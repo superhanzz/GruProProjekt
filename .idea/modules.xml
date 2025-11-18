@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GruProProjekt.iml" filepath="$PROJECT_DIR$/GruProProjekt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../grpro_project/WorldSimulator.iml" filepath="$PROJECT_DIR$/../grpro_project/WorldSimulator.iml" />
     </modules>
   </component>
 </project>
