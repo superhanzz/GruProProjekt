@@ -15,7 +15,7 @@ public class Grass implements NonBlocking, Actor{
         Set<Location> tiles = world.getSurroundingTiles();
         List<Location> locations = new ArrayList<>();
         for (Location location : tiles){
-            if(world.getTile(location) == null){
+            if(!world.containsNonBlocking(location)){
                 locations.add(location);
             }
         }
