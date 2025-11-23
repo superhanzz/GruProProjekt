@@ -4,14 +4,20 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Rabbit implements Actor {
 
     private int energy;
+    private int maxEnergy;
+    private int age;
 
     public Rabbit() {
-        this.energy = 15;
+        this.energy = 10;
+        this.maxEnergy = 10;
+        this.age = 0;
     }
 
     public Rabbit(int energy) {
@@ -25,6 +31,9 @@ public class Rabbit implements Actor {
         if(energy <= 0) {
             die(world);
         }
+
+        //maxEnergy = age % 5 + 10;
+
     }
 
     public void testEatGrass(World world) {
@@ -39,8 +48,18 @@ public class Rabbit implements Actor {
         if (emptyTiles.length <= 0) {
             return;
         }
+        List<Location> grassTiles = new ArrayList<>();
+        for (Location location : emptyTiles) {
+            if (world.getNonBlocking(location) instanceof Grass) grassTiles.add(location);
+        }
         Random rand = new Random();
-        Location searchLocation = emptyTiles[rand.nextInt(emptyTiles.length)];
+        Location searchLocation;
+        if (!grassTiles.isEmpty())
+            searchLocation = grassTiles.get(rand.nextInt(grassTiles.size()));
+        else
+            searchLocation = emptyTiles[rand.nextInt(emptyTiles.length)];
+
+
         world.move(this, searchLocation);
 
         Grass foundGrass = searchTile(world);
