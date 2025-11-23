@@ -1,3 +1,5 @@
+package CapableSimulator;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
@@ -30,7 +32,7 @@ public class CapableSim {
     /* A map of all the Actor's constructors, though lambda's */
     private static final Map<String, Supplier<Actor>> actorConstructorRegistry = new HashMap<>();
     /**
-     * Run when the CapableSim class is loaded
+     * Run when the CapableSimulator.CapableSim class is loaded
      * The 'Class::new' is a constructor reference or a lambda
      **/
     static {
@@ -45,11 +47,12 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.GRASS, Grass.class);
         actorClassTypes.put(ActorTypes.RABBIT, Rabbit.class);
         actorClassTypes.put(ActorTypes.BURROW, Burrow.class);
+
     }
 
 
 
-    CapableSim(int simulationSteps, int displaySize, int simulationDelay, String inputDataFilePath) {
+    public CapableSim(int simulationSteps, int displaySize, int simulationDelay, String inputDataFilePath) {
         this.simulationSteps = simulationSteps;
         this.displaySize = displaySize;
         this.simulationDelay = simulationDelay;
@@ -58,6 +61,12 @@ public class CapableSim {
         world = null;
         program = null;
         worldSize = 0;
+    }
+
+    public CapableSim(World world, int worldSize) {
+        this.world = world;
+        program = null;
+        this.worldSize = worldSize;
     }
 
     void setupSimulation() {
@@ -88,7 +97,7 @@ public class CapableSim {
         }
     }
 
-    void generateActors(String actorType, int amount, World world){
+    public void generateActors(String actorType, int amount, World world){
         Supplier<Actor> actorConstructor = actorConstructorRegistry.get(actorType);
         if (actorConstructor == null) {
             System.out.println("Tried to create an unknown actor: " + actorType);
@@ -107,7 +116,7 @@ public class CapableSim {
             case "grass":
                 for(int i = 0; i < amount; i++) {
                     Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new Grass());
+                    if (location != null) world.setTile(location, new CapableSimulator.Grass());
                     else System.out.println("Failed to create an actor of type " + actorType);
                 };
                 break;
@@ -115,7 +124,7 @@ public class CapableSim {
             case "rabbit":
                 for(int i = 0; i < amount; i++) {
                     Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new Rabbit());
+                    if (location != null) world.setTile(location, new CapableSimulator.Rabbit());
                     else System.out.println("Failed to create an actor of type " + actorType);
                 };
                 break;
@@ -123,7 +132,7 @@ public class CapableSim {
             case "burrow":
                 for(int i = 0; i < amount; i++) {
                     Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new Burrow());
+                    if (location != null) world.setTile(location, new CapableSimulator.Burrow());
                     else System.out.println("Failed to create an actor of type " + actorType);
                 };
                 break;
@@ -156,7 +165,7 @@ public class CapableSim {
         return emptyTile ;
     }
 
-    Map<String, Integer> parseInputFile(String path){
+    public Map<String, Integer> parseInputFile(String path){
         Map<String, Integer> map = new HashMap<>();
         File inputFile = new File(path);
 
@@ -211,17 +220,17 @@ public class CapableSim {
         switch (actorType){
             case GRASS:
                 for(Object actor : actors){
-                    if(actor instanceof Grass) numOfActors++;
+                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
                 }
                 break;
             case RABBIT:
                 for(Object actor : actors){
-                    if(actor instanceof Rabbit) numOfActors++;
+                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
                 }
                 break;
             case BURROW:
                 for(Object actor : actors){
-                    if(actor instanceof Burrow) numOfActors++;
+                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
                 }
                 break;
         }

@@ -2,6 +2,10 @@ import java.awt.Color;
 import java.io.File;
 import java.util.*;
 
+import CapableSimulator.Burrow;
+import CapableSimulator.CapableSim;
+import CapableSimulator.Grass;
+import CapableSimulator.Rabbit;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
@@ -47,7 +51,7 @@ public class Main {
         String line3;
         String[] words = new String[2];
         String[] words1 = new String[2];
-        ArrayList<Grass> grasses = new ArrayList<>();
+        ArrayList<CapableSimulator.Grass> grasses = new ArrayList<>();
 
         File input1 = new File("src/Data/week-1/t1-1c.txt");
         System.out.println(System.getProperty("user.dir"));
@@ -82,14 +86,14 @@ public class Main {
         World world = program.getWorld();
 
         DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
-        program.setDisplayInformation(Grass.class, diGrass);
+        program.setDisplayInformation(CapableSimulator.Grass.class, diGrass);
         DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
-        program.setDisplayInformation(Rabbit.class, diRabbit);
+        program.setDisplayInformation(CapableSimulator.Rabbit.class, diRabbit);
 
         createActor(worldSize, words, world);
         createActor(worldSize, words1, world);
 
-        //world.setTile(new Location(0,1), new Grass());
+        //world.setTile(new Location(0,1), new CapableSimulator.Grass());
         // w.setTile(new Location(0, 0), new <MyClass>());
 
         // p.setDisplayInformation(<MyClass>.class, new DisplayInformation(<Color>, "<ImageName>"));
@@ -129,7 +133,7 @@ public class Main {
             case "grass":
                 for(int i = 0; i < amount; i++) {
                     /*
-                    Grass grass = new Grass();
+                    CapableSimulator.Grass grass = new CapableSimulator.Grass();
                     Location location = getEmptyTile(world);
                     world.setTile(location, grass);
                     */
@@ -234,8 +238,8 @@ public class Main {
     /*static void enveiromentalUpdate(World world){
         Map<Object, Location> entities = world.getEntities();
         for(Object object : entities.keySet()){
-            if(object instanceof Grass){
-                ((Grass) object).grow(world);
+            if(object instanceof CapableSimulator.Grass){
+                ((CapableSimulator.Grass) object).grow(world);
             }
         }
     }*/
