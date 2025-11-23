@@ -168,6 +168,7 @@ public class CapableSim {
     public Map<String, Integer> parseInputFile(String path){
         Map<String, Integer> map = new HashMap<>();
         File inputFile = new File(path);
+        int debugLine = 0;
 
         try(Scanner sc = new Scanner(inputFile)){
 
@@ -175,7 +176,10 @@ public class CapableSim {
 
             /** Iterates though each line of the input file and parses the line into the map<String, Integer> **/
             while(sc.hasNextLine()){
-                String[] Words = sc.nextLine().split(" ");
+                String line = sc.nextLine();
+                if (line.isEmpty()) break;
+
+                String[] Words = line.split(" ");
                 if (map.containsKey(Words[0])) throw new RuntimeException("paraseInputFile() read the same identifier more than once: " + Words[0]);
 
                 /* If the quantity is between 2 values, it generates a random number between the 2 */
@@ -188,7 +192,7 @@ public class CapableSim {
                 map.put(Words[0], Integer.parseInt(Words[1]));
             }
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Exception on line: " + debugLine + "   " + e.getMessage());
         }
 
         return map;

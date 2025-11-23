@@ -10,11 +10,12 @@ import java.util.*;
 public class Grass implements NonBlocking, Actor{
     @Override
     public void act(World world) {
+
         grow(world);
     }
 
     public void grow(World world) {
-        Set<Location> tiles = world.getSurroundingTiles();
+        Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this));
         List<Location> locations = new ArrayList<>();
         for (Location location : tiles){
             if(!world.containsNonBlocking(location)){

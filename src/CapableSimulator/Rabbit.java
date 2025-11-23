@@ -14,12 +14,23 @@ public class Rabbit implements Actor {
         this.energy = 15;
     }
 
+    public Rabbit(int energy) {
+        this.energy = energy;
+    }
+
     @Override
     public void act(World world) {
         lookForFood(world);
         energy--;
         if(energy <= 0) {
             die(world);
+        }
+    }
+
+    public void testEatGrass(World world) {
+        Grass foundGrass = searchTile(world);
+        if (foundGrass != null) {
+            eatGrass(world, foundGrass);
         }
     }
 

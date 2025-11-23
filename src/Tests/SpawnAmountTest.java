@@ -10,17 +10,17 @@ import org.junit.jupiter.api.RepeatedTest;
 import java.io.File;
 import java.util.*;
 
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SpawnAmountTest {
     World world;
-    int grassSpawns;
+    int spawns;
     int testSample;
-    Map<String, Interval> grassSpawnCalls;
+    Map<String, Interval> spawnCalls;
 
     public record Interval(int min, int max, int worldSize) {}
 
-    private static final ArrayList<String> inputFiles = new ArrayList<>();
+    protected static final ArrayList<String> inputFiles = new ArrayList<>();
     static{
         inputFiles.add("src/Data/week-1/t1-1a.txt");
         inputFiles.add("src/Data/week-1/t1-1b.txt");
@@ -34,20 +34,12 @@ public class SpawnAmountTest {
         inputFiles.add("src/Data/week-1/tf1-1.txt");
     }
 
-    @BeforeEach
-    public void setUp() {
-        grassSpawns = 0;
+    protected void buildSpawnCalls(String actorType) {
+        spawns = 0;
         testSample = 10;
 
-        //List<>
-
-
-
-
-
-
         /* Finds all files where grass is defined and put's them in a map with the amount of instances as an interval, if a interval isn't specified, the max value is set to 0 */
-        grassSpawnCalls =  new HashMap<>();
+        spawnCalls =  new HashMap<>();
 
         for (String path : inputFiles){
             String fileName = path;
@@ -63,7 +55,7 @@ public class SpawnAmountTest {
                 while(sc.hasNextLine()){
                     String line = sc.nextLine();
 
-                    if (line.contains("grass")){
+                    if (line.contains(actorType)){
                         line = line.split(" ")[1];
 
                         Interval interval = null;
@@ -73,21 +65,19 @@ public class SpawnAmountTest {
                         }
                         else interval = new Interval(Integer.parseInt(line), 0,  worldSize);
 
-                        grassSpawnCalls.put(fileName, interval);
+                        spawnCalls.put(fileName, interval);
                     }
                 }
             }catch(Exception e){
                 System.out.println(e.getMessage());
             }
         }
-
-        //grassSpawns.forEach((s, interval) -> {System.out.println(s + " " + interval);});
     }
 
-    @RepeatedTest(1)
-    public void grassSpawnTest() {
+    protected void checkSpawns(String actorType) {
+        Map<String, Boolean> assertions = new HashMap<>();
 
-        grassSpawnCalls.forEach((s, interval) -> {
+        spawnCalls.forEach((s, interval) -> {
             System.out.println(s);
             world = new World(interval.worldSize);
             CapableSim sim = new CapableSim(world, interval.worldSize);
@@ -99,12 +89,37 @@ public class SpawnAmountTest {
                     break;
                 }
             }
-            sim.generateActors("grass", sim.parseInputFile(filePath).get("grass"), world);
+            sim.generateActors(actorType, sim.parseInputFile(filePath).get(actorType), world);
 
-            System.out.print("Number of grass actors: ");
-            System.out.println(sim.getNumOfActors(CapableSim.ActorTypes.GRASS));
-            System.out.println();
+            CapableSim.ActorTypes type;
+            switch (actorType){
+                case "grass":
+                     type = CapableSim.ActorTypes.GRASS;
+                    break;
+                case "rabbit":
+                    type = CapableSim.ActorTypes.RABBIT;
+                    break;
+                case "burrow":
+                    type = CapableSim.ActorTypes.BURROW;
+                    break;
+                default:
+                    return;
+            }
+
+            int numOfActors = sim.getNumOfActors(type);
+
+            //System.out.print("Number of " + type + " actors: ");
+            //System.out.println(sim.getNumOfActors(type));
+            //System.out.println();
+
+            if (interval.max != 0) {
+                assertions.put(s, ((numOfActors >= interval.min)  && (numOfActors <= interval.max)));
+            }
+            else assertions.put(s, (numOfActors == interval.min));
+
         });
+
+        assertions.forEach((key, value) -> {assertTrue(value);});
     }
 
     @AfterEach
