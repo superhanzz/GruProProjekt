@@ -43,16 +43,26 @@ public class CapableSim {
      * Run when the CapableSimulator.CapableSim class is loaded
      * The 'Class::new' is a constructor reference or a lambda
      **/
+
+    /**
+     * Når vi først loader klassen CapableSim vil koden indenfor {} blive kørt.
+     * Når koden kører vil der blive regristreret en reference til den tilhørende constructor uden parametre,
+     * hvor at strengen er nøglen til den tilhørende constructor.
+     **/
     static {
-        actorConstructorRegistry.put("grass", Grass::new);
+        actorConstructorRegistry.put("grass", Grass::new); // Her bliver der skabt en reference til "new Grass()" uden parametre, hvor "grass" er nøglen.
         actorConstructorRegistry.put("rabbit", Rabbit::new);
         actorConstructorRegistry.put("burrow", Burrow::new);
     }
 
+
+    /**
+     * Her laver vi et Map der består af en actor type og en hvilken somhelst type som implementerer Actor interfacet.
+     */
     /* A map of all the Actor's class references */
     private static final Map<ActorTypes, Class<? extends Actor>> actorClassTypes = new HashMap<>();
     static {
-        actorClassTypes.put(ActorTypes.GRASS, Grass.class);
+        actorClassTypes.put(ActorTypes.GRASS, Grass.class); // Her bliver actor typen Grass placeret inde i mappet, hvor Grass peger på Grass.class
         actorClassTypes.put(ActorTypes.RABBIT, Rabbit.class);
         actorClassTypes.put(ActorTypes.BURROW, Burrow.class);
 
@@ -77,6 +87,9 @@ public class CapableSim {
         this.worldSize = worldSize;
     }
 
+    /**
+     * Denne metode instantiere et nyt Program, derudover gemmer den også hvorvidt det er dag eller nat, og derefter kalder setUpDisplayInformation();
+     */
     void setupSimulation() {
         program = new Program(worldSize, displaySize, simulationDelay);
         world = program.getWorld();
@@ -86,6 +99,16 @@ public class CapableSim {
         setUpDisplayInformation();
     }
 
+    /**
+     * Denne metode runSimulation, er den som kører simuleringen. Her siger den altså at hvis der ikke er givet noget program,
+     * vil den køre setupSimlation.
+     *
+     * Derefter vil den skabe vores Actors ud fra inputfilen som defineres i constructoren.
+     * Efter det viser den programet og så opsættes et loop hvori hver iteration er 'simulerings skridtene'.
+     * for iteration bliver der kontrolleret om det er dag,nat eller ved at blive nat.
+     *
+     * Til sidst eksekveres itumulator's simulerings kode.(eksempelvis act() metoden)
+     */
     public void runSimulation(){
         /* Parses the input file into a map */
         Map<String, Integer> inputMap = parseInputFile(inputDataFilePath);

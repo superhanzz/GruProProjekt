@@ -27,6 +27,7 @@ public class Simulator {
      * @param canvas the canvas to use for simulation.
      * @param delay between executing simulations in ms (when using {@link run() run}).
      */
+
     public Simulator(World world, Canvas canvas, int delay) {
         this.world = world;
         this.canvas = canvas;
