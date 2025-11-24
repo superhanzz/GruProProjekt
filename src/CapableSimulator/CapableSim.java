@@ -166,7 +166,6 @@ public class CapableSim {
             if (location != null) {
                 Object o = actorConstructor.get();
                 world.setTile(location, o);
-
             }
             else
                 System.out.println("Failed to create an actor of type " + actorType);
