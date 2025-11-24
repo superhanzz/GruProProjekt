@@ -215,6 +215,11 @@ public class Rabbit extends Animals {
 
     @Override
     public void onDay(World world) {
+        if(burrow == null) {
+            System.out.println("Burrow is null");
+            return;
+        }
+
         if (burrowLocation != null && !isOnMap)
             updateOnMap(world, burrowLocation, true);
         canMate = true;
@@ -226,6 +231,7 @@ public class Rabbit extends Animals {
             for (Location l : world.getSurroundingTiles(world.getLocation(this))) {
                 if (world.getNonBlocking(l) instanceof Burrow) {
                     burrow = (Burrow) world.getNonBlocking(l);
+                    burrowLocation = world.getLocation(burrow);
                     break;
                 }
             }
@@ -242,5 +248,10 @@ public class Rabbit extends Animals {
         world.move(this, closestTile);
     }
 
+
+
+    public Burrow getBurrow() {
+        return burrow;
+    }
 
 }
