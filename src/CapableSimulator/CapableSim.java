@@ -122,11 +122,17 @@ public class CapableSim {
             generateActors(key, inputMap.get(key), world);
         }
 
-        // System.out.print("The number of grass actor's in the world is: " + getNumOfActors(ActorTypes.GRASS));
-
         program.show();
         for (int i = 0; i < simulationSteps; i++){
             if (world.getCurrentTime() == 9){
+                Map<Object, Location> entities = world.getEntities();
+                for (Object entity : entities.keySet()) {
+                    if (entity instanceof Animals && entities.get(entity) == null) {
+                        world.delete(entity);
+                        System.out.println("Removed entity" + entity);
+                    }
+                }
+
                 List<Animals> animals = getAllAnimals(world);
                 animals.forEach(animal -> {animal.almostNight(world);});
             }
@@ -305,11 +311,11 @@ public class CapableSim {
         List<Animals> animals = getAllAnimals(world);
         switch (dayNightStatus){
             case DAY:
-                System.out.println("it has become day");
+                //System.out.println("it has become day");
                 animals.forEach((animal) -> {animal.onDay(world);});
                 break;
             case NIGHT:
-                System.out.println("it has become night");
+                //System.out.println("it has become night");
                 animals.forEach((animal) -> {animal.onNight(world);});
                 break;
             default:
