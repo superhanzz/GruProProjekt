@@ -14,9 +14,15 @@ public class Rabbit implements Actor {
     private int maxEnergy;
     private int age;
 
+    private boolean isPregnant;
+    //private int
+
+    private final int pregnancyTime = 3;
+    private final int pregnancyCooldown = 3;
+
     public Rabbit() {
         this.energy = 10;
-        this.maxEnergy = 10;
+        this.maxEnergy = 15;
         this.age = 0;
     }
 
@@ -26,13 +32,26 @@ public class Rabbit implements Actor {
 
     @Override
     public void act(World world) {
-        lookForFood(world);
+        if (energy >= (maxEnergy - 4)) {
+            if (!tryReproduce(world)){
+                lookForFood(world);
+            }
+        }
+        else {
+            lookForFood(world);
+        }
+        if(isPregnant){
+
+        }
+
         energy--;
         if(energy <= 0) {
             die(world);
         }
 
-        //maxEnergy = age % 5 + 10;
+        if (age % 5 == 4) {
+            maxEnergy++;
+        }
 
     }
 
@@ -68,8 +87,32 @@ public class Rabbit implements Actor {
         }
     }
 
-    private void tryReproduce(World world) {
+    private boolean tryReproduce(World world) {
+        List<Rabbit> possibleMates = new ArrayList<>();
 
+
+        world.getSurroundingTiles(world.getLocation(this)).forEach(location -> {
+            Object o = world.getTile(location);
+            if (o instanceof Rabbit) {
+                possibleMates.add((Rabbit) o);
+            }
+        });
+
+        if (possibleMates.isEmpty()) return false;
+
+        Random rand = new Random();
+        boolean mated = possibleMates.get(rand.nextInt(possibleMates.size())).mate();
+
+        return mated;
+    }
+
+    protected boolean mate() { // This function is called from another Rabbit instance
+        System.out.println("Mate");
+        if (!(energy >= (maxEnergy - 4)))
+            return false;
+
+
+        return true;
     }
 
     private Grass searchTile(World world) {
@@ -79,7 +122,8 @@ public class Rabbit implements Actor {
 
     private void eatGrass(World world,  Grass grass) {
         world.delete(grass);
-        energy++;
+        energy += 2;
+        energy = Math.clamp(energy, 0, maxEnergy);
     }
 
     void die(World world) {

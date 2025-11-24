@@ -8,6 +8,13 @@ import itumulator.world.World;
 import java.util.*;
 
 public class Grass implements NonBlocking, Actor{
+
+    double growthChance;
+
+    public Grass(){
+        growthChance = 0.5;
+    }
+
     @Override
     public void act(World world) {
 
@@ -28,7 +35,7 @@ public class Grass implements NonBlocking, Actor{
         }
         int index = rand.nextInt(locations.size());
         Location location = locations.get(index);
-        if(rand.nextDouble() < 0.01){
+        if(rand.nextDouble() < growthChance){
             world.setTile(location, new Grass());
         }
 

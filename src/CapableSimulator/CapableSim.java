@@ -199,7 +199,7 @@ public class CapableSim {
     }
 
     void setUpDisplayInformation() {
-        DisplayInformation diGrass = new DisplayInformation(Color.green, "alpha-wolf");
+        DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
         program.setDisplayInformation(Grass.class, diGrass);
 
         DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
