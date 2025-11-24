@@ -48,14 +48,15 @@ public class Rabbit extends Animals {
         if(world.isNight() || !isOnMap)
             return;
 
-        if (energy >= (maxEnergy - 4)) {
+        /*if (energy >= (maxEnergy - 4)) {
             if (!tryReproduce(world)){
                 lookForFood(world);
             }
         }
         else {
             lookForFood(world);
-        }
+        }*/
+        lookForFood(world);
         if(isPregnant){
 
         }
