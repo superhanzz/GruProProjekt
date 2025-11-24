@@ -1,5 +1,6 @@
 package CapableSimulator;
 
+import FunctionLibrary.CapableFunc;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -7,8 +8,12 @@ import itumulator.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
-public class Rabbit implements Actor {
+public class Rabbit extends Animals {
+
+    Burrow burrow;
+    Location burrowLocation;
 
     private int energy;
     private int maxEnergy;
@@ -17,21 +22,32 @@ public class Rabbit implements Actor {
     private boolean isPregnant;
     //private int
 
-    private final int pregnancyTime = 3;
-    private final int pregnancyCooldown = 3;
+    private int pregnancyCooldown;
 
     public Rabbit() {
         this.energy = 10;
         this.maxEnergy = 15;
         this.age = 0;
+
+        burrow = null;
+        burrowLocation = null;
+        isOnMap = true;
+        pregnancyCooldown = 0;
     }
 
     public Rabbit(int energy) {
         this.energy = energy;
+        burrow = null;
+        burrowLocation = null;
+        isOnMap = true;
+        pregnancyCooldown = 0;
     }
 
     @Override
     public void act(World world) {
+        if(world.isNight() || !isOnMap)
+            return;
+
         if (energy >= (maxEnergy - 4)) {
             if (!tryReproduce(world)){
                 lookForFood(world);
@@ -101,16 +117,24 @@ public class Rabbit implements Actor {
         if (possibleMates.isEmpty()) return false;
 
         Random rand = new Random();
-        boolean mated = possibleMates.get(rand.nextInt(possibleMates.size())).mate();
+        boolean mated = possibleMates.get(rand.nextInt(possibleMates.size())).mate(world);
+        if (mated) pregnancyCooldown = 3;
 
         return mated;
     }
 
-    protected boolean mate() { // This function is called from another Rabbit instance
-        System.out.println("Mate");
-        if (!(energy >= (maxEnergy - 4)))
+    protected boolean mate(World world) { // This function is called from another Rabbit instance
+        //System.out.println("Mate");
+        if (!(energy >= (maxEnergy - 4)) && pregnancyCooldown <= 0)
             return false;
+        Rabbit baby = new Rabbit();
+        Location[] locations = world.getEmptySurroundingTiles(world.getLocation(this)).toArray(new Location[0]);
+        if (locations.length <= 0) return false;
 
+        Random rand = new Random();
+        world.setTile(locations[rand.nextInt(locations.length)], baby);
+        pregnancyCooldown = 3;
+        //baby.updateOnMap(world, CapableFunc.getEmptyTile(world, world.getSize()), true);
 
         return true;
     }
@@ -129,4 +153,47 @@ public class Rabbit implements Actor {
     void die(World world) {
         world.delete(this);
     }
+
+    void digBurrow(World world) {
+        Object standingOn = world.getNonBlocking(world.getLocation(this));
+        if (standingOn != null) {
+            world.delete(standingOn);
+        }
+
+        burrow = new Burrow(this);
+        world.setTile(world.getLocation(this), burrow);
+        burrowLocation = world.getLocation(this);
+
+    }
+
+    @Override
+    public void onDay(World world) {
+        if (burrowLocation != null && !isOnMap) updateOnMap(world, burrowLocation, true);
+    }
+
+    @Override
+    public void onNight(World world) {
+        if (burrow == null) {
+            for (Location l : world.getSurroundingTiles(world.getLocation(this))) {
+                if (world.getNonBlocking(l) instanceof Burrow) {
+                    burrow = (Burrow) world.getNonBlocking(l);
+                    break;
+                }
+            }
+            if (burrow == null) digBurrow(world);
+        }
+        else {
+            //world.move(this, burrowLocation);
+        }
+        updateOnMap(world, world.getLocation(this),false);
+    }
+    @Override
+    public void almostNight(World world) {
+        if(burrow == null) return;
+        Location closestTile = getClosestTile(world, burrowLocation);
+        if (closestTile == null) return;
+        world.move(this, closestTile);
+    }
+
+
 }

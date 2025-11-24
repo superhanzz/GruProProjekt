@@ -9,6 +9,7 @@ import itumulator.world.World;
 import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class CapableSim {
@@ -22,10 +23,17 @@ public class CapableSim {
     int displaySize;
     int simulationDelay;
 
+    DayNightStatus dayNightStatus;
+
     public enum ActorTypes {
         GRASS,
         RABBIT,
         BURROW;
+    }
+
+    public enum DayNightStatus {
+        DAY,
+        NIGHT;
     }
 
 
@@ -73,6 +81,8 @@ public class CapableSim {
         program = new Program(worldSize, displaySize, simulationDelay);
         world = program.getWorld();
 
+        dayNightStatus = world.isDay() ? DayNightStatus.DAY : DayNightStatus.NIGHT;
+
         setUpDisplayInformation();
     }
 
@@ -93,6 +103,25 @@ public class CapableSim {
 
         program.show();
         for (int i = 0; i < simulationSteps; i++){
+            if (world.getCurrentTime() == 9){
+                List<Animals> animals = getAllAnimals(world);
+                animals.forEach(animal -> {animal.almostNight(world);});
+            }
+
+            switch (dayNightStatus) {
+                case DAY:
+                    if (!world.isDay()) {
+                        dayNightStatus = DayNightStatus.NIGHT;
+                        onDayNightChange(dayNightStatus);
+                    }
+                    break;
+                case NIGHT:
+                    if (!world.isNight()) {
+                        dayNightStatus = DayNightStatus.DAY;
+                        onDayNightChange(dayNightStatus);
+                    }
+                    break;
+            }
             program.simulate();
         }
     }
@@ -105,8 +134,11 @@ public class CapableSim {
         }
         for (int i = 0; i < amount; i++){
             Location location = getEmptyTile(world);
-            if (location != null)
-                world.setTile(location, actorConstructor.get());
+            if (location != null) {
+                Object o = actorConstructor.get();
+                world.setTile(location, o);
+
+            }
             else
                 System.out.println("Failed to create an actor of type " + actorType);
         }
@@ -202,8 +234,11 @@ public class CapableSim {
         DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
         program.setDisplayInformation(Grass.class, diGrass);
 
-        DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
+        DisplayInformation diRabbit = new DisplayInformation(Color.red, "alpha-wolf");
         program.setDisplayInformation(Rabbit.class, diRabbit);
+
+        DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
+        program.setDisplayInformation(Burrow.class, diBurrow);
     }
 
     /**
@@ -241,6 +276,36 @@ public class CapableSim {
         */
 
         return numOfActors;
+    }
+
+    void onDayNightChange(DayNightStatus dayNightStatus){
+        List<Animals> animals = getAllAnimals(world);
+        switch (dayNightStatus){
+            case DAY:
+                System.out.println("it has become day");
+                animals.forEach((animal) -> {animal.onDay(world);});
+                break;
+            case NIGHT:
+                System.out.println("it has become night");
+                animals.forEach((animal) -> {animal.onNight(world);});
+                break;
+            default:
+                return;
+        }
+    }
+
+    List<Animals> getAllAnimals(World world){
+        List<Animals> animals = new ArrayList<>();
+
+        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+        for(Object actor : actors){
+            if(actor instanceof Animals){
+                animals.add((Animals) actor);
+            }
+        }
+
+
+        return animals;
     }
 
 }
