@@ -24,8 +24,8 @@ public class RabbitReproduceTest {
         /**
          * Creates 2 parrent rabbits with a constructer that set the minimum age required for mating, and the pregnancy cooldown
          * */
-        Rabbit r1 = new Rabbit(0, 0);
-        Rabbit r2 = new Rabbit(0, 0);
+        Rabbit r1 = new Rabbit(0, 20);
+        Rabbit r2 = new Rabbit(0, 20);
 
         /**
          * Puts the two rabbits in the world, next to each other

@@ -1,60 +1,108 @@
 package CapableSimulator;
 
-import FunctionLibrary.CapableFunc;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class Rabbit extends Animals {
 
-    Burrow burrow;
-    Location burrowLocation;
+    /* ----- ----- ----- Burrow variables ----- ----- ----- */
 
+    /** The reference to the rabbits burrow */
+    private Burrow burrow;
+
+    /** The Location of the rabbits burrow */
+    private Location burrowLocation;
+
+    /* ----- ----- ----- Energy variables ----- ----- ----- */
+
+    /** The energy variable is the variable that keeps track of the rabbits energy.
+     *  If energy = 0, the rabbit dies at the end of the simulation step.
+     *  When the rabbit eats grass, the energy is increased by the amount of energy stored in the grass. //TODO
+     *  */
     private int energy;
+
+    /** The maximal amount of energy the rabbit can have.
+     *  if the rabbit eats grass and the energy exceeds the maximal value, energy is clamped.
+     * */
     private int maxEnergy;
+
+    /** The rabbits age.
+     *  The age controls the maximal energy  the rabbit can have    //TODO
+     * */
     private int age;
-    private int matingAge;
+
+
+    /* ----- ----- ----- Mating variables ----- ----- ----- */
+
+    /** Defines the age of the rabbit before it can mate.
+     * */
+    private final int matingAge;
+
+    /** The rabbit should not be able to mate during nights, this keeps that from happening.
+     * */
     private boolean canMate;
 
-    private int pregnancyCooldown;
+    /** The cooldown period after a rabbit has mated.
+     *  It goes down by one after each simulation step
+     * */
+    private int matingCooldown;
 
+    /** What the matingCooldown is set to after a successful mating has occurred.
+     * Set's the cooldown in both parrents.
+     * */
+    private final int MATING_COOLDOWN_DURATION;
+
+
+    /* ----- ----- ----- Constructors ----- ----- ----- */
+
+    /**
+     * The default constructor for the rabbit class.
+     * This is the constructor to use when making the simulation.
+     * */
     public Rabbit() {
         this.energy = 10;
         this.maxEnergy = 15;
         this.age = 0;
         this.matingAge = 10;
-        this.pregnancyCooldown = 0;
+        this.matingCooldown = 0;
         this.canMate = true;
+        this.MATING_COOLDOWN_DURATION = 20;
 
         burrow = null;
         burrowLocation = null;
         isOnMap = true;
     }
 
+    /**
+     * A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
+     * */
     public Rabbit(int energy) {
         this.energy = energy;
         this.age = 0;
         this.matingAge = 10;
-        this.pregnancyCooldown = 0;
+        this.matingCooldown = 0;
         this.canMate = true;
+        this.MATING_COOLDOWN_DURATION = 20;
 
         burrow = null;
         burrowLocation = null;
         isOnMap = true;
     }
 
-    public Rabbit(int matingAge, int pregnancyCooldown) {
+    /**
+     * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
+     * */
+    public Rabbit(int matingAge, int MATING_COOLDOWN_DURATION) {
         this.matingAge = matingAge;
-        this.pregnancyCooldown = pregnancyCooldown;
+        this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
 
         this.age = 0;
         this.energy = 10;
-        this.pregnancyCooldown = 0;
+        this.matingCooldown = 0;
         this.canMate = true;
 
         burrow = null;
@@ -62,7 +110,12 @@ public class Rabbit extends Animals {
         isOnMap = true;
     }
 
+    /* ----- ----- ----- Behavior ----- ----- ----- */
 
+    /** Implementation of act() method from the Actor interface.
+     *  Executes once per simulation step.
+     *  Most of the behavior occurs within this method.
+     * */
     @Override
     public void act(World world) {
         if(world.isNight() || !isOnMap)
@@ -71,8 +124,8 @@ public class Rabbit extends Animals {
         if(canMate && age >= matingAge)
             findMate(world);
 
-        pregnancyCooldown--;
-        pregnancyCooldown = Math.clamp(pregnancyCooldown, 0, 100);
+        matingCooldown--;
+        matingCooldown = Math.clamp(matingCooldown, 0, 100);
 
         lookForFood(world);
 
@@ -84,13 +137,20 @@ public class Rabbit extends Animals {
         age++;
     }
 
+    /** A method for testing if
+     * */
     public void testEatGrass(World world) {
-        Grass foundGrass = searchTile(world);
+        Grass foundGrass = searchTile(world, world.getLocation(this));
         if (foundGrass != null) {
             eatGrass(world, foundGrass);
         }
     }
 
+    /** Tries to find food.
+     *  First, checks if the rabbit is standing on grass. //TODO
+     *  If it is not standing on grass then it tries to find grass on surrounding empty tiels.
+     *  If grass is found on one or more surrounding tiles, then a random tile is chosen and moved to.
+     * */
     private void lookForFood(World world) {
         Location[] emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this)).toArray(new Location[0]);
         if (emptyTiles.length <= 0) {
@@ -110,15 +170,21 @@ public class Rabbit extends Animals {
 
         world.move(this, searchLocation);
 
-        Grass foundGrass = searchTile(world);
+        Grass foundGrass = searchTile(world, world.getLocation(searchLocation));
         if (foundGrass != null) {
             eatGrass(world, foundGrass);
         }
     }
 
-
+    /** Tries to find a mate to reproduce
+     *  If more than one possible mate is found, then a random one is chosen.
+     *  If the chosen mate is eligible to reproduce, then a offspring is created.
+     *  The offspring is inserted into the world at a free surrounding tile, around the instigating rabbit
+     *  If no free tile is found the offspring dies, but the mating is still counted as a success. TODO
+     *  // TODO when the mate is chosen, set a variable in the other mate to make sure that they dont try and mate with another rabbit in the same turn.
+     * */
     public void findMate(World world) {
-        if (pregnancyCooldown > 0)
+        if (matingCooldown > 0)
             return;
 
         List<Rabbit> possibleMates = new ArrayList<>();
@@ -137,15 +203,15 @@ public class Rabbit extends Animals {
         }
 
         if (mate.age < matingAge) return;
-        if (mate.pregnancyCooldown > 0) return;
+        if (mate.matingCooldown > 0) return;
 
         // makes new rabbit
         Rabbit offSpring = new Rabbit();
         Location[] possibleSpawns = world.getEmptySurroundingTiles(world.getLocation(this)).toArray(new Location[0]);
         Location offSpringLocation = possibleSpawns[new Random().nextInt(possibleSpawns.length)];
         offSpring.updateOnMap(world, offSpringLocation, true);
-        mate.pregnancyCooldown = 20;
-        pregnancyCooldown = 20;
+        mate.matingCooldown = 20;
+        matingCooldown = 20;
     }
 
     /*
@@ -186,21 +252,31 @@ public class Rabbit extends Animals {
     }
     */
 
-    private Grass searchTile(World world) {
-        Object nonBlockingObject = world.getNonBlocking(world.getLocation(this));
+    /** A method that checks if the tile at the given location has grass.
+     *  If there is grass on the tile, then a reference to the grass is returned.
+     *  If there is no grass then null is returned.
+     * */
+    private Grass searchTile(World world, Location location) {
+        Object nonBlockingObject = world.getNonBlocking(location);
         return nonBlockingObject instanceof Grass ? (Grass) nonBlockingObject : null;
     }
 
+    /** Handles eating grass i.e. increases the rabbits energy and deletes the grass actor from the world
+     * TODO make the grass deleting happen in the grass actor insted of here, and make the grass return the amount of energy it provides
+     * */
     private void eatGrass(World world,  Grass grass) {
         world.delete(grass);
         energy += 2;
         energy = Math.clamp(energy, 0, maxEnergy);
     }
 
+    /** Handles the rabbit upon death i.e. deletes it from the world */
     public void die(World world) {
         world.delete(this);
     }
 
+    /** Handels the digging of a burrow, and connecting the rabbit to the burrow.
+     * */
     public void digBurrow(World world) {
         Object standingOn = world.getNonBlocking(world.getLocation(this));
         if (standingOn != null) {
@@ -213,6 +289,16 @@ public class Rabbit extends Animals {
 
     }
 
+    /** TODO make this method handle ribbits entering their burrow */
+    void goIntoBurrow(World world) {
+
+    }
+
+
+    /** The implementation of the animal method onDay()
+     *  Handles the events linked to day break i.e.
+     *  Enabling mating again, and the rabbit appearing on the map again.
+     * */
     @Override
     public void onDay(World world) {
         if(burrow == null) {
@@ -225,6 +311,11 @@ public class Rabbit extends Animals {
         canMate = true;
     }
 
+    /** The implementation of the animal method onNight()
+     *  Handles the events linked to nightfall i.e.
+     *  The rabbit going into it's burrow if it has one, otherwise it tries to find a nearby burrow.
+     *  If no nearby burrow is found, then it tries to dig one.
+     * */
     @Override
     public void onNight(World world) {
         if (burrow == null) {
@@ -239,19 +330,43 @@ public class Rabbit extends Animals {
         }
         updateOnMap(world, world.getLocation(this),false);
     }
+
+    /** The implementation of the animal method almostNight()
+     *  Handles the events linked to it almost being night i.e.
+     *  Making the rabbits go towards their burrow if they have one.
+     *  Disabling mating until daybreak.
+     * */
     @Override
     public void almostNight(World world) {
         canMate = false;
+
         if(burrow == null) return;
+
         Location closestTile = getClosestTile(world, burrowLocation);
-        if (closestTile == null) return;
+
+        if (closestTile == null) {
+            System.out.println("Rabbit could not find a free tile around it's burrow.");    // error message if no empty tile was found around its burrow
+            //TODO kill rabbit if no tile was found, burrow might be full
+            return;
+        }
+
         world.move(this, closestTile);
     }
 
 
 
-    public Burrow getBurrow() {
-        return burrow;
-    }
+
+    /* ----- ----- ----- ----- Getters ----- ----- ----- ----- ----- */
+
+    /** Returns the rabbits burrow reference */
+    public Burrow getBurrow() { return burrow; }
+
+    /** Returns the rabbits burrows location */
+    public Location getBurrowLocation() { return burrowLocation; }
+
+    /** Returns the location of the rabbit */
+    public Location getLocation(World world) { return world.getLocation(this); }
+
+
 
 }
