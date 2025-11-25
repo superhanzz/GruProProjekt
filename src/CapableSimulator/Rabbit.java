@@ -197,7 +197,7 @@ public class Rabbit extends Animals {
         energy = Math.clamp(energy, 0, maxEnergy);
     }
 
-    void die(World world) {
+    public void die(World world) {
         world.delete(this);
     }
 

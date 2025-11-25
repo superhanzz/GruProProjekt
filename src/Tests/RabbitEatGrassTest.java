@@ -14,6 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RabbitEatGrassTest {
+
     World world;
 
     @BeforeEach
@@ -21,48 +22,70 @@ public class RabbitEatGrassTest {
         world = new World(3);
     }
 
-    @RepeatedTest(1)
+    /**
+     * Tests whether the rabbit can eat grass or not.
+     * */
+    @RepeatedTest(10)
     void eatTest() {
+        // Creates one rabbit and one grass and a location at (0,0).
         Rabbit r = new Rabbit(1);
         Grass grass = new Grass();
         Location location = new Location(1, 1);
 
+        // Inserts the rabbit and grass into the world at (0,0).
         world.setTile(location, grass);
         world.setTile(location, r);
 
-        boolean isGrassUnderRabbit = world.getNonBlocking(location) != null;
+        // Checks if the grass is actually at the location under the rabbit.
+        assertNotNull(world.getNonBlocking(world.getLocation(r)));
 
+        // Executes the method where the rabbit eats grass.
         r.testEatGrass(world);
 
-        boolean isGrassEaten = world.getNonBlocking(location) == null;
+        // Checks if the grass under the rabbit has been eaten.
+        assertNull(world.getNonBlocking(world.getLocation(r)));
 
-        assertTrue(isGrassUnderRabbit);
-        assertTrue(isGrassEaten);
-
-        boolean isRabbitAlive = world.getTile(location) != null;
-        assertTrue(isRabbitAlive);
-
-
-        boolean rabbitInWorld = world.getTile(location) != null;
+        // Checks if the rabbit is alive, that is that the rabbit has not been deleted, and is still in the worlds entity map.
+        assertTrue(world.getEntities().containsKey(r));
     }
 
-    @RepeatedTest(1)
-    void notEatGrassTest() {
-        Rabbit r = new Rabbit(0);
-        Location location = new Location(1, 1);
 
+    /**
+     * Tests if the rabbit can die, and then if the actor is actually deleted from the world
+     * */
+    @RepeatedTest(10)
+    void dieTest() {
+        // Creates a rabbit and inserts it on the map at (0,0)
+        Rabbit r = new Rabbit();
+        Location location = new Location(0, 0);
         world.setTile(location, r);
 
-        Set<Object> objects = world.getEntities().keySet();
-        boolean isRabbitAlive = objects.contains(r);
-        assertTrue(isRabbitAlive);
-        r.act(world);
+        // Checks if the rabbit is in the world
+        boolean rabbitInWorld = world.getTile(location) != null;
+        assertTrue(rabbitInWorld); // Evaluates whether the rabbit is in the world before the rabbit die.
 
-        objects = world.getEntities().keySet();
-        boolean isRabbitDead = !objects.contains(r);
+        // Executes the die() method in the rabbit.
+        r.die(world);
+        assertFalse(world.getEntities().containsKey(r)); // Evaluates whether the rabbit is completely removed from the world.
+    }
 
-        System.out.println(isRabbitDead);
-        assertTrue(isRabbitDead);
+
+    /**
+     * Tests whether the rabbit dies if it does not eat grass before it runs out of energy.
+     * */
+    @RepeatedTest(10)
+    void notEatGrassTest() {
+        // Creates a rabbit with a special constructor, where the rabbits starting energy can be defined.
+        Rabbit r = new Rabbit(0);
+        Location location = new Location(1, 1); // Creates a location at (1,1).
+        world.setTile(location, r); // Inserts the rabbit into the world, at (1,1).
+
+        // Checks if the rabbit is alive, that is that it is actually in the world's entity map.
+        assertTrue(world.getEntities().containsKey(r));
+        r.act(world); // Executes the act() method in the rabbit, which is the method wherein the rabbits behavior is defined.
+
+        // Checks if the rabbit has died, that is the rabbit is not in the worlds entity map.
+        assertFalse(world.getEntities().containsKey(r));
     }
 
     @AfterEach
