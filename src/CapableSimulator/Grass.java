@@ -9,10 +9,10 @@ import java.util.*;
 
 public class Grass implements NonBlocking, Actor{
 
-    double growthChance;
+    private final double growthChance;
 
     public Grass(){
-        growthChance = 0.5;
+        growthChance = 0.15;
     }
 
     @Override
@@ -40,5 +40,9 @@ public class Grass implements NonBlocking, Actor{
         }
 
 
+    }
+
+    public double getGrowthChance() {
+        return growthChance;
     }
 }

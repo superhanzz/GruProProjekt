@@ -170,7 +170,7 @@ public class Rabbit extends Animals {
 
         world.move(this, searchLocation);
 
-        Grass foundGrass = searchTile(world, world.getLocation(searchLocation));
+        Grass foundGrass = searchTile(world, world.getLocation(this));
         if (foundGrass != null) {
             eatGrass(world, foundGrass);
         }

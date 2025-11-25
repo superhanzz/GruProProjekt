@@ -19,12 +19,18 @@ public class GrassGrowthChanceTest {
     World world;
     int sampleSize;
     int grassGrowths;
+    double expectedGrowthChance;
 
     @BeforeEach
     void setUp() {
         world = new World(3);
         sampleSize = 1000;
         grassGrowths = 0;
+
+        // Retrieves the expected grass growth chance from a grass actor, the destroys that instance.
+        Grass g = new Grass();
+        expectedGrowthChance = g.getGrowthChance();
+        g = null;
     }
 
     @RepeatedTest(1000)
