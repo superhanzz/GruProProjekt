@@ -55,6 +55,10 @@ public class Animals implements Actor {
         return distance;
     }
 
+    public void die(World world) {
+        world.delete(this);
+    }
+
     public void updateOnMap(World world, Location location, boolean putOnMap) {
         if (putOnMap) {
             if (world.isTileEmpty(location)) {
