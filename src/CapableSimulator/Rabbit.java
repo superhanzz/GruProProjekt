@@ -64,8 +64,8 @@ public class Rabbit extends Animals {
      * This is the constructor to use when making the simulation.
      * */
     public Rabbit() {
-        this.energy = 10;
-        this.maxEnergy = 15;
+        this.energy = 15;
+        this.maxEnergy = 20;
         this.age = 0;
         this.matingAge = 10;
         this.matingCooldown = 0;
@@ -271,9 +271,7 @@ public class Rabbit extends Animals {
     }
 
     /** Handles the rabbit upon death i.e. deletes it from the world */
-    public void die(World world) {
-        world.delete(this);
-    }
+
 
     /** Handels the digging of a burrow, and connecting the rabbit to the burrow.
      * */

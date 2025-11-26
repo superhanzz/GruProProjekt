@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CapableSim sim = new CapableSim(200, 800, 500, "src/Data/week-1/t1-2cde.txt");
+        CapableSim sim = new CapableSim(200, 800, 500, "src/Data/week-2/t2-2a.txt");
         sim.runSimulation();
 
 

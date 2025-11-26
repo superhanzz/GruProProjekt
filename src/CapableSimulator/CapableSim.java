@@ -25,9 +25,12 @@ public class CapableSim {
 
     DayNightStatus dayNightStatus;
 
+    Map<String, Set<Wolf>> allWolfgangs;
+
     public enum ActorTypes {
         GRASS,
         RABBIT,
+        WOLF,
         BURROW;
     }
 
@@ -53,6 +56,7 @@ public class CapableSim {
         actorConstructorRegistry.put("grass", Grass::new); // Her bliver der skabt en reference til "new Grass()" uden parametre, hvor "grass" er nøglen.
         actorConstructorRegistry.put("rabbit", Rabbit::new);
         actorConstructorRegistry.put("burrow", Burrow::new);
+        actorConstructorRegistry.put("wolf", Wolf::new);
     }
 
 
@@ -65,6 +69,7 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.GRASS, Grass.class); // Her bliver actor typen Grass placeret inde i mappet, hvor Grass peger på Grass.class
         actorClassTypes.put(ActorTypes.RABBIT, Rabbit.class);
         actorClassTypes.put(ActorTypes.BURROW, Burrow.class);
+        actorClassTypes.put(ActorTypes.WOLF, Wolf.class);
 
     }
 
@@ -159,6 +164,20 @@ public class CapableSim {
         Supplier<Actor> actorConstructor = actorConstructorRegistry.get(actorType);
         if (actorConstructor == null) {
             System.out.println("Tried to create an unknown actor: " + actorType);
+            return;
+        }
+        if(actorType.equals("wolf")) {
+            Set<Actor> wolfs = new HashSet<>();
+            for (int i = 0; i < amount; i++){
+                Location location = getEmptyTile(world);
+                if (location != null) {
+                    Wolf o = new Wolf(wolfs);
+                    wolfs.add(o);
+                    world.setTile(location, o);
+                }
+                else
+                    System.out.println("Failed to create an actor of type " + actorType);
+            }
             return;
         }
         for (int i = 0; i < amount; i++){
@@ -262,12 +281,15 @@ public class CapableSim {
         DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
         program.setDisplayInformation(Grass.class, diGrass);
 
-        DisplayInformation diRabbit = new DisplayInformation(Color.red, "alpha-wolf");
+        DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
         program.setDisplayInformation(Rabbit.class, diRabbit);
+
+        DisplayInformation diWolf = new DisplayInformation(Color.green, "alpha-wolf");
+        program.setDisplayInformation(Wolf.class, diWolf);
 
         DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
         program.setDisplayInformation(Burrow.class, diBurrow);
-    }
+    }   
 
     /**
      * Return the amount of the given actor type in the world
