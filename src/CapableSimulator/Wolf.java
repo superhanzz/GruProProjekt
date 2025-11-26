@@ -11,27 +11,29 @@ import java.util.Set;
 
 public class Wolf extends Predator {
 
+    //the pack that the wolf is part of
     Set<Actor> wolfGang;
 
+    //Default constructor for wolf, used in the actorConstructorRegistry
     public Wolf() {
         this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
-        this.actorType = "wolf";
     }
 
+    //Wolf constructor used for instantiating new wolves, with a pack as parameter.
     public Wolf(Set<Actor> wolfgang) {
         this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
         this.wolfGang = wolfgang;
-        this.actorType = "wolf";
     }
 
+    //Act method implemented from Actor, every step the wolf is updated and methods are called.
     @Override
     public void act(World world){
 
-        lookForFood(world, 2);
+        lookForFood(world);
 
         energy--;
         if(energy <= 0){
@@ -40,6 +42,7 @@ public class Wolf extends Predator {
         age++;
     }
 
+    //Method to make the wolf move around looking for food, in this case Objects of the type Rabbit.
     public void lookForFood(World world){
         Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),2).toArray(new Location[0]);
         List<Location> rabbitTiles = new ArrayList<>();
