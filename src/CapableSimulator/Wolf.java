@@ -11,20 +11,26 @@ import java.util.Set;
 
 public class Wolf extends Animals {
 
+    //the amount of energy the wolf currently has
     private int energy;
 
+    //the max amount of energy for the wolf
     private int maxEnergy;
 
+    //the amount of steps the wolf has existed
     private int age;
 
+    //the pack that the wolf is part of
     Set<Actor> wolfGang;
 
+    //Default constructor for wolf, used in the actorConstructorRegistry
     public Wolf() {
         this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
     }
 
+    //Wolf constructor used for instantiating new wolves, with a pack as parameter.
     public Wolf(Set<Actor> wolfgang) {
         this.energy = 20;
         this.maxEnergy = 30;
@@ -32,6 +38,7 @@ public class Wolf extends Animals {
         this.wolfGang = wolfgang;
     }
 
+    //Act method implemented from Actor, every step the wolf is updated and methods are called.
     @Override
     public void act(World world){
 
@@ -44,6 +51,7 @@ public class Wolf extends Animals {
         age++;
     }
 
+    //Method to make the wolf move around looking for food, in this case Objects of the type Rabbit.
     public void lookForFood(World world){
         Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),2).toArray(new Location[0]);
         List<Location> rabbitTiles = new ArrayList<>();
