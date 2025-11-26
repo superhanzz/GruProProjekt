@@ -5,16 +5,158 @@ import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class Animals implements Actor {
+public abstract class Animals extends WorldActor {
 
+    /* ----- ----- ----- Energy variables ----- ----- ----- */
+
+    /** The maximal amount of energy the animal can have.
+     *  if the animal eats and the energy exceeds the maximal value, energy is clamped.
+     * */
+    protected int maxEnergy;
+
+    /** The energy variable is the variable that keeps track of the animal energy.
+     *  If energy = 0, the animal dies at the end of the simulation step.
+     *  When the animal eats , the energy is increased by the amount of energy stored in the eaten actor. //TODO
+     *  */
+    protected int energy;
+
+    /** The animals age.
+     *  The age controls the maximal energy the animal can have    //TODO
+     * */
+    protected int age;
+
+    /* ----- ----- ----- Mating variables ----- ----- ----- */
+
+    /** Defines the age of the animal before it can mate.
+     * Default is set to 10 in Animal class
+     * */
+    protected final int matingAge;
+
+    /** The animal should not be able to mate during nights, this keeps that from happening.
+     * */
+    protected boolean canMate;
+
+    /** The cooldown period after an animal has mated.
+     *  It goes down by one after each simulation step
+     * */
+    protected int matingCooldown;
+
+    /** What the matingCooldown is set to after a successful mating has occurred.
+     * Set's the cooldown in both parrents.
+     * Default is set to 20 in Animal class
+     * */
+    protected final int MATING_COOLDOWN_DURATION;
+
+    public String actorType;
     boolean isOnMap;
 
+    static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
+    static {
+        List<String> bearDiet = new ArrayList<>();
+        bearDiet.add("wolf");
+        bearDiet.add("rabbit");
+        bearDiet.add("berry");
+
+        List<String> wolfDiet = new ArrayList<>();
+        wolfDiet.add("rabbit");
+
+        List<String> rabbitDiet = new ArrayList<>();
+        rabbitDiet.add("grass");
+
+        eatableFoodTypes.put("bear", bearDiet);
+
+        eatableFoodTypes.put("wolf", wolfDiet);
+
+        eatableFoodTypes.put("rabbit", rabbitDiet);
+    }
+
+
+    private static final Map<CapableSim.ActorTypes, Class<? extends Actor>> actorClassTypes = new HashMap<>();
+    static {
+        actorClassTypes.put(CapableSim.ActorTypes.GRASS, Grass.class); // Her bliver actor typen Grass placeret inde i mappet, hvor Grass peger på Grass.class
+        actorClassTypes.put(CapableSim.ActorTypes.RABBIT, Rabbit.class);
+        actorClassTypes.put(CapableSim.ActorTypes.BURROW, Burrow.class);
+        actorClassTypes.put(CapableSim.ActorTypes.WOLF, Wolf.class);
+
+    }
+
+
+
+
+    /** Default constructor
+     * */
+    public Animals() {
+        this.matingAge = 20;
+        this.MATING_COOLDOWN_DURATION = 20;
+    }
+
+    /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
+     * */
+    public Animals(int matingAge, int MATING_COOLDOWN_DURATION) {
+        this.matingAge = matingAge;
+        this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
+    }
+
     public record Vector(int x, int y) {}
+
+
+
+
+
+
+
+    public void lookForFood(World world, int searchRadius){
+        Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+        List<WorldActor> foodTiles = new ArrayList<>();
+
+        for (Location location : neighbours) {
+            Object o = world.getTile(location);
+            // dependent on actor type
+            switch (actorType) {
+                case "rabbit":
+                    if  (o instanceof Grass) {
+                        foodTiles.add((WorldActor) world.getTile(location));
+                    }
+                    break;
+                case "wolf":
+                    if (o instanceof Rabbit) {
+                        foodTiles.add((WorldActor) world.getTile(location));
+                    }
+                    break;
+                case "bear":
+                    if (o instanceof Wolf || o instanceof Rabbit) {
+                        foodTiles.add((WorldActor) world.getTile(location));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        Random rand = new Random();
+        Location searchLocation;
+        if(!foodTiles.isEmpty()){
+            WorldActor eatableActor = foodTiles.get(rand.nextInt(foodTiles.size()));
+            searchLocation = world.getLocation(eatableActor);
+            eat(world, eatableActor);
+        }else {
+            searchLocation = neighbours[rand.nextInt(neighbours.length)];
+            while(!world.isTileEmpty(searchLocation)){
+                searchLocation = neighbours[rand.nextInt(neighbours.length)];
+            }
+        }
+
+        world.move(this, searchLocation);
+    }
+
+
+    protected void eat(World world, WorldActor actor){
+        this.energy += actor.getEnergyValue();
+        world.delete(actor);
+    }
+
+
 
 
     @Override
@@ -70,5 +212,11 @@ public class Animals implements Actor {
             world.remove(this);
             isOnMap = false;
         }
+    }
+
+
+    @Override
+    protected int getEnergyValue() {
+        return energy;
     }
 }

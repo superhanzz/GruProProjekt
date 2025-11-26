@@ -7,12 +7,14 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public class Grass implements NonBlocking, Actor{
+public class Grass extends WorldActor implements NonBlocking{
 
     private final double growthChance;
+    private final int energyValue;
 
     public Grass(){
         growthChance = 0.15;
+        energyValue = 2;
     }
 
     @Override
@@ -47,5 +49,10 @@ public class Grass implements NonBlocking, Actor{
 
     public double getGrowthChance() {
         return growthChance;
+    }
+
+    @Override
+    protected int getEnergyValue() {
+        return energyValue;
     }
 }

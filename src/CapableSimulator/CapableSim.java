@@ -25,15 +25,22 @@ public class CapableSim {
     int displaySize;
     int simulationDelay;
 
+    int dayNumber;
+    int actorSpawnCycle;
+
     DayNightStatus dayNightStatus;
 
+    Map<String, InputFileStruct> inputMap;
     Map<String, Set<Wolf>> allWolfgangs;
+
+
 
     public enum ActorTypes {
         GRASS,
         RABBIT,
         WOLF,
-        BURROW;
+        BURROW,
+        BEAR;
     }
 
     public enum DayNightStatus {
@@ -59,6 +66,7 @@ public class CapableSim {
         actorConstructorRegistry.put("rabbit", Rabbit::new);
         actorConstructorRegistry.put("burrow", Burrow::new);
         actorConstructorRegistry.put("wolf", Wolf::new);
+        actorConstructorRegistry.put("bear", Bear::new);
     }
 
 
@@ -72,7 +80,7 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.RABBIT, Rabbit.class);
         actorClassTypes.put(ActorTypes.BURROW, Burrow.class);
         actorClassTypes.put(ActorTypes.WOLF, Wolf.class);
-
+        actorClassTypes.put(ActorTypes.BEAR, Bear.class);
     }
 
 
@@ -86,12 +94,16 @@ public class CapableSim {
         world = null;
         program = null;
         worldSize = 0;
+        actorSpawnCycle = 0;
+        dayNumber = 0;
     }
 
     public CapableSim(World world, int worldSize) {
         this.world = world;
         program = null;
         this.worldSize = worldSize;
+        actorSpawnCycle = 0;
+        dayNumber = 0;
     }
 
     /**
@@ -118,8 +130,7 @@ public class CapableSim {
      */
     public void runSimulation(){
         /* Parses the input file into a map */
-        //Map<String, Integer> inputMap = parseInputFile(inputDataFilePath);
-        Map<String, InputFileStruct> inputMap = parseInputsFromFile(new  File(inputDataFilePath));
+        inputMap = parseInputsFromFile(new  File(inputDataFilePath));
 
 
         if (program == null) {
@@ -134,7 +145,10 @@ public class CapableSim {
         }
 
         program.show();
+        List<Double> times = new ArrayList<>();
         for (int i = 0; i < simulationSteps; i++){
+            double startTime = System.nanoTime();
+
             if (world.getCurrentTime() == 9){
                 Map<Object, Location> entities = world.getEntities();
                 for (Object entity : entities.keySet()) {
@@ -163,7 +177,21 @@ public class CapableSim {
                     break;
             }
             program.simulate();
+
+            double endTime = System.nanoTime();
+            times.add((endTime - startTime) / 1000000.0);
         }
+        double averageTime = times.stream().mapToDouble(Double::doubleValue).sum() / times.size();
+        System.out.println(averageTime);
+    }
+
+    public void delayedSpawns(World world) {
+        for (String key :  inputMap.keySet()) {
+            if (key.contains(String.valueOf(actorSpawnCycle))) {
+                generateActors2(inputMap.get(key), world);
+            }
+        }
+        actorSpawnCycle++;
     }
 
     public void generateActors2(InputFileStruct iFS, World world){
@@ -186,6 +214,17 @@ public class CapableSim {
                     Wolf o = new Wolf(wolfs);
                     wolfs.add(o);
                     world.setTile(location, o);
+                }
+                else
+                    System.out.println("Failed to create an actor of type " + iFS.actorType);
+            }
+            return;
+        } else if (iFS.actorType.equals("bear")) {
+            for (int i = 0; i < amount; i++){
+                Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
+                if (location != null) {
+                    Bear b = new Bear(iFS.staticSpawnLocation != null ? iFS.staticSpawnLocation : location);
+                    world.setTile(location, b);
                 }
                 else
                     System.out.println("Failed to create an actor of type " + iFS.actorType);
@@ -331,7 +370,6 @@ public class CapableSim {
         try(Scanner sc = new Scanner(file)){
             worldSize = Integer.parseInt(sc.nextLine());
 
-            int debugLine = 0;
             while(sc.hasNextLine()){
                 String line = sc.nextLine();    // saves the input line as a string
                 if (line.contains(" ")) {       // Makes sure there is a " " before splitting the line
@@ -352,7 +390,6 @@ public class CapableSim {
                         minAmount = Integer.parseInt(words[1]);
                         maxAmount = 0;
                     }
-                    System.out.println(debugLine);
 
                     // Handles the case of a static spawn being declared in the input file.
                     Location staticSpawnLocation = null;
@@ -384,7 +421,6 @@ public class CapableSim {
                     InputFileStruct iFS = new InputFileStruct(actorType, minAmount, maxAmount, staticSpawnLocation, isDelayedSpawn);
 
                     map.put(mapKey, iFS);
-                    debugLine++;
 
                 }
             }
@@ -398,9 +434,6 @@ public class CapableSim {
     }
 
 
-
-
-
     void setUpDisplayInformation() {
         DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
         program.setDisplayInformation(Grass.class, diGrass);
@@ -408,11 +441,14 @@ public class CapableSim {
         DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
         program.setDisplayInformation(Rabbit.class, diRabbit);
 
-        DisplayInformation diWolf = new DisplayInformation(Color.green, "alpha-wolf");
+        DisplayInformation diWolf = new DisplayInformation(Color.pink, "alpha-wolf");
         program.setDisplayInformation(Wolf.class, diWolf);
 
         DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
         program.setDisplayInformation(Burrow.class, diBurrow);
+
+        DisplayInformation diBear = new DisplayInformation(Color.BLACK, "bear");
+        program.setDisplayInformation(Bear.class, diBear);
     }   
 
     /**
@@ -458,6 +494,8 @@ public class CapableSim {
             case DAY:
                 //System.out.println("it has become day");
                 animals.forEach((animal) -> {animal.onDay(world);});
+                dayNumber++;
+                delayedSpawns(world);
                 break;
             case NIGHT:
                 //System.out.println("it has become night");

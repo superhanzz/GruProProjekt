@@ -17,46 +17,6 @@ public class Rabbit extends Animals {
     /** The Location of the rabbits burrow */
     private Location burrowLocation;
 
-    /* ----- ----- ----- Energy variables ----- ----- ----- */
-
-    /** The energy variable is the variable that keeps track of the rabbits energy.
-     *  If energy = 0, the rabbit dies at the end of the simulation step.
-     *  When the rabbit eats grass, the energy is increased by the amount of energy stored in the grass. //TODO
-     *  */
-    private int energy;
-
-    /** The maximal amount of energy the rabbit can have.
-     *  if the rabbit eats grass and the energy exceeds the maximal value, energy is clamped.
-     * */
-    private int maxEnergy;
-
-    /** The rabbits age.
-     *  The age controls the maximal energy  the rabbit can have    //TODO
-     * */
-    private int age;
-
-
-    /* ----- ----- ----- Mating variables ----- ----- ----- */
-
-    /** Defines the age of the rabbit before it can mate.
-     * */
-    private final int matingAge;
-
-    /** The rabbit should not be able to mate during nights, this keeps that from happening.
-     * */
-    private boolean canMate;
-
-    /** The cooldown period after a rabbit has mated.
-     *  It goes down by one after each simulation step
-     * */
-    private int matingCooldown;
-
-    /** What the matingCooldown is set to after a successful mating has occurred.
-     * Set's the cooldown in both parrents.
-     * */
-    private final int MATING_COOLDOWN_DURATION;
-
-
     /* ----- ----- ----- Constructors ----- ----- ----- */
 
     /**
@@ -64,13 +24,13 @@ public class Rabbit extends Animals {
      * This is the constructor to use when making the simulation.
      * */
     public Rabbit() {
+        super();
         this.energy = 15;
         this.maxEnergy = 20;
         this.age = 0;
-        this.matingAge = 10;
         this.matingCooldown = 0;
         this.canMate = true;
-        this.MATING_COOLDOWN_DURATION = 20;
+        this.actorType = "rabbit";
 
         burrow = null;
         burrowLocation = null;
@@ -81,12 +41,13 @@ public class Rabbit extends Animals {
      * A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
      * */
     public Rabbit(int energy) {
+        super();
         this.energy = energy;
         this.age = 0;
-        this.matingAge = 10;
+        //this.matingAge = 10;
         this.matingCooldown = 0;
         this.canMate = true;
-        this.MATING_COOLDOWN_DURATION = 20;
+        //this.MATING_COOLDOWN_DURATION = 20;
 
         burrow = null;
         burrowLocation = null;
@@ -97,8 +58,7 @@ public class Rabbit extends Animals {
      * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
      * */
     public Rabbit(int matingAge, int MATING_COOLDOWN_DURATION) {
-        this.matingAge = matingAge;
-        this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
+        super(matingAge, MATING_COOLDOWN_DURATION);
 
         this.age = 0;
         this.energy = 10;
@@ -127,7 +87,7 @@ public class Rabbit extends Animals {
         matingCooldown--;
         matingCooldown = Math.clamp(matingCooldown, 0, 100);
 
-        lookForFood(world);
+        lookForGrass(world);
 
 
         energy--;
@@ -151,7 +111,7 @@ public class Rabbit extends Animals {
      *  If it is not standing on grass then it tries to find grass on surrounding empty tiels.
      *  If grass is found on one or more surrounding tiles, then a random tile is chosen and moved to.
      * */
-    private void lookForFood(World world) {
+    private void lookForGrass(World world) {
         Location[] emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this)).toArray(new Location[0]);
         if (emptyTiles.length <= 0) {
             return;
