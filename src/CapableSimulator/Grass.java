@@ -18,6 +18,9 @@ public class Grass implements NonBlocking, Actor{
     @Override
     public void act(World world) {
 
+        if ( world.isNight())
+            return;
+
         grow(world);
     }
 

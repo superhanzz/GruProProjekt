@@ -11,6 +11,8 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CapableSim {
 
@@ -116,7 +118,8 @@ public class CapableSim {
      */
     public void runSimulation(){
         /* Parses the input file into a map */
-        Map<String, Integer> inputMap = parseInputFile(inputDataFilePath);
+        //Map<String, Integer> inputMap = parseInputFile(inputDataFilePath);
+        Map<String, InputFileStruct> inputMap = parseInputsFromFile(new  File(inputDataFilePath));
 
 
         if (program == null) {
@@ -124,7 +127,10 @@ public class CapableSim {
         }
 
         for (String key : inputMap.keySet()) {
-            generateActors(key, inputMap.get(key), world);
+            InputFileStruct input = inputMap.get(key);
+
+            if (!input.isDelayedSpawn)
+                generateActors2(inputMap.get(key), world);
         }
 
         program.show();
@@ -158,6 +164,45 @@ public class CapableSim {
             }
             program.simulate();
         }
+    }
+
+    public void generateActors2(InputFileStruct iFS, World world){
+        Supplier<Actor> actorConstructor = actorConstructorRegistry.get(iFS.actorType);
+        if (actorConstructor == null) {
+            System.out.println("Tried to create an unknown actor: " + iFS.actorType);
+            return;
+        }
+        int amount = iFS.minAmount;
+        if (iFS.maxAmount > 0) {
+            Random rand = new Random();
+            amount = rand.nextInt(iFS.minAmount,  iFS.maxAmount);
+        }
+
+        if(iFS.actorType.equals("wolf")) {
+            Set<Actor> wolfs = new HashSet<>();
+            for (int i = 0; i < amount; i++){
+                Location location = getEmptyTile(world);
+                if (location != null) {
+                    Wolf o = new Wolf(wolfs);
+                    wolfs.add(o);
+                    world.setTile(location, o);
+                }
+                else
+                    System.out.println("Failed to create an actor of type " + iFS.actorType);
+            }
+            return;
+        }
+        for (int i = 0; i < amount; i++){
+            Location location = getEmptyTile(world);
+            if (location != null) {
+                Object o = actorConstructor.get();
+                world.setTile(location, o);
+            }
+            else
+                System.out.println("Failed to create an actor of type " + iFS.actorType);
+        }
+
+
     }
 
     public void generateActors(String actorType, int amount, World world){
@@ -276,6 +321,85 @@ public class CapableSim {
 
         return map;
     }
+
+
+
+
+    public Map<String, InputFileStruct> parseInputsFromFile(File file){
+        Map<String, InputFileStruct> map = new HashMap<>();
+
+        try(Scanner sc = new Scanner(file)){
+            worldSize = Integer.parseInt(sc.nextLine());
+
+            int debugLine = 0;
+            while(sc.hasNextLine()){
+                String line = sc.nextLine();    // saves the input line as a string
+                if (line.contains(" ")) {       // Makes sure there is a " " before splitting the line
+                    String[] words = line.split(" ");
+                    String actorType = words[0];
+                    String mapKey = words[0];
+                    // Handles amount to spawn
+                    int minAmount = 0;
+                    int maxAmount = 0;
+                    if (line.contains("-")) {
+                        Pattern pattern = Pattern.compile("(\\d+)-(\\d+)");
+                        Matcher matcher = pattern.matcher(words[1]);
+                        if (matcher.matches()) {
+                            minAmount = Integer.parseInt(matcher.group(1));
+                            maxAmount = Integer.parseInt(matcher.group(2));
+                        }
+                    } else {
+                        minAmount = Integer.parseInt(words[1]);
+                        maxAmount = 0;
+                    }
+                    System.out.println(debugLine);
+
+                    // Handles the case of a static spawn being declared in the input file.
+                    Location staticSpawnLocation = null;
+                    if (line.contains("(") && words.length > 2) {
+                        int x = 0;
+                        int y = 0;
+                        Pattern pattern = Pattern.compile("\\((\\d+),(\\d+)\\)");
+                        Matcher matcher = pattern.matcher(words[2]);
+
+                        if (matcher.matches()) {
+                            x = Integer.parseInt(matcher.group(1));
+                            y = Integer.parseInt(matcher.group(2));
+                        }
+                        staticSpawnLocation = new Location(x, y);
+                    }
+                    boolean isDelayedSpawn = false;
+                    // Handles the case of the return map already contains an entry of the same class.
+                    if (map.containsKey(words[0])) {
+                        isDelayedSpawn = true;
+
+                        // Findes the amount of times the same actory type is present in the map.
+                        int numOfSameActorType = 0;
+                        for (String key : map.keySet()) {
+                            if (map.get(key).actorType == actorType)
+                                numOfSameActorType++;
+                        }
+                        mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
+                    }
+                    InputFileStruct iFS = new InputFileStruct(actorType, minAmount, maxAmount, staticSpawnLocation, isDelayedSpawn);
+
+                    map.put(mapKey, iFS);
+                    debugLine++;
+
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());
+        }
+
+        return map;
+    }
+
+
+
+
 
     void setUpDisplayInformation() {
         DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
