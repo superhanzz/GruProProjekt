@@ -33,7 +33,7 @@ public class Wolf extends Predator {
     @Override
     public void act(World world){
 
-        lookForFood(world);
+        lookForFood(world, 2);
 
         energy--;
         if(energy <= 0){
@@ -42,6 +42,17 @@ public class Wolf extends Predator {
         age++;
     }
 
+    @Override
+    protected List<WorldActor> newWorldActorList(World world, Location[] neighbours) {
+        List<WorldActor> worldActorList = new ArrayList<>();
+        for (Location location : neighbours) {
+            Object o =  world.getTile(location);
+            if (o instanceof Rabbit)
+                worldActorList.add((WorldActor) o);
+        }
+        return worldActorList;
+    }
+/*
     //Method to make the wolf move around looking for food, in this case Objects of the type Rabbit.
     public void lookForFood(World world){
         Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),2).toArray(new Location[0]);
@@ -70,4 +81,5 @@ public class Wolf extends Predator {
 
 
     }
+    */
 }

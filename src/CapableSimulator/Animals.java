@@ -50,6 +50,7 @@ public abstract class Animals extends WorldActor {
     protected final int MATING_COOLDOWN_DURATION;
 
     public String actorType;
+    protected  boolean hasSpecialMovementBehaviour;
     boolean isOnMap;
 
     static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
@@ -104,56 +105,39 @@ public abstract class Animals extends WorldActor {
 
 
 
+    protected Location[] getPossibleFoodTiles(World world, int searchRadius) {
+        return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+    }
 
-
-
-    public void lookForFood(World world, int searchRadius){
-        Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
-        List<WorldActor> foodTiles = new ArrayList<>();
-
-        for (Location location : neighbours) {
-            Object o = world.getTile(location);
-            // dependent on actor type
-            switch (actorType) {
-                case "rabbit":
-                    if  (o instanceof Grass) {
-                        foodTiles.add((WorldActor) world.getTile(location));
-                    }
-                    break;
-                case "wolf":
-                    if (o instanceof Rabbit) {
-                        foodTiles.add((WorldActor) world.getTile(location));
-                    }
-                    break;
-                case "bear":
-                    if (o instanceof Wolf || o instanceof Rabbit) {
-                        foodTiles.add((WorldActor) world.getTile(location));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void move(World world) {
+        Location[] neighbours = getPossibleFoodTiles(world, 1);
         Random rand = new Random();
-        Location searchLocation;
-        if(!foodTiles.isEmpty()){
-            WorldActor eatableActor = foodTiles.get(rand.nextInt(foodTiles.size()));
-            searchLocation = world.getLocation(eatableActor);
-            eat(world, eatableActor);
-        }else {
+        Location searchLocation = neighbours[rand.nextInt(neighbours.length)];
+        while(!world.isTileEmpty(searchLocation)){
             searchLocation = neighbours[rand.nextInt(neighbours.length)];
-            while(!world.isTileEmpty(searchLocation)){
-                searchLocation = neighbours[rand.nextInt(neighbours.length)];
-            }
         }
-
         world.move(this, searchLocation);
     }
 
 
+    public void lookForFood(World world, int searchRadius){
+        Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+        List<WorldActor> foodTiles = newWorldActorList(world, neighbours);
+
+        if(!foodTiles.isEmpty()){
+            WorldActor eatableActor = foodTiles.get(new Random().nextInt(foodTiles.size()));
+            eat(world, eatableActor);
+        }else
+            move(world);
+    }
+
+    protected abstract List<WorldActor> newWorldActorList(World world, Location[] neighbours);
+
     protected void eat(World world, WorldActor actor){
         this.energy += actor.getEnergyValue();
+        Location goTo = world.getLocation(actor);
         world.delete(actor);
+        world.move(this, goTo);
     }
 
 

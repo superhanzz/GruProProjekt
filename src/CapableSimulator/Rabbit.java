@@ -87,7 +87,8 @@ public class Rabbit extends Animals {
         matingCooldown--;
         matingCooldown = Math.clamp(matingCooldown, 0, 100);
 
-        lookForGrass(world);
+        //lookForGrass(world);
+        lookForFood(world, 2);
 
 
         energy--;
@@ -105,6 +106,20 @@ public class Rabbit extends Animals {
             eatGrass(world, foundGrass);
         }
     }
+
+
+
+    @Override
+    protected List<WorldActor> newWorldActorList(World world, Location[] neighbours) {
+        List<WorldActor> worldActorList = new ArrayList<>();
+        for (Location location : neighbours) {
+            Object o =  world.getTile(location);
+            if (o instanceof Grass)
+                worldActorList.add((WorldActor) o);
+        }
+        return worldActorList;
+    }
+
 
     /** Tries to find food.
      *  First, checks if the rabbit is standing on grass. //TODO

@@ -1,12 +1,17 @@
 package Tests;
 
 import CapableSimulator.CapableSim;
+import CapableSimulator.Grass;
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.Program;
+import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
 
@@ -175,6 +180,31 @@ public class SpawnAmountTest {
     public void burrowSpawnAmountTest(){
         Map<String, Interval> spawnCalls = buildSpawnCalls("burrow");
         checkSpawns("burrow", spawnCalls);
+    }
+
+    @RepeatedTest(1)
+    public void bearTerritorySizeTest(){
+
+        Program program = new Program(21, 800, 500);
+        world = program.getWorld();
+        Location center = new Location(10, 10);
+        Set<Location> Radius = world.getSurroundingTiles(center, 4);
+
+        for (Location location : Radius.toArray(new Location[0])) {
+            Grass grass = new Grass();
+            world.setTile(location, grass);
+        }
+
+        DisplayInformation displayInformation = new DisplayInformation(Color.red);
+        program.setDisplayInformation(Grass.class, displayInformation);
+        program.show();
+
+        System.out.print(world.getEntities().size());
+        for(int i = 0; i < 200; i++) {
+            world.setNight();
+            program.simulate();
+        }
+
     }
 
 
