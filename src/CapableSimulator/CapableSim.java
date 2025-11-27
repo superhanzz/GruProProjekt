@@ -208,7 +208,7 @@ public class CapableSim {
 
         if(iFS.actorType.equals("wolf")) {
             Set<Actor> wolfs = new HashSet<>();
-            for (int i = 0; i < amount; i++){
+            for (int i = 0; i < iFS.getSpawnAmount(); i++){
                 Location location = getEmptyTile(world);
                 if (location != null) {
                     Wolf o = new Wolf(wolfs);
@@ -220,7 +220,7 @@ public class CapableSim {
             }
             return;
         } else if (iFS.actorType.equals("bear")) {
-            for (int i = 0; i < amount; i++){
+            for (int i = 0; i < iFS.getSpawnAmount(); i++){
                 Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
                 if (location != null) {
                     Bear b = new Bear(iFS.staticSpawnLocation != null ? iFS.staticSpawnLocation : location);
@@ -231,7 +231,7 @@ public class CapableSim {
             }
             return;
         }
-        for (int i = 0; i < amount; i++){
+        for (int i = 0; i < iFS.getSpawnAmount(); i++){
             Location location = getEmptyTile(world);
             if (location != null) {
                 Object o = actorConstructor.get();
@@ -484,6 +484,41 @@ public class CapableSim {
                 break;
         }
         */
+
+        return numOfActors;
+    }
+
+    public int getNumOfActors(String actorType) {
+        int numOfActors = 0;
+        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+
+        switch (actorType){
+            case "grass":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
+                }
+                break;
+            case "rabbit":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
+                }
+                break;
+            case "burrow":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
+                }
+                break;
+            case "wolf":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Wolf) numOfActors++;
+                }
+                break;
+            case "bear":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                }
+                break;
+        }
 
         return numOfActors;
     }

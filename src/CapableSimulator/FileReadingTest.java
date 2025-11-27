@@ -1,16 +1,28 @@
 package CapableSimulator;
 
 import FunctionLibrary.CapableFunc;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileReadingTest {
+
+    static List<String> actorTypes = new ArrayList<>();
+    static {
+        actorTypes.add("grass");
+        actorTypes.add("rabbit");
+        actorTypes.add("burrow");
+        actorTypes.add("wolf");
+        actorTypes.add("bear");
+    }
 
     @BeforeEach
     public void setup() {
@@ -19,44 +31,85 @@ public class FileReadingTest {
 
     @RepeatedTest(1)
     public void testReadFile() {
-
-        /*List<Map<String, InputFileStruct>> allInputs = new ArrayList<>();
-        Map<String, List<File>> allFiles = CapableFunc.getAllInputFiles("scr/Data");
-
-        for (String folder :  allFiles.keySet()) {
-            allFiles.get(folder).forEach((file) -> {
-                allInputs.add(CapableFunc.parseInputsFromFile(file));
-            });
-        }*/
-
-
-        //File file = new File("src/Data/week-2/t2-4a.txt");
-
-        //Map<String, InputFileStruct> map = CapableFunc.parseInputsFromFile(file);
-
-
-
-       Map<String, File> weekInputDataMap = new HashMap<>();
-
         File dataFolder = new File("src/Data");
-        File[] listOfFiles = dataFolder.listFiles();
-        System.out.println("File list length: " + listOfFiles.length);
+        //String actorType = "bear";
 
-        for  (File file : listOfFiles) {
-            System.out.println("Folder: " + file.getName() + ". Has files: ");
-            for (File f : file.listFiles()) {
-                System.out.println("\t" + f.getName());
-                //f.getPath()
-                weekInputDataMap.put(file.getName(), f);
+        final String RED = "\u001B[31m";
+        final String RESET = "\u001B[0m";
+        final String GREEN = "\u001B[32m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String PURPLE = "\u001B[35m";
+        final String CYAN = "\u001B[36m";
+        final String WHITE = "\u001B[37m";
+
+
+
+        for (String actorType : actorTypes) {
+            System.out.printf("Testing for actorType: %5s%s%s.", RED, actorType.toUpperCase(), RESET);
+            System.out.println();
+
+            Map<String, Map<String, InputFileStruct>> inputFilesToTest = new HashMap<>();
+
+
+            // Retrieves all the files containing the actor type
+            Map<String, Map<String, InputFileStruct>> allInputs = CapableFunc.getAllInputs(dataFolder);
+            for (String fileName : allInputs.keySet()) {
+                Map<String, InputFileStruct> input = allInputs.get(fileName);
+                for (String key : input.keySet()) {
+                    if (input.get(key) == null) continue;
+                    if (input.get(key).actorType.equals(actorType)) {
+                        //System.out.println(fileName + " contains the actor type: " + actorType);
+                        inputFilesToTest.put(fileName, input);
+                    }
+                }
+            }
+
+            // Testing every input file containing the actor type
+            for (String fileName : inputFilesToTest.keySet()) {
+                Map<String, InputFileStruct> input = inputFilesToTest.get(fileName);
+
+                // Retrieves the world size and removes it from the inputs map
+                int worldSize = CapableFunc.getWorldSize(input); // Retrieves the world size
+                if (worldSize == 0) continue;   // If there was no world size then skip this file
+
+                // Creates the simulation environment
+                World world = new World(worldSize);
+                CapableSim sim = new CapableSim(world, worldSize);
+
+
+                // Creates all the actors of the specified type
+                for (String key : input.keySet()) {
+                    if (input.get(key) == null) continue;
+                    InputFileStruct inputFile = input.get(key);
+                    if (!inputFile.actorType.equals(actorType)) continue;
+
+                    int preNum = sim.getNumOfActors(actorType);
+                    sim.generateActors2(inputFile, world);
+                    int postNum = sim.getNumOfActors(actorType);
+                    int spawnedNum = postNum - preNum;
+                    String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
+                    //System.out.println(spawnedNum + ",\t ");
+                    System.out.print("\t");
+                    System.out.printf("Spawned: %s%-5d%s Interval: %s%-10s%s File: %s%10s%s%n", GREEN,spawnedNum,RESET, PURPLE,interval,RESET, CYAN,fileName,RESET);
+                    //System.out.println();   // Separates files
+
+                    if (inputFile.maxAmount == 0)
+                        assertEquals(inputFile.minAmount, spawnedNum);
+                    else
+                        assertTrue((inputFile.minAmount <= spawnedNum) && (spawnedNum <= inputFile.maxAmount));
+                }
+                //System.out.println();   // Separates files
             }
             System.out.println();
-        }
 
-        weekInputDataMap.forEach((key, value) -> {System.out.println(key);});
+        }
     }
+
+
+
 
     @AfterEach
     public void tearDown() {
-
     }
 }

@@ -2,6 +2,8 @@ package CapableSimulator;
 
 import itumulator.world.Location;
 
+import java.util.Random;
+
 public class InputFileStruct {
 
     // The actorType
@@ -48,6 +50,14 @@ public class InputFileStruct {
         this.maxAmount = maxAmount;
         this.staticSpawnLocation = staticSpawnLocation;
         this.isDelayedSpawn = isDelayedSpawn;
+    }
+
+    public int getSpawnAmount() {
+        if (maxAmount == 0)
+            return minAmount;
+
+        Random rand = new Random();
+        return rand.nextInt(minAmount, maxAmount);
     }
 
     /*InputFileStruct(InputFileStruct other, boolean isDelayedSpawn) {

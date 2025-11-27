@@ -120,6 +120,7 @@ public class SpawnAmountTest {
                 }
             }
             // Executes generateActor() within the CapableSim instans. The filepath is needed here to use the pareInputFile() method wherein the amount of the actor type class' is decided.
+            //sim.generateActors2(sim.parseInputsFromFile());
             sim.generateActors(actorType, sim.parseInputFile(filePath).get(actorType), world);
 
             // Converts the actorType (String) to actorType (enum) which is needed to get the number of the given actor in the world.
