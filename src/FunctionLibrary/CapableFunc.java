@@ -172,6 +172,60 @@ public class CapableFunc {
         return map;
     }
 
+
+
+    public static Map<String, InputFileStruct> parseInputsFromFile2(File file){
+        if (file == null) return null;      // TODO make exeption or something
+
+        Map<String, InputFileStruct> map = new HashMap<>();
+
+        int lineNumber = 0;                 // Debug line number
+        String filePath = file.getPath();   // Debug file path
+
+        try(Scanner sc = new Scanner(file)){
+            // Handles the extraction of the world size
+            int worldSize = Integer.parseInt(sc.nextLine());
+            map.put(new String("#" + String.valueOf(worldSize) + "#"), null);
+
+            lineNumber++;   // Debug line number
+
+            while(sc.hasNextLine()){
+                String line = sc.nextLine();    // saves the input line as a string
+                if (line.contains(" ")) {       // Makes sure there is a " " before splitting the line
+                    InputFileStruct inputFile = new InputFileStruct(line);
+                    String mapKey = inputFile.actorType;
+
+                    // Handles the case of the return map already contains an entry of the same class.
+                    if (map.containsKey(inputFile.actorType)) {
+
+                        // Findes the amount of times the same actory type is present in the map.
+                        int numOfSameActorType = 0;
+                        for (String key : map.keySet()) {
+                            if (map.get(key) != null) {     // Ignores the world size entry
+                                if (map.get(key).actorType.equals(inputFile.actorType))
+                                    numOfSameActorType++;
+                            }
+                        }
+
+                        mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
+                    }
+                    map.put(mapKey, inputFile);
+
+                    lineNumber++;   // Debug line number
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());
+            System.out.println(lineNumber);
+            System.out.println(filePath);
+            System.out.println();
+        }
+
+        return map;
+    }
+
     /** Retrieves all the files within the data folder path
      * @param dataFolder The data folder file
      * */

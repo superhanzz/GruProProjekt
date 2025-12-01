@@ -1,5 +1,6 @@
 package CapableSimulator;
 
+import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
@@ -130,7 +131,8 @@ public class CapableSim {
      */
     public void runSimulation(){
         /* Parses the input file into a map */
-        inputMap = parseInputsFromFile(new  File(inputDataFilePath));
+        inputMap = CapableFunc.parseInputsFromFile2(new  File(inputDataFilePath));
+        worldSize = CapableFunc.getWorldSize(inputMap); // Retrieves the world size
 
 
         if (program == null) {
@@ -139,8 +141,9 @@ public class CapableSim {
 
         for (String key : inputMap.keySet()) {
             InputFileStruct input = inputMap.get(key);
-
-            if (!input.isDelayedSpawn)
+            Pattern pattern = Pattern.compile("([A-Za-z]+)"); // Only accepts the first spawning cycle i.e. only entries where the kay does NOT contain any numbers
+            Matcher matcher = pattern.matcher(key);
+            if (matcher.matches())
                 generateActors2(inputMap.get(key), world);
         }
 
@@ -186,8 +189,10 @@ public class CapableSim {
     }
 
     public void delayedSpawns(World world) {
+        Pattern pattern = Pattern.compile("([A-Za-z]+"+actorSpawnCycle+")"); // Makes sure that only actor of the given spawn cycle spawns
         for (String key :  inputMap.keySet()) {
-            if (key.contains(String.valueOf(actorSpawnCycle))) {
+            Matcher matcher = pattern.matcher(key);
+            if (matcher.matches()) {
                 generateActors2(inputMap.get(key), world);
             }
         }
@@ -195,16 +200,13 @@ public class CapableSim {
     }
 
     public void generateActors2(InputFileStruct iFS, World world){
+        System.out.println(iFS.actorType);
         Supplier<Actor> actorConstructor = actorConstructorRegistry.get(iFS.actorType);
         if (actorConstructor == null) {
             System.out.println("Tried to create an unknown actor: " + iFS.actorType);
             return;
         }
-        int amount = iFS.minAmount;
-        if (iFS.maxAmount > 0) {
-            Random rand = new Random();
-            amount = rand.nextInt(iFS.minAmount,  iFS.maxAmount);
-        }
+
 
         if(iFS.actorType.equals("wolf")) {
             Set<Actor> wolfs = new HashSet<>();
@@ -308,6 +310,8 @@ public class CapableSim {
     }
 
     Location getEmptyTile(World world){
+        //TODO Make this function chose between the free tiles in the world, by generating a map symbolizing all the possible tiles and then subtracting all entities, and chosing a random tile from the remaining.
+
         Random rand = new Random();
         boolean isEmpty = false;
         Location emptyTile = null;

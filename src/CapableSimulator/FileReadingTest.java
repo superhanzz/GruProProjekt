@@ -32,7 +32,6 @@ public class FileReadingTest {
     @RepeatedTest(1)
     public void testReadFile() {
         File dataFolder = new File("src/Data");
-        //String actorType = "bear";
 
         final String RED = "\u001B[31m";
         final String RESET = "\u001B[0m";
@@ -43,14 +42,11 @@ public class FileReadingTest {
         final String CYAN = "\u001B[36m";
         final String WHITE = "\u001B[37m";
 
-
-
         for (String actorType : actorTypes) {
             System.out.printf("Testing for actorType: %5s%s%s.", RED, actorType.toUpperCase(), RESET);
             System.out.println();
 
             Map<String, Map<String, InputFileStruct>> inputFilesToTest = new HashMap<>();
-
 
             // Retrieves all the files containing the actor type
             Map<String, Map<String, InputFileStruct>> allInputs = CapableFunc.getAllInputs(dataFolder);
@@ -77,7 +73,6 @@ public class FileReadingTest {
                 World world = new World(worldSize);
                 CapableSim sim = new CapableSim(world, worldSize);
 
-
                 // Creates all the actors of the specified type
                 for (String key : input.keySet()) {
                     if (input.get(key) == null) continue;
@@ -91,8 +86,8 @@ public class FileReadingTest {
                     String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
                     //System.out.println(spawnedNum + ",\t ");
                     System.out.print("\t");
-                    System.out.printf("Spawned: %s%-5d%s Interval: %s%-10s%s File: %s%10s%s%n", GREEN,spawnedNum,RESET, PURPLE,interval,RESET, CYAN,fileName,RESET);
-                    //System.out.println();   // Separates files
+                    System.out.printf("Spawned: %s%-5d%s Interval: %s%-10s%s File: %s%5s%s%n", GREEN,spawnedNum,RESET, PURPLE,interval,RESET, CYAN,fileName,RESET);
+
 
                     if (inputFile.maxAmount == 0)
                         assertEquals(inputFile.minAmount, spawnedNum);
@@ -102,12 +97,8 @@ public class FileReadingTest {
                 //System.out.println();   // Separates files
             }
             System.out.println();
-
         }
     }
-
-
-
 
     @AfterEach
     public void tearDown() {
