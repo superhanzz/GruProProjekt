@@ -1,8 +1,10 @@
 package CapableSimulator;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +18,8 @@ public class Rabbit extends Animals {
 
     /** The Location of the rabbits burrow */
     private Location burrowLocation;
+
+    DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
 
     /* ----- ----- ----- Constructors ----- ----- ----- */
 
@@ -110,7 +114,7 @@ public class Rabbit extends Animals {
 
 
     @Override
-    protected List<WorldActor> newWorldActorList(World world, Location[] neighbours) {
+    protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours) {
         List<WorldActor> worldActorList = new ArrayList<>();
         for (Location location : neighbours) {
             Object o =  world.getTile(location);
@@ -340,6 +344,9 @@ public class Rabbit extends Animals {
     /** Returns the location of the rabbit */
     public Location getLocation(World world) { return world.getLocation(this); }
 
-
+    @Override
+    public DisplayInformation getInformation() {
+        return diRabbit;
+    }
 
 }

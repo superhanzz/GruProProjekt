@@ -34,6 +34,7 @@ public class CapableSim {
     Map<String, InputFileStruct> inputMap;
     Map<String, Set<Wolf>> allWolfgangs;
 
+    List<BerryBush> bushList;
 
 
     public enum ActorTypes {
@@ -68,6 +69,7 @@ public class CapableSim {
         actorConstructorRegistry.put("burrow", Burrow::new);
         actorConstructorRegistry.put("wolf", Wolf::new);
         actorConstructorRegistry.put("bear", Bear::new);
+        actorConstructorRegistry.put("berry", BerryBush::new);
     }
 
 
@@ -116,7 +118,7 @@ public class CapableSim {
 
         dayNightStatus = world.isDay() ? DayNightStatus.DAY : DayNightStatus.NIGHT;
 
-        setUpDisplayInformation();
+        //setUpDisplayInformation();
     }
 
     /**
@@ -134,6 +136,7 @@ public class CapableSim {
         inputMap = CapableFunc.parseInputsFromFile2(new  File(inputDataFilePath));
         worldSize = CapableFunc.getWorldSize(inputMap); // Retrieves the world size
 
+        bushList = new ArrayList<>();
 
         if (program == null) {
             setupSimulation();
@@ -164,6 +167,10 @@ public class CapableSim {
                 List<Animals> animals = getAllAnimals(world);
                 animals.forEach(animal -> {animal.almostNight(world);});
             }
+
+            bushList.forEach(bush -> {
+                bush.trySpawnBerrys(program);
+            });
 
             switch (dayNightStatus) {
                 case DAY:
@@ -209,12 +216,15 @@ public class CapableSim {
 
 
         if(iFS.actorType.equals("wolf")) {
-            Set<Actor> wolfs = new HashSet<>();
+            WolfGang gang = null;
             for (int i = 0; i < iFS.getSpawnAmount(); i++){
                 Location location = getEmptyTile(world);
                 if (location != null) {
-                    Wolf o = new Wolf(wolfs);
-                    wolfs.add(o);
+                    Wolf o = new Wolf();
+
+                    if (gang == null) gang = new WolfGang(o);
+                    else gang.addWolfToGang(o);
+
                     world.setTile(location, o);
                 }
                 else
@@ -226,6 +236,19 @@ public class CapableSim {
                 Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
                 if (location != null) {
                     Bear b = new Bear(iFS.staticSpawnLocation != null ? iFS.staticSpawnLocation : location);
+                    world.setTile(location, b);
+                }
+                else
+                    System.out.println("Failed to create an actor of type " + iFS.actorType);
+            }
+            return;
+        }
+        else if (iFS.actorType.equals("berry")) {
+            for (int i = 0; i < iFS.getSpawnAmount(); i++){
+                Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
+                if (location != null) {
+                    BerryBush b = new BerryBush();
+                    bushList.add(b);
                     world.setTile(location, b);
                 }
                 else
@@ -453,6 +476,10 @@ public class CapableSim {
 
         DisplayInformation diBear = new DisplayInformation(Color.BLACK, "bear");
         program.setDisplayInformation(Bear.class, diBear);
+
+        DisplayInformation diBush = new DisplayInformation(Color.cyan, "bush");
+        DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berry");
+        program.setDisplayInformation(BerryBush.class, diBush);
     }   
 
     /**
@@ -518,6 +545,10 @@ public class CapableSim {
                 }
                 break;
             case "bear":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                }
+            case "berry":
                 for(Object actor : actors){
                     if(actor instanceof CapableSimulator.Bear) numOfActors++;
                 }

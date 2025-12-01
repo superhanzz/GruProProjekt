@@ -1,17 +1,19 @@
 package CapableSimulator;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Burrow implements NonBlocking, Actor {
+public class Burrow extends WorldActor implements NonBlocking {
 
     List<Rabbit> owners;
-
+    DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
 
     public Burrow(Rabbit rabbit){
         owners = new ArrayList<Rabbit>();
@@ -22,10 +24,18 @@ public class Burrow implements NonBlocking, Actor {
         owners = new ArrayList<>();
     }
 
-
-
     @Override
     public void act(World world) {
 
+    }
+
+    @Override
+    public int getEnergyValue() {
+        return 0;
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        return diBurrow;
     }
 }

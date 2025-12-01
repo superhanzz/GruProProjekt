@@ -1,0 +1,51 @@
+package CapableSimulator;
+
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
+import itumulator.executable.Program;
+import itumulator.world.World;
+
+import java.awt.*;
+import java.util.Random;
+
+public class BerryBush extends WorldActor {
+
+    private final int energyValue;
+
+    private final double berrySpawnChance;
+
+    private boolean hasBerrys;
+
+    private DisplayInformation diBush = new DisplayInformation(Color.cyan, "bush");
+    private DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berries");
+
+    public BerryBush() {
+        this.energyValue = 3;
+        this.hasBerrys = false;
+        this.berrySpawnChance = 0.25;
+    }
+
+    @Override
+    public int getEnergyValue() {
+        return energyValue;
+    }
+
+    @Override
+    public void act(World world) {
+
+    }
+
+    public void trySpawnBerrys(Program program) {
+        if (hasBerrys) return;
+
+        Random rand = new Random();
+        if (rand.nextDouble() < (1 - berrySpawnChance)) { // TODO test that the spawn chance is actually true
+            hasBerrys = true;
+        }
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        return (hasBerrys ? diBerry : diBush);
+    }
+}

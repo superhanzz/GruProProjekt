@@ -1,8 +1,8 @@
 package CapableSimulator;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
-import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.util.*;
@@ -48,6 +48,29 @@ public abstract class Animals extends WorldActor {
      * Default is set to 20 in Animal class
      * */
     protected final int MATING_COOLDOWN_DURATION;
+
+
+    protected AnimalState animalState;
+    protected AnimalSize animalSize;
+
+
+    protected enum AnimalState {
+        AWAKE,
+        SLEEPING;
+    }
+
+    protected enum AnimalSize {
+        BABY,
+        ADULT;
+    }
+
+
+    protected static final Map<AnimalState, Map<AnimalSize, DisplayInformation>> displayInformations = new HashMap<>();
+    static {
+        displayInformations.put(AnimalState.AWAKE, new HashMap<>());
+        displayInformations.put(AnimalState.SLEEPING, new HashMap<>());
+    }
+
 
     public String actorType;
     protected  boolean hasSpecialMovementBehaviour;
@@ -122,7 +145,7 @@ public abstract class Animals extends WorldActor {
 
     public void lookForFood(World world, int searchRadius){
         Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
-        List<WorldActor> foodTiles = newWorldActorList(world, neighbours);
+        List<WorldActor> foodTiles = findFoodFromSource(world, neighbours);
 
         if(!foodTiles.isEmpty()){
             WorldActor eatableActor = foodTiles.get(new Random().nextInt(foodTiles.size()));
@@ -131,7 +154,9 @@ public abstract class Animals extends WorldActor {
             move(world);
     }
 
-    protected abstract List<WorldActor> newWorldActorList(World world, Location[] neighbours);
+    // findFoodFromSource
+    protected abstract List<WorldActor> findFoodFromSource(World world, Location[] neighbours);
+
 
     protected void eat(World world, WorldActor actor){
         this.energy += actor.getEnergyValue();

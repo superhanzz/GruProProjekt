@@ -1,14 +1,19 @@
 package CapableSimulator;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Bear extends Predator {
 
     Location territoryCenter;
     int territoryRadius;
+
+    DisplayInformation diBear = new DisplayInformation(Color.BLACK, "bear");
 
     public Bear() {
         this.territoryCenter = new Location(0, 0);
@@ -23,7 +28,7 @@ public class Bear extends Predator {
     }
 
     @Override
-    protected List<WorldActor> newWorldActorList(World world, Location[] neighbours) {
+    protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours) {
         List<WorldActor> worldActorList = new ArrayList<>();
         for (Location location : neighbours) {
             Object o =  world.getTile(location);
@@ -59,5 +64,10 @@ public class Bear extends Predator {
     public void act(World world) {
 
         lookForFood(world, 2);
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        return diBear;
     }
 }

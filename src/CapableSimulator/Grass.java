@@ -1,16 +1,21 @@
 package CapableSimulator;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Grass extends WorldActor implements NonBlocking{
 
     private final double growthChance;
     private final int energyValue;
+
+    DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
 
     public Grass(){
         growthChance = 0.15;
@@ -54,5 +59,10 @@ public class Grass extends WorldActor implements NonBlocking{
     @Override
     protected int getEnergyValue() {
         return energyValue;
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        return diGrass;
     }
 }
