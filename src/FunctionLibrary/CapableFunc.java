@@ -29,7 +29,46 @@ public class CapableFunc {
             loopCounter++;
         }
 
-        return emptyTile ;
+        return emptyTile;
+    }
+
+    public static int getNumOfActors(World world, String actorType) {
+        int numOfActors = 0;
+        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+
+        switch (actorType){
+            case "grass":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
+                }
+                break;
+            case "rabbit":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
+                }
+                break;
+            case "burrow":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
+                }
+                break;
+            case "wolf":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Wolf) numOfActors++;
+                }
+                break;
+            case "bear":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                }
+            case "berry":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                }
+                break;
+        }
+
+        return numOfActors;
     }
 
     public static Map<String, Integer> parseInputFile(String path){

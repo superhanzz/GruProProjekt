@@ -3,6 +3,7 @@ package CapableSimulator;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.util.*;
@@ -134,10 +135,15 @@ public abstract class Animals extends WorldActor {
 
     public void move(World world) {
         Location[] neighbours = getPossibleFoodTiles(world, 1);
+        List<Location> emptyNeighbours = new ArrayList<>();
+        for (Location neighbour : neighbours) {
+            if (world.getTile(neighbour) == null || world.getTile(neighbour) instanceof NonBlocking) emptyNeighbours.add(neighbour);
+        }
+        if (emptyNeighbours.isEmpty()) return;
         Random rand = new Random();
-        Location searchLocation = neighbours[rand.nextInt(neighbours.length)];
+        Location searchLocation = emptyNeighbours.get(rand.nextInt(emptyNeighbours.size()));
         while(!world.isTileEmpty(searchLocation)){
-            searchLocation = neighbours[rand.nextInt(neighbours.length)];
+            searchLocation = emptyNeighbours.get(rand.nextInt(emptyNeighbours.size()));
         }
         world.move(this, searchLocation);
     }
@@ -151,7 +157,7 @@ public abstract class Animals extends WorldActor {
             WorldActor eatableActor = foodTiles.get(new Random().nextInt(foodTiles.size()));
             eat(world, eatableActor);
         }else
-            move(world);
+            if (!hasSpecialMovementBehaviour) move(world);
     }
 
     // findFoodFromSource
@@ -185,6 +191,47 @@ public abstract class Animals extends WorldActor {
 
     }
 
+    public Location getLocation(World world) {
+        return (isOnMap ? world.getLocation(this) : null);
+    }
+
+    public Location getMovementVector(Location start, Location end) {
+        int x = end.getX() - start.getX();
+        int y = end.getY() - start.getY();
+        return new Location(x, y);
+    }
+
+    /*public Location getMoveToLocation(Location start, Location end) {
+        Location moveToLocation = null;
+        Location movementVector = null;
+        int moveX = 0;
+        int moveY = 0;
+
+        if (Math.abs(start.getX()) == Math.abs(end.getX())) {
+
+            switch (new Random().nextInt(1)) {
+                case 0: //
+
+            }
+        }
+        if (Math.abs(start.getX()) < Math.abs(end.getX())) {
+
+        }
+
+        int minElement = Math.min(end.getX(), end.getY());
+        // to move take end + start
+        minElement == 0
+
+        return moveToLocation;
+    }*/
+
+    public Location locationAddition(Location A, Location B) {
+        int x = A.getX() + B.getX();
+        int y = A.getY() + B.getY();
+        return new Location(x, y);
+    }
+
+
     public Location getClosestTile(World world, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
@@ -200,7 +247,7 @@ public abstract class Animals extends WorldActor {
         return shortestTile;
     }
 
-    double distance(Location A, Location B) {
+    public double distance(Location A, Location B) {
         Location distanceVector = new Location((A.getX() - B.getX()),(A.getY() - B.getY()));
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
         return distance;

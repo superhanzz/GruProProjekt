@@ -220,7 +220,7 @@ public class CapableSim {
             for (int i = 0; i < iFS.getSpawnAmount(); i++){
                 Location location = getEmptyTile(world);
                 if (location != null) {
-                    Wolf o = new Wolf();
+                    Wolf o = new Wolf(gang, (gang == null));
 
                     if (gang == null) gang = new WolfGang(o);
                     else gang.addWolfToGang(o);

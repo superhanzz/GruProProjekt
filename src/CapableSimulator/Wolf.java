@@ -3,11 +3,13 @@ package CapableSimulator;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class Wolf extends Predator {
@@ -17,6 +19,7 @@ public class Wolf extends Predator {
     WolfGang wolfGang;
 
     protected Wolf alpha;
+    protected WolfDen wolfDen;
 
     protected WolfType wolfType;
 
@@ -50,14 +53,18 @@ public class Wolf extends Predator {
         setupDisplayInformations();
     }
 
-    public Wolf(WolfGang wolfgang) {
-        this.energy = 20;
+    public Wolf(WolfGang wolfgang, boolean isAlpha) {
+        //this.energy = isAlpha ? 20 : 100;
+        this.energy = 100;
         this.maxEnergy = 30;
         this.age = 0;
         this.wolfGang = wolfgang;
 
-        this.animalSize = AnimalSize.BABY;
+        this.animalSize = AnimalSize.ADULT;
         this.animalState = AnimalState.AWAKE;
+        this.wolfType = isAlpha ? WolfType.ALPHA : WolfType.NPC;
+
+        hasSpecialMovementBehaviour = wolfType.equals(WolfType.NPC);
 
         setupDisplayInformations();
     }
@@ -67,12 +74,11 @@ public class Wolf extends Predator {
     public void act(World world){
 
         if (wolfType == WolfType.ALPHA) {
-            lookForFood(world, 2);
-            wolfGang.alphaMoved(world.getLocation(this));
+            lookForFood(world, 1);
+            wolfGang.alphaMoved(world, world.getLocation(this));
 
-            doEverySimStep(world);
-            return;
         }
+        //doEverySimStep(world);
 
         //lookForFood(world, 2);
 
@@ -85,16 +91,128 @@ public class Wolf extends Predator {
         if (animalSize == AnimalSize.BABY && age > 10) animalSize = AnimalSize.ADULT;
     }
 
-    public void followAlpha(Location location){
+    public void followAlpha(World world, Location alphaLocation) {
+        final String RED = "\u001B[31m";
+        final String RESET = "\u001B[0m";
+        final String GREEN = "\u001B[32m";
+
+        Location wolfLocation = world.getLocation(this);
+        double distance =distance(wolfLocation, alphaLocation);
+        if (distance >= wolfGang.radiusAroundAlpha) { // if the wolf is within the allowed radius of the alpha
+            //something
+        }
+
+        Location movementVector = getMovementVector(wolfLocation, alphaLocation);
+
+
+        // all possible movements that where the wolf still moves towards the alpha or a target
+        List<Integer> possibleMoves_X = new ArrayList<>();  // this list is ordered based on most ideal movement direction
+        List<Integer> possibleMoves_Y = new ArrayList<>();  // this list is ordered based on most ideal movement direction
+
+        // x-axis
+        if (movementVector.getX() == 0) {       // only movement in the y-axis
+            possibleMoves_X.add(0);
+            possibleMoves_X.add(1);
+            possibleMoves_X.add(-1);
+        }
+        else if (movementVector.getX() > 1) {   // movement in the x-axis is positive
+            possibleMoves_X.add(1);
+            possibleMoves_X.add(0);
+        }
+        else {  // movement in the x-axis is positive
+            possibleMoves_X.add(-1);
+            possibleMoves_X.add(0);
+        }
+
+
+
+        // y-axis
+        if (movementVector.getY() == 0) {       // no movement in the y-axis
+            possibleMoves_Y.add(0);
+            possibleMoves_Y.add(1);
+            possibleMoves_Y.add(-1);
+        }
+        else if (movementVector.getY() > 1) {   // movement in the y-axis is positive
+            possibleMoves_Y.add(1);
+            possibleMoves_Y.add(0);
+        }
+        else {  // movement in the y-axis is negative
+            possibleMoves_Y.add(-1);
+            possibleMoves_Y.add(0);
+        }
+
+        // Check which of the possibilities are free
+        Location testMoveTo;
+        Location moveToLocation = null;
+        for (Integer dx : possibleMoves_X) {
+            for (Integer dy : possibleMoves_Y) {
+                int x = Math.clamp(wolfLocation.getX() + dx, 0, world.getSize() - 1);
+                int y = Math.clamp(wolfLocation.getY() + dy, 0, world.getSize() - 1);
+
+                testMoveTo = new Location(x, y);
+
+                if (false){
+                    System.out.println("(" + dx + "," + dy + ") -> (" + x + "," + y + ")\t\t Original distance was: " + distance);
+                    double newDistance = distance(testMoveTo, alphaLocation);
+                    System.out.println("\t\t\t\t\t New distance is: " + distance(testMoveTo, alphaLocation));
+
+                    boolean isShorter = distance >= newDistance;
+                    String truth = isShorter ? GREEN + "Shorter" + RESET : RED + "Longer" + RESET;
+                    System.out.printf("\t\t\t\t\t " + truth + "%n");
+                }
+
+
+                //if (x > 9 || y > 9) throw new RuntimeException(x + "," + y + "\t not a valid tile");
+                Object o = world.getTile(testMoveTo);
+                if (o instanceof NonBlocking || !(o instanceof Animals)) {
+                    moveToLocation = new Location(x, y); //locationAddition(testMoveTo, wolfLocation);
+                    break;
+                }
+            }
+            if (moveToLocation != null && moveToLocation != wolfLocation) break;
+        }
+        if (moveToLocation != null) world.move(this, moveToLocation);
+        else move(world);
+        lookForFood(world, 1);
+
+
 
     }
 
-    void setupDisplayInformations(){
-        displayInformations.get(AnimalState.AWAKE).put(AnimalSize.BABY, new DisplayInformation(Color.pink, "wolf-small"));
-        displayInformations.get(AnimalState.AWAKE).put(AnimalSize.ADULT, new DisplayInformation(Color.magenta, "wolf"));
 
-        displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.BABY, new DisplayInformation(Color.pink, "wolf-sleeping"));
-        displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.ADULT, new DisplayInformation(Color.magenta, "wolf-small-sleeping"));
+
+    public void setAlpha(Wolf wolf) {
+        this.alpha = wolf;
+        hasSpecialMovementBehaviour = false;
+    }
+
+    public void promoteToAlpha() {
+        wolfType = WolfType.ALPHA;
+        wolfGang.setNewAlpha(this);
+        setAlpha(alpha);
+    }
+
+    private void digWolfDen(World world) {
+        wolfDen = new WolfDen(wolfGang);
+        world.setTile(world.getLocation(this), wolfDen);
+    }
+
+    public void setWolfDen(WolfDen wolfDen) {
+        this.wolfDen = this.wolfDen ==  null ? wolfDen : this.wolfDen;
+    }
+
+    protected void goIntoDen(World world) {
+        if (distance(getLocation(world), wolfGang.denLocation) < 2) {
+            //world.remove(this);
+
+        }
+        //else ()
+    }
+
+    @Override
+    public void die(World world) {
+        wolfGang.wolfDied(this);
+        world.delete(this);
     }
 
     @Override
@@ -105,6 +223,13 @@ public class Wolf extends Predator {
     @Override
     public void onNight(World world) {
         animalState = AnimalState.SLEEPING;
+    }
+
+    @Override
+    public void almostNight(World world) {
+        if (wolfType.equals(WolfType.ALPHA) && wolfDen == null) {
+            digWolfDen(world);
+        }
     }
 
     @Override
@@ -148,8 +273,24 @@ public class Wolf extends Predator {
     }
     */
 
+
+
+    void setupDisplayInformations(){
+        displayInformations.get(AnimalState.AWAKE).put(AnimalSize.BABY, new DisplayInformation(Color.pink, "wolf-small"));
+        displayInformations.get(AnimalState.AWAKE).put(AnimalSize.ADULT, new DisplayInformation(Color.magenta, "wolf"));
+
+        displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.BABY, new DisplayInformation(Color.pink, "wolf-small-sleeping"));
+        displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.ADULT, new DisplayInformation(Color.magenta, "wolf-sleeping"));
+    }
+
     @Override
     public DisplayInformation getInformation() {
-        return displayInformations.get(animalState).get(animalSize);
+        DisplayInformation di = displayInformations.get(animalState).get(animalSize);
+
+        if (wolfType == WolfType.ALPHA) {
+            di = new DisplayInformation(Color.pink, animalState.equals(AnimalState.AWAKE) ? "alpha-wolf" : "alpha-wolf-sleeping");
+        }
+
+        return di;
     }
 }
