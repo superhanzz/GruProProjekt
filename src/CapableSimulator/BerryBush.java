@@ -20,9 +20,9 @@ public class BerryBush extends WorldActor {
     private DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berries");
 
     public BerryBush() {
-        this.energyValue = 3;
+        this.energyValue = 5;
         this.hasBerrys = false;
-        this.berrySpawnChance = 0.25;
+        this.berrySpawnChance = 0.10;
     }
 
     @Override
@@ -41,6 +41,16 @@ public class BerryBush extends WorldActor {
         Random rand = new Random();
         if (rand.nextDouble() < (1 - berrySpawnChance)) { // TODO test that the spawn chance is actually true
             hasBerrys = true;
+        }
+    }
+
+    public boolean getBerryStatus(){
+        return hasBerrys;
+    }
+
+    public void updateBerryStatus(boolean berryStatus){
+        if(berryStatus){
+            hasBerrys = false;
         }
     }
 

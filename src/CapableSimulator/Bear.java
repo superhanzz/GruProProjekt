@@ -34,6 +34,10 @@ public class Bear extends Predator {
             Object o =  world.getTile(location);
             if (o instanceof Wolf || o instanceof Rabbit)
                 worldActorList.add((WorldActor) o);
+            else if(o instanceof BerryBush){
+                if(((BerryBush) o).getBerryStatus())
+                    worldActorList.add((WorldActor) o);
+            }
         }
         return worldActorList;
     }
@@ -59,6 +63,18 @@ public class Bear extends Predator {
         world.move(this, searchLocation);
     }
     // TODO make test that test if a bear moves out of it territory.
+
+    @Override
+    public void eat(World world, WorldActor actor){
+        if(actor instanceof BerryBush){
+            this.energy += actor.getEnergyValue();
+            Location GoTo = this.getClosestTile(world, world.getLocation(actor));
+            ((BerryBush) actor).updateBerryStatus(((BerryBush) actor).getBerryStatus());
+            world.move(this, GoTo);
+        }else {
+            super.eat(world, actor);
+        }
+    }
 
     @Override
     public void act(World world) {
