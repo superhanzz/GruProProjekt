@@ -65,6 +65,14 @@ public class WolfGang {
         }
     }
 
+    public void gangLeaveDen(World world) {
+        Alpha.exitDen(world);
+
+        for (Wolf npc : NPCs) {
+            npc.exitDen(world);
+        }
+    }
+
     public int getRadiusAroundAlpha() {
         return radiusAroundAlpha;
     }

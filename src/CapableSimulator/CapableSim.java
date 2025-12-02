@@ -163,8 +163,8 @@ public class CapableSim {
                 Map<Object, Location> entities = world.getEntities();
                 for (Object entity : entities.keySet()) {
                     if (entity instanceof Animals && entities.get(entity) == null) {
-                        world.delete(entity);
-                        System.out.println("Removed entity" + entity);
+                        //world.delete(entity);
+                        //System.out.println("Removed entity" + entity);
                     }
                 }
 
@@ -228,8 +228,8 @@ public class CapableSim {
 
                     if (gang == null) gang = new WolfGang(o);
                     else gang.addWolfToGang(o);
-
-                    world.setTile(location, o);
+                    o.updateOnMap(world, location, true);
+                    //world.setTile(location, o);
                 }
                 else
                     System.out.println("Failed to create an actor of type " + iFS.actorType);
@@ -571,10 +571,20 @@ public class CapableSim {
 
     void onDayNightChange(DayNightStatus dayNightStatus){
         List<Animals> animals = getAllAnimals(world);
+        List<WolfDen> wolfDens = new ArrayList<>();
         switch (dayNightStatus){
             case DAY:
                 //System.out.println("it has become day");
+                Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+                for(Object actor : actors){
+                    if(actor instanceof WolfDen) wolfDens.add((WolfDen)actor);
+                }
+                for(WolfDen wolfDen : wolfDens){
+                    wolfDen.ejectGang(world);
+                }
+
                 animals.forEach((animal) -> {animal.onDay(world);});
+
                 dayNumber++;
                 delayedSpawns(world);
                 break;

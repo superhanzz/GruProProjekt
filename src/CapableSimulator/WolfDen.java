@@ -28,6 +28,10 @@ public class WolfDen extends WorldActor implements NonBlocking {
 
     }
 
+    public void ejectGang(World world) {
+        owners.gangLeaveDen(world);
+    }
+
     @Override
     public DisplayInformation getInformation() {
         return di;

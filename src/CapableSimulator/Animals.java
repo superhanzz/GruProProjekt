@@ -192,7 +192,7 @@ public abstract class Animals extends WorldActor {
     }
 
     public Location getLocation(World world) {
-        return (isOnMap ? world.getLocation(this) : null);
+        return world.getLocation(this);
     }
 
     public Location getMovementVector(Location start, Location end) {
