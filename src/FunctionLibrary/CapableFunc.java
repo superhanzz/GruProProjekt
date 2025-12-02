@@ -224,6 +224,7 @@ public class CapableFunc {
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
             int worldSize = Integer.parseInt(sc.nextLine());
+            System.out.println(worldSize);
             map.put(new String("#" + String.valueOf(worldSize) + "#"), null);
 
             lineNumber++;   // Debug line number

@@ -42,7 +42,9 @@ public class CapableSim {
         RABBIT,
         WOLF,
         BURROW,
-        BEAR;
+        BEAR,
+        PUTIN;
+
     }
 
     public enum DayNightStatus {
@@ -70,6 +72,7 @@ public class CapableSim {
         actorConstructorRegistry.put("wolf", Wolf::new);
         actorConstructorRegistry.put("bear", Bear::new);
         actorConstructorRegistry.put("berry", BerryBush::new);
+        actorConstructorRegistry.put("putin", Putin::new);
     }
 
 
@@ -84,6 +87,7 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.BURROW, Burrow.class);
         actorClassTypes.put(ActorTypes.WOLF, Wolf.class);
         actorClassTypes.put(ActorTypes.BEAR, Bear.class);
+        actorClassTypes.put(ActorTypes.PUTIN, Putin.class);
     }
 
 
@@ -480,6 +484,8 @@ public class CapableSim {
         DisplayInformation diBush = new DisplayInformation(Color.cyan, "bush");
         DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berry");
         program.setDisplayInformation(BerryBush.class, diBush);
+
+
     }   
 
     /**
@@ -551,6 +557,11 @@ public class CapableSim {
             case "berry":
                 for(Object actor : actors){
                     if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                }
+                break;
+            case "putin":
+                for(Object actor : actors){
+                    if(actor instanceof CapableSimulator.Putin) numOfActors++;
                 }
                 break;
         }

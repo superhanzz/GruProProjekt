@@ -2,3 +2,4 @@
 grass 2-7
 rabbit 2
 wolf 1
+putin 1
