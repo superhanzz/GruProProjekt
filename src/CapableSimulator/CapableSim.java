@@ -43,6 +43,7 @@ public class CapableSim {
         WOLF,
         BURROW,
         BEAR,
+        CARCASS,
         PUTIN;
 
     }
@@ -158,6 +159,7 @@ public class CapableSim {
         List<Double> times = new ArrayList<>();
         for (int i = 0; i < simulationSteps; i++){
             double startTime = System.nanoTime();
+            System.out.println(i);
 
             if (world.getCurrentTime() == 4) {
                 Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");

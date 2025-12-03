@@ -8,6 +8,16 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
 
     public final String actorType;
 
+    protected enum AnimalState {
+        AWAKE,
+        SLEEPING;
+    }
+
+    public enum AnimalSize {
+        BABY,
+        ADULT;
+    }
+
     protected WorldActor(String actorType) {
         this.actorType = actorType;
     }
@@ -16,7 +26,6 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
     public void act(World world) {
 
     }
-
 
     //public abstract void setActorType(String actorType);
     public String getActorType() {return actorType;}

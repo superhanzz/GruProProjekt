@@ -55,15 +55,7 @@ public abstract class Animals extends WorldActor {
     protected AnimalSize animalSize;
 
 
-    protected enum AnimalState {
-        AWAKE,
-        SLEEPING;
-    }
 
-    protected enum AnimalSize {
-        BABY,
-        ADULT;
-    }
 
 
     protected static final Map<AnimalState, Map<AnimalSize, DisplayInformation>> displayInformations = new HashMap<>();
@@ -155,7 +147,7 @@ public abstract class Animals extends WorldActor {
 
         if(!foodTiles.isEmpty()){
             WorldActor eatableActor = foodTiles.get(new Random().nextInt(foodTiles.size()));
-            eat(world, eatableActor);
+            kill(world, eatableActor);
         }else
             if (!hasSpecialMovementBehaviour) move(world);
     }
@@ -163,6 +155,30 @@ public abstract class Animals extends WorldActor {
     // findFoodFromSource
     protected abstract List<WorldActor> findFoodFromSource(World world, Location[] neighbours);
 
+    protected void kill(World world, WorldActor actor) {
+        Location goTo = this.getClosestTile(world, world.getLocation(actor));
+        world.move(this, goTo);
+        Carcass carcass = null;
+        if(actor instanceof Animals){
+            carcass = ((Animals) actor).makeCarcass(world);
+
+        }
+        if(carcass != null){
+            //eat(world, carcass);
+        }
+
+    }
+
+    public Carcass makeCarcass(World world) {
+        Location location = getLocation(world);
+        world.delete(this);
+
+        Carcass carcass = new Carcass(this.energy, this.animalSize);
+        world.setTile(location, carcass);
+        System.out.println("Carcass has been created");
+
+        return carcass;
+    }
 
     protected void eat(World world, WorldActor actor){
         this.energy += actor.getEnergyValue();
