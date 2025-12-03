@@ -101,11 +101,7 @@ public class Wolf extends Predator {
             wolfGang.alphaMoved(world, world.getLocation(this));
 
 
-            System.out.println(allPossibleFoodActors.size());
-            for (String at : allPossibleFoodActors.keySet()) {
-                System.out.println("Number of " + at + " in the world: " + allPossibleFoodActors.get(at).size());
-            }
-            System.out.println();
+
 
 
 
@@ -129,6 +125,14 @@ public class Wolf extends Predator {
     private void alphaSight(World world) {
         // Gets references to all the possible food sources
         Map<String, Set<WorldActor>> allPossibleFoodActors = CapableFunc.getAllWorldActorsAsMap(world, eatableFoodTypes.get(actorType));
+
+        if (false) {    // Debug
+            System.out.println(allPossibleFoodActors.size());
+            for (String at : allPossibleFoodActors.keySet()) {
+                System.out.println("Number of " + at + " in the world: " + allPossibleFoodActors.get(at).size());
+            }
+            System.out.println();
+        }
 
         // Finds the closest one
         double shortestDistance = Double.MAX_VALUE;
