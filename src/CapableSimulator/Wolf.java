@@ -75,6 +75,25 @@ public class Wolf extends Predator {
         setupDisplayInformations();
     }
 
+    public Wolf(WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, AnimalSize animalSize, AnimalState animalState) {
+        super("wolf");
+        this.energy = 100;
+        this.maxEnergy = 30;
+        this.age = 0;
+
+        this.wolfGang = wolfgang;
+        this.alpha = alpha;
+        this.wolfDen = wolfDen;
+        this.animalSize = animalSize;
+        this.animalState = animalState;
+
+        this.wolfType = WolfType.NPC;
+
+        hasSpecialMovementBehaviour = true;
+
+        setupDisplayInformations();
+    }
+
     //Act method implemented from Actor, every step the wolf is updated and methods are called.
     @Override
     public void act(World world){

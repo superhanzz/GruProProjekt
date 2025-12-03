@@ -161,14 +161,7 @@ public class CapableSim {
             double startTime = System.nanoTime();
             //System.out.println(i);
 
-            if (world.getCurrentTime() == 4) {
-                Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
-                for (WorldActor actor : Dens) {
-                    System.out.println("TryMate");
-                    ((WolfDen) actor).makeCup(world);
-                }
-            }
-            else if (world.getCurrentTime() == 9){
+            if (world.getCurrentTime() == 9){
                 Map<Object, Location> entities = world.getEntities();
                 for (Object entity : entities.keySet()) {
                     if (entity instanceof Animals && entities.get(entity) == null) {
@@ -184,6 +177,13 @@ public class CapableSim {
                 }
 
                 //animals.forEach(animal -> {animal.almostNight(world);});
+            }
+            else if (world.getCurrentTime() == 14) {
+                Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
+                for (WorldActor actor : Dens) {
+                    System.out.println("TryMate");
+                    ((WolfDen) actor).makeCup(world);
+                }
             }
 
 
