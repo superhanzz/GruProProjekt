@@ -98,6 +98,15 @@ public class CapableFunc {
         return actorTypes;
     }
 
+    public static List<String> getAllAnimalTypes() {
+        List<String> actorTypes = new ArrayList<>();
+        actorTypes.add("rabbit");
+        actorTypes.add("bear");
+        actorTypes.add("wolf");
+        actorTypes.add("putin");
+        return actorTypes;
+    }
+
     /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, with no filter
      * */
     public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world) {

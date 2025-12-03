@@ -172,7 +172,6 @@ public abstract class Animals extends WorldActor {
     public Carcass makeCarcass(World world) {
         Location location = getLocation(world);
         world.delete(this);
-
         Carcass carcass = new Carcass(this.energy, this.animalSize);
         world.setTile(location, carcass);
         System.out.println("Carcass has been created");

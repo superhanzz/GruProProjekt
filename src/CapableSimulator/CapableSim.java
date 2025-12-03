@@ -175,9 +175,16 @@ public class CapableSim {
                         //System.out.println("Removed entity" + entity);
                     }
                 }
+                //CapableFunc.getAllAnimals(world);
 
-                List<Animals> animals = CapableFunc.getAllAnimals(world);
-                animals.forEach(animal -> {animal.almostNight(world);});
+                Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, true);
+                for (String key : worldActors.keySet()) {
+                    if (CapableFunc.getAllAnimalTypes().contains(key)) {
+                        if (worldActors.get(key) instanceof Animals)
+                            ((Animals) worldActors.get(key)).almostNight(world);
+                    }
+                }
+                //animals.forEach(animal -> {animal.almostNight(world);});
             }
 
 
@@ -586,7 +593,14 @@ public class CapableSim {
     }
 
     void onDayNightChange(DayNightStatus dayNightStatus){
-        List<Animals> animals = CapableFunc.getAllAnimals(world);
+        List<Animals> animals = new ArrayList<>();
+        Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, true);
+        for (String key : worldActors.keySet()) {
+            if (CapableFunc.getAllAnimalTypes().contains(key)) {
+                if (worldActors.get(key) instanceof Animals)
+                    animals.add((Animals) worldActors.get(key));
+            }
+        }
         List<WolfDen> wolfDens = new ArrayList<>();
         switch (dayNightStatus){
             case DAY:

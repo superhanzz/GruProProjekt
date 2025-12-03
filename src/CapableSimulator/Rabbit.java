@@ -296,6 +296,7 @@ public class Rabbit extends Animals {
      * */
     @Override
     public void onNight(World world) {
+
         if (burrow == null) {
             for (Location l : world.getSurroundingTiles(world.getLocation(this))) {
                 if (world.getNonBlocking(l) instanceof Burrow) {
