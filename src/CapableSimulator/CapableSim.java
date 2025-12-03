@@ -43,6 +43,7 @@ public class CapableSim {
         WOLF,
         BURROW,
         BEAR,
+        CARCASS,
         PUTIN;
 
     }
@@ -73,6 +74,7 @@ public class CapableSim {
         actorConstructorRegistry.put("bear", Bear::new);
         actorConstructorRegistry.put("berry", BerryBush::new);
         actorConstructorRegistry.put("putin", Putin::new);
+        actorConstructorRegistry.put("carcass", Carcass::new);
     }
 
 
@@ -88,6 +90,7 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.WOLF, Wolf.class);
         actorClassTypes.put(ActorTypes.BEAR, Bear.class);
         actorClassTypes.put(ActorTypes.PUTIN, Putin.class);
+        actorClassTypes.put(ActorTypes.CARCASS, Carcass.class);
     }
 
 
@@ -158,7 +161,7 @@ public class CapableSim {
         List<Double> times = new ArrayList<>();
         for (int i = 0; i < simulationSteps; i++){
             double startTime = System.nanoTime();
-
+            System.out.println(i);
             if (world.getCurrentTime() == 9){
                 Map<Object, Location> entities = world.getEntities();
                 for (Object entity : entities.keySet()) {

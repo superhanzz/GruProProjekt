@@ -33,6 +33,7 @@ public class Rabbit extends Animals {
         this.energy = 15;
         this.maxEnergy = 20;
         this.age = 0;
+        this.animalSize = AnimalSize.ADULT;
         this.matingCooldown = 0;
         this.canMate = true;
 
@@ -316,9 +317,7 @@ public class Rabbit extends Animals {
     @Override
     public void almostNight(World world) {
         canMate = false;
-
         if(burrow == null) return;
-
         Location closestTile = getClosestTile(world, burrowLocation);
 
         if (closestTile == null) {
