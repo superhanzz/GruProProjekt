@@ -1,6 +1,6 @@
 package FunctionLibrary;
 
-import CapableSimulator.InputFileStruct;
+import CapableSimulator.*;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -70,6 +70,105 @@ public class CapableFunc {
 
         return numOfActors;
     }
+
+    public static List<Animals> getAllAnimals(World world){
+        List<Animals> animals = new ArrayList<>();
+
+        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+        for(Object actor : actors){
+            if(actor instanceof Animals){
+                animals.add((Animals) actor);
+            }
+        }
+
+
+        return animals;
+    }
+
+    public static List<String> getAllWorldActorTypes() {
+        List<String> actorTypes = new ArrayList<>();
+        actorTypes.add("grass");
+        actorTypes.add("rabbit");
+        actorTypes.add("bear");
+        actorTypes.add("berry");
+        actorTypes.add("wolf");
+        actorTypes.add("burrow");
+        actorTypes.add("wolfDen");
+        actorTypes.add("putin");
+        return actorTypes;
+    }
+
+    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, with no filter
+     * */
+    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world) {
+        return getAllWorldActorsAsMap(world, null, false);
+    }
+
+    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, List<String> filter) {
+        return getAllWorldActorsAsMap(world, filter, false);
+    }
+
+    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, boolean onlyActorsOnMap) {
+        return getAllWorldActorsAsMap(world, null, onlyActorsOnMap);
+    }
+
+    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, filtered
+     * */
+    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, List<String> filter, boolean onlyActorsOnMap) {
+        Map<String, Set<WorldActor>> possibleFoodSources = new HashMap<>();
+
+        // Prepares the return map
+        for(String actorType : getAllWorldActorTypes()){
+
+            // filters if there is a filter
+            if (filter == null || filter.contains(actorType)) {
+                possibleFoodSources.put(actorType, new HashSet<>());
+                //System.out.println(actorType);
+            }
+        }
+
+        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
+        Map<Object, Location> Actors = world.getEntities();
+
+        for(Object actor : Actors.keySet()){
+            String actorType = "";
+
+            if (Actors.get(actor) != null || !onlyActorsOnMap) {
+
+                /* If the filter is not empty the actors actorType is retrieved */
+                if (filter != null) {
+                    if (actor instanceof WorldActor) {
+                        actorType = ((WorldActor) actor).getActorType();
+                        //System.out.println(actor.toString() + ": " + actorType);
+                    }
+                }
+
+                /* filters the actors if there is a filter */
+                if (filter == null || filter.contains(actorType)) {
+                    //if (filter != null) System.out.println(actorType);
+
+                    switch (actor) {
+                        case Wolf w -> possibleFoodSources.get("wolf").add(w);
+                        case Rabbit r -> possibleFoodSources.get("rabbit").add(r);
+                        case Bear b -> possibleFoodSources.get("bear").add(b);
+                        case Grass g -> possibleFoodSources.get("grass").add(g);
+                        case BerryBush b -> possibleFoodSources.get("berryBush").add(b);
+                        case Burrow b -> possibleFoodSources.get("burrow").add(b);
+                        case Putin p -> possibleFoodSources.get("putin").add(p);
+                        case WolfDen w -> possibleFoodSources.get("wolfDen").add(w);
+                        default -> {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //System.out.println("Number of food sources: " + possibleFoodSources.size());
+        //System.out.println();
+        return  possibleFoodSources;
+    }
+
+
 
     public static Map<String, Integer> parseInputFile(String path){
         Map<String, Integer> map = new HashMap<>();
@@ -307,7 +406,7 @@ public class CapableFunc {
         for (File folder : map.keySet()) {
             for (File file : map.get(folder)) {
                 String fileName = CapableFunc.getInputFileName(file);                           // Gets the name of the given file
-                Map<String, InputFileStruct> inputs = CapableFunc.parseInputsFromFile(file);    // Retrieves all the inputs
+                Map<String, InputFileStruct> inputs = CapableFunc.parseInputsFromFile2(file);    // Retrieves all the inputs
                 allInputs.put(fileName, inputs); // Inserts the give files inputs, into the "allInputs" map
             }
         }

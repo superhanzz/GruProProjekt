@@ -14,7 +14,9 @@ public class WolfDen extends WorldActor implements NonBlocking {
 
     DisplayInformation di = new DisplayInformation(Color.ORANGE, "hole");
 
+
     public WolfDen(WolfGang owners) {
+        super("wolfDen");
         this.owners = owners;
     }
 
@@ -26,10 +28,6 @@ public class WolfDen extends WorldActor implements NonBlocking {
     @Override
     public void act(World world) {
 
-    }
-
-    public void ejectGang(World world) {
-        owners.gangLeaveDen(world);
     }
 
     @Override

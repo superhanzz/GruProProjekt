@@ -20,6 +20,7 @@ public class BerryBush extends WorldActor {
     private DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berries");
 
     public BerryBush() {
+        super("berry");
         this.energyValue = 5;
         this.hasBerrys = false;
         this.berrySpawnChance = 0.10;

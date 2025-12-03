@@ -15,16 +15,18 @@ public class Bear extends Predator {
 
     DisplayInformation diBear = new DisplayInformation(Color.BLACK, "bear");
 
+
+
     public Bear() {
+        super("bear");
         this.territoryCenter = new Location(0, 0);
         this.territoryRadius = 6;
-        this.actorType = "bear";
     }
 
     public Bear(Location territoryCenter) {
+        super("bear");
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 1;
-        this.actorType = "bear";
     }
 
     @Override

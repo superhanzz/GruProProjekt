@@ -17,7 +17,9 @@ public class Grass extends WorldActor implements NonBlocking{
 
     DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
 
+
     public Grass(){
+        super("grass");
         growthChance = 0.15;
         energyValue = 2;
     }

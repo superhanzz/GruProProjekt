@@ -13,7 +13,9 @@ import java.util.List;
 public class Putin extends Animals {
 
     DisplayInformation diPutin = new DisplayInformation(Color.blue, "putin");
+
     public Putin(){
+        super("putin");
         this.energy = 100;
         this.maxEnergy = 1000;
         this.age = 73;

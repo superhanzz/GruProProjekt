@@ -72,12 +72,10 @@ public abstract class Animals extends WorldActor {
         displayInformations.put(AnimalState.SLEEPING, new HashMap<>());
     }
 
-
-    public String actorType;
     protected  boolean hasSpecialMovementBehaviour;
     boolean isOnMap;
 
-    static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
+    protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
     static {
         List<String> bearDiet = new ArrayList<>();
         bearDiet.add("wolf");
@@ -112,14 +110,16 @@ public abstract class Animals extends WorldActor {
 
     /** Default constructor
      * */
-    public Animals() {
+    public Animals(String actorType) {
+        super(actorType);
         this.matingAge = 20;
         this.MATING_COOLDOWN_DURATION = 20;
     }
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
      * */
-    public Animals(int matingAge, int MATING_COOLDOWN_DURATION) {
+    public Animals(String actorType, int matingAge, int MATING_COOLDOWN_DURATION) {
+        super(actorType);
         this.matingAge = matingAge;
         this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
     }
@@ -191,6 +191,7 @@ public abstract class Animals extends WorldActor {
 
     }
 
+
     public Location getLocation(World world) {
         return world.getLocation(this);
     }
@@ -232,6 +233,8 @@ public abstract class Animals extends WorldActor {
     }
 
 
+    /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
+
     public Location getClosestTile(World world, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
@@ -252,6 +255,84 @@ public abstract class Animals extends WorldActor {
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
         return distance;
     }
+
+
+    protected void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
+        if (axis == 0) {       // no movement on the given axis
+            possibleMovesList.add(0);
+            possibleMovesList.add(1);
+            possibleMovesList.add(-1);
+        }
+        else if (axis > 1) {   // movement in the given axis is positive
+            possibleMovesList.add(1);
+            possibleMovesList.add(0);
+        }
+        else {  // movement in the given axis is negative
+            possibleMovesList.add(-1);
+            possibleMovesList.add(0);
+        }
+    }
+
+    protected Location getMoveToTile(World world, Location fromLocation, Location goalLocation) {
+        // DEBUG COLORS FOR printf
+        final String RED = "\u001B[31m";
+        final String RESET = "\u001B[0m";
+        final String GREEN = "\u001B[32m";
+
+        Location movementVector = getMovementVector(fromLocation, goalLocation);
+
+        // all possible movements that where the wolf still moves towards the alpha or a target
+        List<Integer> possibleMoves_X = new ArrayList<>();  // this list is ordered based on most ideal movement direction
+        List<Integer> possibleMoves_Y = new ArrayList<>();  // this list is ordered based on most ideal movement direction
+
+        // x-axis
+        getPossibleMovesForAxis(movementVector.getX(), possibleMoves_X);
+        getPossibleMovesForAxis(movementVector.getY(), possibleMoves_Y);
+
+        //
+        List<Location> moveToLocations = new ArrayList<>();
+        // Check which of the possibilities are free
+        Location testMoveTo;
+        Location moveToLocation = null;
+        for (Integer dx : possibleMoves_X) {
+            for (Integer dy : possibleMoves_Y) {
+                int x = Math.clamp(fromLocation.getX() + dx, 0, world.getSize() - 1);
+                int y = Math.clamp(fromLocation.getY() + dy, 0, world.getSize() - 1);
+
+                testMoveTo = new Location(x, y);
+
+                /*if (false){
+                    System.out.println("(" + dx + "," + dy + ") -> (" + x + "," + y + ")\t\t Original distance was: " + distance);
+                    double newDistance = distance(testMoveTo, alphaLocation);
+                    System.out.println("\t\t\t\t\t New distance is: " + distance(testMoveTo, alphaLocation));
+
+                    boolean isShorter = distance >= newDistance;
+                    String truth = isShorter ? GREEN + "Shorter" + RESET : RED + "Longer" + RESET;
+                    System.out.printf("\t\t\t\t\t " + truth + "%n");
+                }*/
+                //if (x > 9 || y > 9) throw new RuntimeException(x + "," + y + "\t not a valid tile");
+
+
+                Object o = world.getTile(testMoveTo);
+                if (o instanceof NonBlocking || !(o instanceof Animals)) {
+                    moveToLocations.add(testMoveTo);
+                }
+            }
+        }
+        if (!moveToLocations.isEmpty()) {
+            double shortestDistance = Double.MAX_VALUE;
+            for (Location location : moveToLocations) {
+                double distance = distance(location, goalLocation);
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    moveToLocation = location;
+                }
+            }
+        }
+        return moveToLocation;
+    }
+
+    /* ----- ----- ----- -----   ----- ----- ----- ----- */
 
     public void die(World world) {
         world.delete(this);

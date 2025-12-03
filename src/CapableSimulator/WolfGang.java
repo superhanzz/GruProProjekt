@@ -50,6 +50,7 @@ public class WolfGang {
 
     public void alphaAssertsDominance(Wolf alpha) {
         if (NPCs.contains(alpha)) NPCs.remove(alpha);
+        Alpha.setAlpha(alpha);
 
         for (Wolf npc : NPCs) {
             npc.setAlpha(alpha);
@@ -62,14 +63,6 @@ public class WolfGang {
         denLocation = world.getLocation(wolfDen);
         for  (Wolf npc : NPCs) {
             npc.setWolfDen(wolfDen);
-        }
-    }
-
-    public void gangLeaveDen(World world) {
-        Alpha.exitDen(world);
-
-        for (Wolf npc : NPCs) {
-            npc.exitDen(world);
         }
     }
 

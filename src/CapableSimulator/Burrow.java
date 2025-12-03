@@ -16,11 +16,13 @@ public class Burrow extends WorldActor implements NonBlocking {
     DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
 
     public Burrow(Rabbit rabbit){
+        super("burrow");
         owners = new ArrayList<Rabbit>();
         owners.add(rabbit);
     }
 
     public Burrow(){
+        super("burrow");
         owners = new ArrayList<>();
     }
 

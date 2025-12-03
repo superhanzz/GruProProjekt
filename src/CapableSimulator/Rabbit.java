@@ -21,6 +21,7 @@ public class Rabbit extends Animals {
 
     DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
 
+
     /* ----- ----- ----- Constructors ----- ----- ----- */
 
     /**
@@ -28,13 +29,12 @@ public class Rabbit extends Animals {
      * This is the constructor to use when making the simulation.
      * */
     public Rabbit() {
-        super();
+        super("rabbit");
         this.energy = 15;
         this.maxEnergy = 20;
         this.age = 0;
         this.matingCooldown = 0;
         this.canMate = true;
-        this.actorType = "rabbit";
 
         burrow = null;
         burrowLocation = null;
@@ -45,7 +45,7 @@ public class Rabbit extends Animals {
      * A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
      * */
     public Rabbit(int energy) {
-        super();
+        super("rabbit");
         this.energy = energy;
         this.age = 0;
         //this.matingAge = 10;
@@ -62,7 +62,7 @@ public class Rabbit extends Animals {
      * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
      * */
     public Rabbit(int matingAge, int MATING_COOLDOWN_DURATION) {
-        super(matingAge, MATING_COOLDOWN_DURATION);
+        super("rabbit", matingAge, MATING_COOLDOWN_DURATION);
 
         this.age = 0;
         this.energy = 10;

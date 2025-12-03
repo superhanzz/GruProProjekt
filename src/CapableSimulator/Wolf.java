@@ -1,16 +1,14 @@
 package CapableSimulator;
 
+import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
-import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public class Wolf extends Predator {
 
@@ -28,8 +26,12 @@ public class Wolf extends Predator {
         NPC;
     }
 
+    /* Sets the actors type */
+    static {  }
+
     //Default constructor for wolf, used in the actorConstructorRegistry
     public Wolf() {
+        super("wolf");
         this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
@@ -37,11 +39,14 @@ public class Wolf extends Predator {
         this.animalSize = AnimalSize.BABY;
         this.animalState = AnimalState.AWAKE;
 
+        //actorType = "wolf";
+
         setupDisplayInformations();
     }
 
     //Wolf constructor used for instantiating new wolves, with a pack as parameter.
     public Wolf(Set<Actor> wolfgang) {
+        super("wolf");
         this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
@@ -54,6 +59,7 @@ public class Wolf extends Predator {
     }
 
     public Wolf(WolfGang wolfgang, boolean isAlpha) {
+        super("wolf");
         //this.energy = isAlpha ? 20 : 100;
         this.energy = 100;
         this.maxEnergy = 30;
@@ -79,12 +85,31 @@ public class Wolf extends Predator {
             }
         }
         else {
-            //if (!isOnMap) exitDen(world);
+            //if (alpha == null) System.out.println(wolfType.toString());
+            if (!isOnMap) {
+                exitDen(world);
+            }
+            else {
+                if (!alpha.isOnMap) {
+                    lookForFood(world, 1);
+                }
+            }
         }
 
         if (wolfType == WolfType.ALPHA && world.isDay() && isOnMap) {
             lookForFood(world, 1);
             wolfGang.alphaMoved(world, world.getLocation(this));
+
+
+            System.out.println(allPossibleFoodActors.size());
+            for (String at : allPossibleFoodActors.keySet()) {
+                System.out.println("Number of " + at + " in the world: " + allPossibleFoodActors.get(at).size());
+            }
+            System.out.println();
+
+
+
+
         }
         //doEverySimStep(world);
 
@@ -102,6 +127,43 @@ public class Wolf extends Predator {
 
     // alpha can see whole map
     private void alphaSight(World world) {
+        // Gets references to all the possible food sources
+        Map<String, Set<WorldActor>> allPossibleFoodActors = CapableFunc.getAllWorldActorsAsMap(world, eatableFoodTypes.get(actorType));
+
+        // Finds the closest one
+        double shortestDistance = Double.MAX_VALUE;
+        WorldActor nearestFoodActor = null;
+
+        // This is dumb because there is no priority in the food source
+        for (String actorType : allPossibleFoodActors.keySet()) {
+            for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
+                double distance = distance(getLocation(world), world.getLocation(actor));
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    nearestFoodActor = actor;
+                }
+            }
+        }
+
+
+        // smart because it is categorised
+        record PreyDist(WorldActor actor, double distance) {}   //
+
+        Map<String, PreyDist> nearestPreyActors = new HashMap<>();
+        Map<String, Double> distances = new HashMap<>();
+
+        for (String actorType : allPossibleFoodActors.keySet()) {
+            distances.put(actorType, Double.MAX_VALUE);
+            for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
+                double distance = distance(getLocation(world), world.getLocation(actor));
+                if (distance < distances.get(actorType)) {
+                    distances.put(actorType, distance);
+                    nearestPreyActors.put(actorType, new PreyDist(actor, distance));
+                }
+            }
+        }
+
+
 
     }
 
@@ -122,82 +184,6 @@ public class Wolf extends Predator {
         lookForFood(world, 1);
     }
 
-    private void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
-        if (axis == 0) {       // no movement on the given axis
-            possibleMovesList.add(0);
-            possibleMovesList.add(1);
-            possibleMovesList.add(-1);
-        }
-        else if (axis > 1) {   // movement in the given axis is positive
-            possibleMovesList.add(1);
-            possibleMovesList.add(0);
-        }
-        else {  // movement in the given axis is negative
-            possibleMovesList.add(-1);
-            possibleMovesList.add(0);
-        }
-    }
-
-    private Location getMoveToTile(World world, Location fromLocation, Location goalLocation) {
-        // DEBUG COLORS FOR printf
-        final String RED = "\u001B[31m";
-        final String RESET = "\u001B[0m";
-        final String GREEN = "\u001B[32m";
-
-        Location movementVector = getMovementVector(fromLocation, goalLocation);
-
-        // all possible movements that where the wolf still moves towards the alpha or a target
-        List<Integer> possibleMoves_X = new ArrayList<>();  // this list is ordered based on most ideal movement direction
-        List<Integer> possibleMoves_Y = new ArrayList<>();  // this list is ordered based on most ideal movement direction
-
-        // x-axis
-        getPossibleMovesForAxis(movementVector.getX(), possibleMoves_X);
-        getPossibleMovesForAxis(movementVector.getY(), possibleMoves_Y);
-
-        //
-        List<Location> moveToLocations = new ArrayList<>();
-        // Check which of the possibilities are free
-        Location testMoveTo;
-        Location moveToLocation = null;
-        for (Integer dx : possibleMoves_X) {
-            for (Integer dy : possibleMoves_Y) {
-                int x = Math.clamp(fromLocation.getX() + dx, 0, world.getSize() - 1);
-                int y = Math.clamp(fromLocation.getY() + dy, 0, world.getSize() - 1);
-
-                testMoveTo = new Location(x, y);
-
-                /*if (false){
-                    System.out.println("(" + dx + "," + dy + ") -> (" + x + "," + y + ")\t\t Original distance was: " + distance);
-                    double newDistance = distance(testMoveTo, alphaLocation);
-                    System.out.println("\t\t\t\t\t New distance is: " + distance(testMoveTo, alphaLocation));
-
-                    boolean isShorter = distance >= newDistance;
-                    String truth = isShorter ? GREEN + "Shorter" + RESET : RED + "Longer" + RESET;
-                    System.out.printf("\t\t\t\t\t " + truth + "%n");
-                }*/
-                //if (x > 9 || y > 9) throw new RuntimeException(x + "," + y + "\t not a valid tile");
-
-
-                Object o = world.getTile(testMoveTo);
-                if (o instanceof NonBlocking || !(o instanceof Animals)) {
-                    moveToLocations.add(testMoveTo);
-                }
-            }
-        }
-        if (!moveToLocations.isEmpty()) {
-            double shortestDistance = Double.MAX_VALUE;
-            for (Location location : moveToLocations) {
-                double distance = distance(location, goalLocation);
-                if (distance < shortestDistance) {
-                    shortestDistance = distance;
-                    moveToLocation = location;
-                }
-            }
-        }
-        return moveToLocation;
-    }
-
-
 
     public void setAlpha(Wolf wolf) {
         this.alpha = wolf;
@@ -213,6 +199,8 @@ public class Wolf extends Predator {
 
     private void digWolfDen(World world) {
         wolfDen = new WolfDen(wolfGang);
+        Object nonBlocking = world.getNonBlocking(getLocation(world));
+        if (nonBlocking != null) world.delete(nonBlocking);
         world.setTile(world.getLocation(this), wolfDen);
         wolfGang.wolfDenCreated(world, wolfDen);
     }

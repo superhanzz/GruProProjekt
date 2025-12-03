@@ -168,7 +168,7 @@ public class CapableSim {
                     }
                 }
 
-                List<Animals> animals = getAllAnimals(world);
+                List<Animals> animals = CapableFunc.getAllAnimals(world);
                 animals.forEach(animal -> {animal.almostNight(world);});
             }
 
@@ -221,10 +221,12 @@ public class CapableSim {
 
         if(iFS.actorType.equals("wolf")) {
             WolfGang gang = null;
+            Wolf alpha = null;
             for (int i = 0; i < iFS.getSpawnAmount(); i++){
                 Location location = getEmptyTile(world);
                 if (location != null) {
                     Wolf o = new Wolf(gang, (gang == null));
+                    if (gang == null) alpha = o;
 
                     if (gang == null) gang = new WolfGang(o);
                     else gang.addWolfToGang(o);
@@ -233,6 +235,11 @@ public class CapableSim {
                 }
                 else
                     System.out.println("Failed to create an actor of type " + iFS.actorType);
+                try {
+                    gang.setNewAlpha(alpha);
+                } catch (NullPointerException e) {
+                    System.out.println("Tried to call setNewAlpha on alpha, but 'gang' is null. \t" + e.getMessage());
+                }
             }
             return;
         } else if (iFS.actorType.equals("bear")) {
@@ -570,18 +577,10 @@ public class CapableSim {
     }
 
     void onDayNightChange(DayNightStatus dayNightStatus){
-        List<Animals> animals = getAllAnimals(world);
+        List<Animals> animals = CapableFunc.getAllAnimals(world);
         List<WolfDen> wolfDens = new ArrayList<>();
         switch (dayNightStatus){
             case DAY:
-                //System.out.println("it has become day");
-                Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
-                for(Object actor : actors){
-                    if(actor instanceof WolfDen) wolfDens.add((WolfDen)actor);
-                }
-                for(WolfDen wolfDen : wolfDens){
-                    wolfDen.ejectGang(world);
-                }
 
                 animals.forEach((animal) -> {animal.onDay(world);});
 
@@ -597,18 +596,6 @@ public class CapableSim {
         }
     }
 
-    List<Animals> getAllAnimals(World world){
-        List<Animals> animals = new ArrayList<>();
 
-        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
-        for(Object actor : actors){
-            if(actor instanceof Animals){
-                animals.add((Animals) actor);
-            }
-        }
-
-
-        return animals;
-    }
 
 }
