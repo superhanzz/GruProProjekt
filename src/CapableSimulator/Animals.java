@@ -78,8 +78,8 @@ public abstract class Animals extends WorldActor {
     protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
     static {
         List<String> bearDiet = new ArrayList<>();
-        bearDiet.add("wolf");
         bearDiet.add("rabbit");
+        bearDiet.add("wolf");
         bearDiet.add("berry");
 
         List<String> wolfDiet = new ArrayList<>();
@@ -350,6 +350,8 @@ public abstract class Animals extends WorldActor {
             isOnMap = false;
         }
     }
+
+    public boolean isAnimalAdult() {return (animalSize.equals(AnimalSize.ADULT));}
 
 
     @Override

@@ -101,11 +101,6 @@ public class Wolf extends Predator {
             wolfGang.alphaMoved(world, world.getLocation(this));
 
 
-
-
-
-
-
         }
         //doEverySimStep(world);
 
@@ -121,7 +116,7 @@ public class Wolf extends Predator {
         if (animalSize == AnimalSize.BABY && age > 10) animalSize = AnimalSize.ADULT;
     }
 
-    // alpha can see whole map
+    // alpha can see whole map TODO
     private void alphaSight(World world) {
         // Gets references to all the possible food sources
         Map<String, Set<WorldActor>> allPossibleFoodActors = CapableFunc.getAllWorldActorsAsMap(world, eatableFoodTypes.get(actorType));
@@ -135,16 +130,18 @@ public class Wolf extends Predator {
         }
 
         // Finds the closest one
-        double shortestDistance = Double.MAX_VALUE;
-        WorldActor nearestFoodActor = null;
+        if (false) {
+            double shortestDistance = Double.MAX_VALUE;
+            WorldActor nearestFoodActor = null;
 
-        // This is dumb because there is no priority in the food source
-        for (String actorType : allPossibleFoodActors.keySet()) {
-            for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                double distance = distance(getLocation(world), world.getLocation(actor));
-                if (distance < shortestDistance) {
-                    shortestDistance = distance;
-                    nearestFoodActor = actor;
+            // This is dumb because there is no priority in the food source
+            for (String actorType : allPossibleFoodActors.keySet()) {
+                for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
+                    double distance = distance(getLocation(world), world.getLocation(actor));
+                    if (distance < shortestDistance) {
+                        shortestDistance = distance;
+                        nearestFoodActor = actor;
+                    }
                 }
             }
         }
@@ -167,6 +164,9 @@ public class Wolf extends Predator {
             }
         }
 
+        for (String at : eatableFoodTypes.get(actorType)) {
+
+        }
 
 
     }
@@ -219,6 +219,7 @@ public class Wolf extends Predator {
 
         if (distance(wolfLocation, wolfGang.denLocation) <= 2 && isOnMap) {
             updateOnMap(world, wolfLocation, false);
+            wolfDen.wolfEnteredDen(this);
         }
         else {
             Location moveToTile = getMoveToTile(world, wolfLocation, wolfGang.denLocation);
@@ -239,6 +240,7 @@ public class Wolf extends Predator {
         }
         Location apperAt = possibleLocations.get(new Random().nextInt(possibleLocations.size()));
         updateOnMap(world, apperAt, true);
+        wolfDen.wolfLeftDen(this);
     }
 
     @Override

@@ -159,7 +159,13 @@ public class CapableSim {
         for (int i = 0; i < simulationSteps; i++){
             double startTime = System.nanoTime();
 
-            if (world.getCurrentTime() == 9){
+            if (world.getCurrentTime() == 4) {
+                Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
+                for (WorldActor actor : Dens) {
+                    ((WolfDen) actor).makeCup(world);
+                }
+            }
+            else if (world.getCurrentTime() == 9){
                 Map<Object, Location> entities = world.getEntities();
                 for (Object entity : entities.keySet()) {
                     if (entity instanceof Animals && entities.get(entity) == null) {
@@ -171,6 +177,7 @@ public class CapableSim {
                 List<Animals> animals = CapableFunc.getAllAnimals(world);
                 animals.forEach(animal -> {animal.almostNight(world);});
             }
+
 
             bushList.forEach(bush -> {
                 bush.trySpawnBerrys(program);
