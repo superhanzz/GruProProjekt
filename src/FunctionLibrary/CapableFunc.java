@@ -73,15 +73,14 @@ public class CapableFunc {
 
     public static List<Animals> getAllAnimals(World world){
         List<Animals> animals = new ArrayList<>();
-
-        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
-        for(Object actor : actors){
-            if(actor instanceof Animals){
-                animals.add((Animals) actor);
+        Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, getAllAnimalTypes(),true);
+        for (String actorType : worldActors.keySet()) {
+            for (WorldActor actor : worldActors.get(actorType)) {
+                if (actor instanceof Animals) {
+                    animals.add((Animals) actor);
+                }
             }
         }
-
-
         return animals;
     }
 
@@ -136,7 +135,6 @@ public class CapableFunc {
             }
         }
 
-        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
         Map<Object, Location> Actors = world.getEntities();
 
         for(Object actor : Actors.keySet()){

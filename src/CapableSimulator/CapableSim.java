@@ -159,11 +159,12 @@ public class CapableSim {
         List<Double> times = new ArrayList<>();
         for (int i = 0; i < simulationSteps; i++){
             double startTime = System.nanoTime();
-            System.out.println(i);
+            //System.out.println(i);
 
             if (world.getCurrentTime() == 4) {
                 Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
                 for (WorldActor actor : Dens) {
+                    System.out.println("TryMate");
                     ((WolfDen) actor).makeCup(world);
                 }
             }
@@ -177,13 +178,11 @@ public class CapableSim {
                 }
                 //CapableFunc.getAllAnimals(world);
 
-                Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, true);
-                for (String key : worldActors.keySet()) {
-                    if (CapableFunc.getAllAnimalTypes().contains(key)) {
-                        if (worldActors.get(key) instanceof Animals)
-                            ((Animals) worldActors.get(key)).almostNight(world);
-                    }
+                List<Animals> animals = CapableFunc.getAllAnimals(world);
+                for (Animals animal : animals) {
+                    animal.almostNight(world);
                 }
+
                 //animals.forEach(animal -> {animal.almostNight(world);});
             }
 
@@ -415,102 +414,6 @@ public class CapableSim {
         return map;
     }
 
-
-
-
-    public Map<String, InputFileStruct> parseInputsFromFile(File file){
-        Map<String, InputFileStruct> map = new HashMap<>();
-
-        try(Scanner sc = new Scanner(file)){
-            worldSize = Integer.parseInt(sc.nextLine());
-
-            while(sc.hasNextLine()){
-                String line = sc.nextLine();    // saves the input line as a string
-                if (line.contains(" ")) {       // Makes sure there is a " " before splitting the line
-                    String[] words = line.split(" ");
-                    String actorType = words[0];
-                    String mapKey = words[0];
-                    // Handles amount to spawn
-                    int minAmount = 0;
-                    int maxAmount = 0;
-                    if (line.contains("-")) {
-                        Pattern pattern = Pattern.compile("(\\d+)-(\\d+)");
-                        Matcher matcher = pattern.matcher(words[1]);
-                        if (matcher.matches()) {
-                            minAmount = Integer.parseInt(matcher.group(1));
-                            maxAmount = Integer.parseInt(matcher.group(2));
-                        }
-                    } else {
-                        minAmount = Integer.parseInt(words[1]);
-                        maxAmount = 0;
-                    }
-
-                    // Handles the case of a static spawn being declared in the input file.
-                    Location staticSpawnLocation = null;
-                    if (line.contains("(") && words.length > 2) {
-                        int x = 0;
-                        int y = 0;
-                        Pattern pattern = Pattern.compile("\\((\\d+),(\\d+)\\)");
-                        Matcher matcher = pattern.matcher(words[2]);
-
-                        if (matcher.matches()) {
-                            x = Integer.parseInt(matcher.group(1));
-                            y = Integer.parseInt(matcher.group(2));
-                        }
-                        staticSpawnLocation = new Location(x, y);
-                    }
-                    boolean isDelayedSpawn = false;
-                    // Handles the case of the return map already contains an entry of the same class.
-                    if (map.containsKey(words[0])) {
-                        isDelayedSpawn = true;
-
-                        // Findes the amount of times the same actory type is present in the map.
-                        int numOfSameActorType = 0;
-                        for (String key : map.keySet()) {
-                            if (map.get(key).actorType == actorType)
-                                numOfSameActorType++;
-                        }
-                        mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
-                    }
-                    InputFileStruct iFS = new InputFileStruct(actorType, minAmount, maxAmount, staticSpawnLocation, isDelayedSpawn);
-
-                    map.put(mapKey, iFS);
-
-                }
-            }
-
-        }
-        catch (Exception e) {
-            System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());
-        }
-
-        return map;
-    }
-
-
-    void setUpDisplayInformation() {
-        DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
-        program.setDisplayInformation(Grass.class, diGrass);
-
-        DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
-        program.setDisplayInformation(Rabbit.class, diRabbit);
-
-        DisplayInformation diWolf = new DisplayInformation(Color.pink, "alpha-wolf");
-        program.setDisplayInformation(Wolf.class, diWolf);
-
-        DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
-        program.setDisplayInformation(Burrow.class, diBurrow);
-
-        DisplayInformation diBear = new DisplayInformation(Color.BLACK, "bear");
-        program.setDisplayInformation(Bear.class, diBear);
-
-        DisplayInformation diBush = new DisplayInformation(Color.cyan, "bush");
-        DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berry");
-        program.setDisplayInformation(BerryBush.class, diBush);
-
-
-    }   
-
     /**
      * Return the amount of the given actor type in the world
      * */
@@ -524,26 +427,6 @@ public class CapableSim {
         for(Object actor : actors){
             if(actorClass.isInstance(actor)) numOfActors++;
         }
-
-        /*
-        switch (actorType){
-            case GRASS:
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
-                }
-                break;
-            case RABBIT:
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
-                }
-                break;
-            case BURROW:
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
-                }
-                break;
-        }
-        */
 
         return numOfActors;
     }
@@ -593,15 +476,9 @@ public class CapableSim {
     }
 
     void onDayNightChange(DayNightStatus dayNightStatus){
-        List<Animals> animals = new ArrayList<>();
-        Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, true);
-        for (String key : worldActors.keySet()) {
-            if (CapableFunc.getAllAnimalTypes().contains(key)) {
-                if (worldActors.get(key) instanceof Animals)
-                    animals.add((Animals) worldActors.get(key));
-            }
-        }
+        List<Animals> animals = CapableFunc.getAllAnimals(world);
         List<WolfDen> wolfDens = new ArrayList<>();
+
         switch (dayNightStatus){
             case DAY:
 
