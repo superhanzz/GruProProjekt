@@ -1,5 +1,9 @@
-package CapableSimulator;
+package Tests;
 
+import CapableSimulator.CapableSim;
+import CapableSimulator.InputFileStruct;
+import CapableSimulator.SpawningAgent;
+import CapableSimulator.WorldUtils;
 import FunctionLibrary.CapableFunc;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
@@ -8,8 +12,6 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +44,9 @@ public class FileReadingTest {
         final String CYAN = "\u001B[36m";
         final String WHITE = "\u001B[37m";
 
+
+
+
         for (String actorType : actorTypes) {
             System.out.printf("Testing for actorType: %5s%s%s.", RED, actorType.toUpperCase(), RESET);
             System.out.println();
@@ -49,7 +54,7 @@ public class FileReadingTest {
             Map<String, Map<String, InputFileStruct>> inputFilesToTest = new HashMap<>();
 
             // Retrieves all the files containing the actor type
-            Map<String, Map<String, InputFileStruct>> allInputs = CapableFunc.getAllInputs(dataFolder);
+            Map<String, Map<String, InputFileStruct>> allInputs = new HashMap<>(); // = CapableFunc.getAllInputs(dataFolder);
             for (String fileName : allInputs.keySet()) {
                 Map<String, InputFileStruct> input = allInputs.get(fileName);
                 for (String key : input.keySet()) {
@@ -66,12 +71,15 @@ public class FileReadingTest {
                 Map<String, InputFileStruct> input = inputFilesToTest.get(fileName);
 
                 // Retrieves the world size and removes it from the inputs map
-                int worldSize = CapableFunc.getWorldSize(input); // Retrieves the world size
+                int worldSize = 0; //CapableFunc.getWorldSize(input); // Retrieves the world size
                 if (worldSize == 0) continue;   // If there was no world size then skip this file
 
                 // Creates the simulation environment
                 World world = new World(worldSize);
                 CapableSim sim = new CapableSim(world, worldSize);
+
+                SpawningAgent  spawningAgent = new SpawningAgent(world);
+                WorldUtils worldUtils = new WorldUtils(world);
 
                 // Creates all the actors of the specified type
                 for (String key : input.keySet()) {
@@ -79,9 +87,9 @@ public class FileReadingTest {
                     InputFileStruct inputFile = input.get(key);
                     if (!inputFile.actorType.equals(actorType)) continue;
 
-                    int preNum = sim.getNumOfActors(actorType);
-                    sim.generateActors2(inputFile, world);
-                    int postNum = sim.getNumOfActors(actorType);
+                    int preNum = worldUtils.getNumOfActors(actorType);
+                    spawningAgent.generateActors(inputFile);
+                    int postNum = worldUtils.getNumOfActors(actorType);
                     int spawnedNum = postNum - preNum;
                     String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
                     //System.out.println(spawnedNum + ",\t ");

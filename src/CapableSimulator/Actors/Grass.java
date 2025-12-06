@@ -1,7 +1,6 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;

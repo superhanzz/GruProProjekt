@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;

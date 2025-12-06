@@ -1,9 +1,7 @@
 package Tests;
 
-import CapableSimulator.Animals;
-import CapableSimulator.CapableSim;
-import CapableSimulator.Wolf;
-import CapableSimulator.WolfGang;
+import CapableSimulator.Actors.Wolf;
+import CapableSimulator.Actors.WolfGang;
 import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -11,10 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
-import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 

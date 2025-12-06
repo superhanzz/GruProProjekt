@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -30,17 +30,36 @@ public class WolfGang {
 
     public void alphaMoved(World world, Location location) {
         for (Wolf npc : NPCs) {
+            if (!world.getEntities().keySet().contains(npc)) return;
+
+
             try {
                 npc.followAlpha(world, location);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println(npc.toString() + " ERROR, message:\t" + e.getMessage());
             }
         }
     }
 
     public void wolfDied(Wolf wolf) {
         if (Alpha == wolf) NPCs.getFirst().promoteToAlpha();
-        else NPCs.remove(wolf);
+        //else NPCs.remove(wolf);
+        System.out.println("Wolf Dead.");
+        //System.out.println("Wolf Dead. Wolf removed from NPC list: " + !NPCs.contains(wolf));
+    }
+
+    public void cleanGangList(World world) {
+        List<Wolf> wolfsToKill = new ArrayList<>();
+        for (Wolf wolf : NPCs) {
+            if (!world.getEntities().keySet().contains(wolf)) {
+                wolfsToKill.add(wolf);
+                System.out.println("Wolf to Killed.");
+            }
+        }
+        for (Wolf wolf : wolfsToKill) {
+            NPCs.remove(wolf);
+            System.out.println(wolf.toString() + " removed.");
+        }
     }
 
     public void setNewAlpha(Wolf alpha) {

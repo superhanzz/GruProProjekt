@@ -1,6 +1,7 @@
 package FunctionLibrary;
 
 import CapableSimulator.*;
+import CapableSimulator.Actors.*;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -39,31 +40,31 @@ public class CapableFunc {
         switch (actorType){
             case "grass":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
+                    if(actor instanceof Grass) numOfActors++;
                 }
                 break;
             case "rabbit":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
+                    if(actor instanceof Rabbit) numOfActors++;
                 }
                 break;
             case "burrow":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
+                    if(actor instanceof Burrow) numOfActors++;
                 }
                 break;
             case "wolf":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Wolf) numOfActors++;
+                    if(actor instanceof Wolf) numOfActors++;
                 }
                 break;
             case "bear":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                    if(actor instanceof Bear) numOfActors++;
                 }
             case "berry":
                 for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
+                    if(actor instanceof Bear) numOfActors++;
                 }
                 break;
         }
@@ -320,7 +321,7 @@ public class CapableFunc {
 
 
 
-    public static Map<String, InputFileStruct> parseInputsFromFile2(File file){
+    /*public static Map<String, InputFileStruct> parseInputsFromFile2(File file){
         if (file == null) return null;      // TODO make exeption or something
 
         Map<String, InputFileStruct> map = new HashMap<>();
@@ -371,12 +372,12 @@ public class CapableFunc {
         }
 
         return map;
-    }
+    }*/
 
     /** Retrieves all the files within the data folder path
      * @param dataFolder The data folder file
      * */
-    public static Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
+   /* public static Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
         Map<File, List<File>> map = new HashMap<>();
 
         //File dataFolder = new File("src/Data");
@@ -390,7 +391,7 @@ public class CapableFunc {
             map.put(file, list);
         }
         return map;
-    }
+    }*/
 
     public static String getInputFileName(File file){
         String fileName = file.getPath();
@@ -400,15 +401,15 @@ public class CapableFunc {
         return fileName.replaceAll(".*/([^/]+)\\.[^/]+$", "$1");
     }
 
-    public static Map<String, Map<String, InputFileStruct>> getAllInputs(File dataFolder) {
+    /*public static Map<String, Map<String, InputFileStruct>> getAllInputs(File dataFolder) {
         if (dataFolder == null) return null;    // TODO make exeption or something
 
         Map<String, Map<String, InputFileStruct>> allInputs = new HashMap<>();
         boolean printAllInputs = false;  // Debug print all entries
 
-        /* Goes through all input files and extracts the file name, and makes an entry in "allInput" map
+        *//* Goes through all input files and extracts the file name, and makes an entry in "allInput" map
          *  Where the file name is the key and the value is a map of all the inputs
-         * */
+         * *//*
         Map<File, List<File>> map = CapableFunc.getAllInputDataFiles(dataFolder);   // Gets all the data files
         for (File folder : map.keySet()) {
             for (File file : map.get(folder)) {
@@ -423,9 +424,9 @@ public class CapableFunc {
         if (printAllInputs) allInputs.forEach((key, value) -> {System.out.printf("%-10s %5d entries%n",  key, value.size());});
 
         return allInputs;
-    }
+    }*/
 
-    public static int getWorldSize(Map<String, InputFileStruct> map) {
+    /*public static int getWorldSize(Map<String, InputFileStruct> map) {
         if (map == null || map.isEmpty()) return 0;
         for (String key : map.keySet()) {
             if (key.contains("#")) {
@@ -439,7 +440,7 @@ public class CapableFunc {
             }
         }
         return 0;
-    }
+    }*/
 
 
 }

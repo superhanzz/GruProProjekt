@@ -1,13 +1,12 @@
 package CapableSimulator;
 
+import CapableSimulator.Actors.*;
 import FunctionLibrary.CapableFunc;
-import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -122,9 +121,9 @@ public class CapableSim {
         world = program.getWorld();
 
         dayNightStatus = world.isDay() ? DayNightStatus.DAY : DayNightStatus.NIGHT;
-
-        //setUpDisplayInformation();
     }
+
+
 
     /**
      * Denne metode runSimulation, er den som kører simuleringen. Her siger den altså at hvis der ikke er givet noget program,
@@ -138,8 +137,10 @@ public class CapableSim {
      */
     public void runSimulation(){
         /* Parses the input file into a map */
-        inputMap = CapableFunc.parseInputsFromFile2(new  File(inputDataFilePath));
-        worldSize = CapableFunc.getWorldSize(inputMap); // Retrieves the world size
+        Parser parser = new Parser();
+        inputMap = parser.parseInputsFromFile2(new  File(inputDataFilePath));
+        worldSize = parser.getWorldSize(inputMap); // Retrieves the world sizeinputMap = CapableFunc.parseInputsFromFile2(new  File(inputDataFilePath));
+
 
         bushList = new ArrayList<>();
 
@@ -159,7 +160,17 @@ public class CapableSim {
         List<Double> times = new ArrayList<>();
         for (int i = 0; i < simulationSteps; i++){
             double startTime = System.nanoTime();
-            //System.out.println(i);
+            /*System.out.println(i);
+
+            Set<WorldActor> wolfs = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolf")), true).get("wolf");
+            Set<WolfGang> wolfGangs = new HashSet<>();
+            for (WorldActor actor : wolfs) {
+                wolfGangs.add(((Wolf) actor).getWolfGang());
+            }
+            for (WolfGang wolfGang : wolfGangs) {
+                wolfGang.cleanGangList(world);
+            }*/
+
 
             if (world.getCurrentTime() == 9){
                 Map<Object, Location> entities = world.getEntities();
@@ -181,7 +192,7 @@ public class CapableSim {
             else if (world.getCurrentTime() == 14) {
                 Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
                 for (WorldActor actor : Dens) {
-                    System.out.println("TryMate");
+                    //System.out.println("TryMate");
                     ((WolfDen) actor).makeCup(world);
                 }
             }
@@ -214,266 +225,7 @@ public class CapableSim {
         System.out.println(averageTime);
     }
 
-    public void delayedSpawns(World world) {
-        Pattern pattern = Pattern.compile("([A-Za-z]+"+actorSpawnCycle+")"); // Makes sure that only actor of the given spawn cycle spawns
-        for (String key :  inputMap.keySet()) {
-            Matcher matcher = pattern.matcher(key);
-            if (matcher.matches()) {
-                generateActors2(inputMap.get(key), world);
-            }
-        }
-        actorSpawnCycle++;
-    }
 
-    public void generateActors2(InputFileStruct iFS, World world){
-        System.out.println(iFS.actorType);
-        Supplier<Actor> actorConstructor = actorConstructorRegistry.get(iFS.actorType);
-        if (actorConstructor == null) {
-            System.out.println("Tried to create an unknown actor: " + iFS.actorType);
-            return;
-        }
-
-
-        if(iFS.actorType.equals("wolf")) {
-            WolfGang gang = null;
-            Wolf alpha = null;
-            for (int i = 0; i < iFS.getSpawnAmount(); i++){
-                Location location = getEmptyTile(world);
-                if (location != null) {
-                    Wolf o = new Wolf(gang, (gang == null));
-                    if (gang == null) alpha = o;
-
-                    if (gang == null) gang = new WolfGang(o);
-                    else gang.addWolfToGang(o);
-                    o.updateOnMap(world, location, true);
-                    //world.setTile(location, o);
-                }
-                else
-                    System.out.println("Failed to create an actor of type " + iFS.actorType);
-                try {
-                    gang.setNewAlpha(alpha);
-                } catch (NullPointerException e) {
-                    System.out.println("Tried to call setNewAlpha on alpha, but 'gang' is null. \t" + e.getMessage());
-                }
-            }
-            return;
-        } else if (iFS.actorType.equals("bear")) {
-            for (int i = 0; i < iFS.getSpawnAmount(); i++){
-                Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
-                if (location != null) {
-                    Bear b = new Bear(iFS.staticSpawnLocation != null ? iFS.staticSpawnLocation : location);
-                    world.setTile(location, b);
-                }
-                else
-                    System.out.println("Failed to create an actor of type " + iFS.actorType);
-            }
-            return;
-        }
-        else if (iFS.actorType.equals("berry")) {
-            for (int i = 0; i < iFS.getSpawnAmount(); i++){
-                Location location = (iFS.staticSpawnLocation != null) ? iFS.staticSpawnLocation : getEmptyTile(world);
-                if (location != null) {
-                    BerryBush b = new BerryBush();
-                    bushList.add(b);
-                    world.setTile(location, b);
-                }
-                else
-                    System.out.println("Failed to create an actor of type " + iFS.actorType);
-            }
-            return;
-        }
-        for (int i = 0; i < iFS.getSpawnAmount(); i++){
-            Location location = getEmptyTile(world);
-            if (location != null) {
-                Object o = actorConstructor.get();
-                world.setTile(location, o);
-            }
-            else
-                System.out.println("Failed to create an actor of type " + iFS.actorType);
-        }
-
-
-    }
-
-    public void generateActors(String actorType, int amount, World world){
-        Supplier<Actor> actorConstructor = actorConstructorRegistry.get(actorType);
-        if (actorConstructor == null) {
-            System.out.println("Tried to create an unknown actor: " + actorType);
-            return;
-        }
-        if(actorType.equals("wolf")) {
-            Set<Actor> wolfs = new HashSet<>();
-            for (int i = 0; i < amount; i++){
-                Location location = getEmptyTile(world);
-                if (location != null) {
-                    Wolf o = new Wolf(wolfs);
-                    wolfs.add(o);
-                    world.setTile(location, o);
-                }
-                else
-                    System.out.println("Failed to create an actor of type " + actorType);
-            }
-            return;
-        }
-        for (int i = 0; i < amount; i++){
-            Location location = getEmptyTile(world);
-            if (location != null) {
-                Object o = actorConstructor.get();
-                world.setTile(location, o);
-            }
-            else
-                System.out.println("Failed to create an actor of type " + actorType);
-        }
-
-        /*
-        switch (actorType){
-            case "grass":
-                for(int i = 0; i < amount; i++) {
-                    Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new CapableSimulator.Grass());
-                    else System.out.println("Failed to create an actor of type " + actorType);
-                };
-                break;
-
-            case "rabbit":
-                for(int i = 0; i < amount; i++) {
-                    Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new CapableSimulator.Rabbit());
-                    else System.out.println("Failed to create an actor of type " + actorType);
-                };
-                break;
-
-            case "burrow":
-                for(int i = 0; i < amount; i++) {
-                    Location location = getEmptyTile(world);
-                    if (location != null) world.setTile(location, new CapableSimulator.Burrow());
-                    else System.out.println("Failed to create an actor of type " + actorType);
-                };
-                break;
-
-            default:
-                System.out.println("Tried to create an unknown actor: "  + actorType);
-                break;
-        }
-        */
-    }
-
-    Location getEmptyTile(World world){
-        //TODO Make this function chose between the free tiles in the world, by generating a map symbolizing all the possible tiles and then subtracting all entities, and chosing a random tile from the remaining.
-
-        Random rand = new Random();
-        boolean isEmpty = false;
-        Location emptyTile = null;
-        int loopCounter = 0;
-
-        /* Tries to find an empty tile in the world. If it attempts more than a certain amount of times without success, it breaks and returns null */
-        while(!isEmpty){
-            emptyTile = new Location(rand.nextInt(worldSize - 1), rand.nextInt(worldSize - 1));
-            isEmpty = world.getTile(emptyTile) == null;
-
-            if(loopCounter >= 100) {
-                System.out.println("Couldn't find empty tile");
-                break;
-            }
-            loopCounter++;
-        }
-
-        return emptyTile ;
-    }
-
-    public Map<String, Integer> parseInputFile(String path){
-        Map<String, Integer> map = new HashMap<>();
-        File inputFile = new File(path);
-        int debugLine = 0;
-
-        try(Scanner sc = new Scanner(inputFile)){
-
-            worldSize = Integer.parseInt(sc.nextLine()); // The First line is always the world size
-
-            /** Iterates though each line of the input file and parses the line into the map<String, Integer> **/
-            while(sc.hasNextLine()){
-                String line = sc.nextLine();
-                if (line.isEmpty()) break;
-
-                String[] Words = line.split(" ");
-                if (map.containsKey(Words[0])) throw new RuntimeException("paraseInputFile() read the same identifier more than once: " + Words[0]);
-
-                /* If the quantity is between 2 values, it generates a random number between the 2 */
-                if (Words[1].contains("-")) {
-                    Random rand = new Random();
-                    String[] interval = Words[1].split("-");
-                    Words[1] = Integer.toString(rand.nextInt(Integer.parseInt(interval[0]), Integer.parseInt(interval[1])));
-                }
-
-                map.put(Words[0], Integer.parseInt(Words[1]));
-            }
-        }catch(Exception e){
-            System.out.println("Exception on line: " + debugLine + "   " + e.getMessage());
-        }
-
-        return map;
-    }
-
-    /**
-     * Return the amount of the given actor type in the world
-     * */
-    public int getNumOfActors(ActorTypes actorType) {
-        int numOfActors = 0;
-        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
-
-        Class<? extends Actor> actorClass = actorClassTypes.get(actorType); // retrieves the "Class".class for the given class
-        if (actorClass == null) return 0;
-
-        for(Object actor : actors){
-            if(actorClass.isInstance(actor)) numOfActors++;
-        }
-
-        return numOfActors;
-    }
-
-    public int getNumOfActors(String actorType) {
-        int numOfActors = 0;
-        Object[] actors = world.getEntities().keySet().toArray(new Object[0]);
-
-        switch (actorType){
-            case "grass":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Grass) numOfActors++;
-                }
-                break;
-            case "rabbit":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Rabbit) numOfActors++;
-                }
-                break;
-            case "burrow":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Burrow) numOfActors++;
-                }
-                break;
-            case "wolf":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Wolf) numOfActors++;
-                }
-                break;
-            case "bear":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
-                }
-            case "berry":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Bear) numOfActors++;
-                }
-                break;
-            case "putin":
-                for(Object actor : actors){
-                    if(actor instanceof CapableSimulator.Putin) numOfActors++;
-                }
-                break;
-        }
-
-        return numOfActors;
-    }
 
     void onDayNightChange(DayNightStatus dayNightStatus){
         List<Animals> animals = CapableFunc.getAllAnimals(world);

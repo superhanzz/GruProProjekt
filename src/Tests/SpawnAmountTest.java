@@ -1,13 +1,13 @@
 package Tests;
 
 import CapableSimulator.CapableSim;
-import CapableSimulator.Grass;
+import CapableSimulator.Actors.Grass;
+import CapableSimulator.WorldUtils;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
 
@@ -121,26 +121,11 @@ public class SpawnAmountTest {
             }
             // Executes generateActor() within the CapableSim instans. The filepath is needed here to use the pareInputFile() method wherein the amount of the actor type class' is decided.
             //sim.generateActors2(sim.parseInputsFromFile());
-            sim.generateActors(actorType, sim.parseInputFile(filePath).get(actorType), world);
+            //sim.generateActors(actorType, sim.parseInputFile(filePath).get(actorType), world);
 
-            // Converts the actorType (String) to actorType (enum) which is needed to get the number of the given actor in the world.
-            CapableSim.ActorTypes type;
-            switch (actorType){
-                case "grass":
-                     type = CapableSim.ActorTypes.GRASS;
-                    break;
-                case "rabbit":
-                    type = CapableSim.ActorTypes.RABBIT;
-                    break;
-                case "burrow":
-                    type = CapableSim.ActorTypes.BURROW;
-                    break;
-                default:
-                    return;
-            }
 
             // Retrieves the number of actor in the world by the given actorType.
-            int numOfActors = sim.getNumOfActors(type);
+            int numOfActors = new WorldUtils(world).getNumOfActors(actorType);
 
             if (interval.max != 0) { // If the input file specified the amount as an interval.
                 assertions.put(s, ((numOfActors >= interval.min)  && (numOfActors <= interval.max)));   // Creates an entry in the assertions map where the file name is the key, and the value is a boolean representing whether the amount of actors is within the interval

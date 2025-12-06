@@ -1,15 +1,13 @@
 package Tests;
 
 
-import CapableSimulator.Grass;
-import CapableSimulator.Rabbit;
+import CapableSimulator.Actors.Grass;
+import CapableSimulator.Actors.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

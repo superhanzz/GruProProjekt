@@ -1,5 +1,6 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
+import CapableSimulator.CapableSim;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
@@ -156,8 +157,10 @@ public abstract class Animals extends WorldActor {
     protected abstract List<WorldActor> findFoodFromSource(World world, Location[] neighbours);
 
     protected void kill(World world, WorldActor actor) {
-        Location goTo = this.getClosestTile(world, world.getLocation(actor));
-        world.move(this, goTo);
+        if (Math.ceil(distance(getLocation(world), world.getLocation(actor))) != 1) {
+            Location goTo = this.getClosestTile(world, world.getLocation(actor));
+            world.move(this, goTo);
+        }
         Carcass carcass = null;
         if(actor instanceof Animals){
             carcass = ((Animals) actor).makeCarcass(world);
@@ -171,7 +174,7 @@ public abstract class Animals extends WorldActor {
 
     public Carcass makeCarcass(World world) {
         Location location = getLocation(world);
-        world.delete(this);
+        die(world);
         Carcass carcass = new Carcass(this.energy, this.animalSize);
         world.setTile(location, carcass);
         System.out.println("Carcass has been created");
@@ -270,7 +273,6 @@ public abstract class Animals extends WorldActor {
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
         return distance;
     }
-
 
     protected void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
         if (axis == 0) {       // no movement on the given axis

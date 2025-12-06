@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;

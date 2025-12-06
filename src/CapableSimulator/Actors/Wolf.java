@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Actors;
 
 import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
@@ -14,7 +14,7 @@ public class Wolf extends Predator {
 
     //the pack that the wolf is part of
     //Set<Actor> wolfGang;
-    WolfGang wolfGang;
+    protected WolfGang wolfGang;
 
     protected Wolf alpha;
     protected WolfDen wolfDen;
@@ -204,7 +204,58 @@ public class Wolf extends Predator {
         Location moveToLocation = getMoveToTile(world, wolfLocation, alphaLocation);
         if (moveToLocation != null) world.move(this, moveToLocation);
         else move(world);
+        List<Wolf> enemies = new ArrayList<>();
+        /*if (lookForWolf(world, enemies)) {
+            System.out.println(this.toString() + " wolf is attacking");
+            attackEnemy(world, enemies.getFirst());
+        }
+        else lookForFood(world, 1);*/
         lookForFood(world, 1);
+    }
+
+    protected boolean lookForWolf(World world, List<Wolf> enemyWolfs) {
+        List<Wolf> surroundingWolfs = new ArrayList<>();
+        Set<Location> neighbors = world.getSurroundingTiles(getLocation(world));
+        for (Location l : neighbors) {
+            Object o = world.getTile(l);
+            if (o instanceof Wolf) {
+                surroundingWolfs.add((Wolf) o);
+            }
+        }
+        if (surroundingWolfs.isEmpty()) return false;
+        for (Wolf wolf : surroundingWolfs) {
+            if (wolf.getWolfGang() != wolfGang) enemyWolfs.add(wolf);
+        }
+
+        return !enemyWolfs.isEmpty();
+    }
+
+    protected void attackEnemy(World world, Wolf enemy) {
+        double winChance = 0.0;
+        if (animalSize.equals(AnimalSize.ADULT)) {
+
+            if (wolfType.equals(WolfType.ALPHA)) {
+                if (enemy.isAlpha() && enemy.isAnimalAdult()) winChance = 0.5;
+                else if (enemy.isAlpha() && !enemy.isAnimalAdult()) winChance = 0.75;
+                else if (!enemy.isAlpha() && enemy.isAnimalAdult()) winChance = 0.75;
+                else winChance = 1;
+            }
+            else {
+                if (enemy.isAlpha() && enemy.isAnimalAdult()) winChance = 0.0;
+                else if (enemy.isAlpha() && !enemy.isAnimalAdult()) winChance = 0.5;
+                else if (!enemy.isAlpha() && enemy.isAnimalAdult()) winChance = 0.5;
+                else winChance = 0.75;
+            }
+
+        }
+        else return;
+
+        if (new Random().nextDouble() < winChance) {
+            kill(world, enemy);
+        }
+        else {
+            makeCarcass(world);
+        }
     }
 
 
@@ -339,6 +390,10 @@ public class Wolf extends Predator {
         displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.BABY, new DisplayInformation(Color.pink, "wolf-small-sleeping"));
         displayInformations.get(AnimalState.SLEEPING).put(AnimalSize.ADULT, new DisplayInformation(Color.magenta, "wolf-sleeping"));
     }
+
+    public WolfGang getWolfGang() {return wolfGang;}
+
+    public boolean isAlpha() {return wolfType.equals(WolfType.ALPHA);}
 
     @Override
     public DisplayInformation getInformation() {

@@ -1,7 +1,7 @@
 package Tests;
 
-import CapableSimulator.Burrow;
-import CapableSimulator.Rabbit;
+import CapableSimulator.Actors.Burrow;
+import CapableSimulator.Actors.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
