@@ -1,7 +1,11 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.*;
+import FunctionLibrary.CapableFunc;
+import itumulator.world.Location;
 import itumulator.world.World;
+
+import java.util.*;
 
 public class WorldUtils {
 
@@ -50,5 +54,117 @@ public class WorldUtils {
         return numOfActors;
     }
 
+
+
+    public List<Animals> getAllAnimals(){
+        List<Animals> animals = new ArrayList<>();
+        Map<String , Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, getAllAnimalTypes(),true);
+        for (String actorType : worldActors.keySet()) {
+            for (WorldActor actor : worldActors.get(actorType)) {
+                if (actor instanceof Animals) {
+                    animals.add((Animals) actor);
+                }
+            }
+        }
+        return animals;
+    }
+
+    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, with no filter
+     * */
+    public Map<String, Set<WorldActor>> getAllWorldActorsAsMap() {
+        return getAllWorldActorsAsMap(null, false);
+    }
+
+    public Map<String, Set<WorldActor>> getAllWorldActorsAsMap(List<String> filter) {
+        return getAllWorldActorsAsMap(filter, false);
+    }
+
+    public Map<String, Set<WorldActor>> getAllWorldActorsAsMap(boolean onlyActorsOnMap) {
+        return getAllWorldActorsAsMap(null, onlyActorsOnMap);
+    }
+
+    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, filtered
+     * */
+    public Map<String, Set<WorldActor>> getAllWorldActorsAsMap(List<String> filter, boolean onlyActorsOnMap) {
+        Map<String, Set<WorldActor>> allActorsInWorld = new HashMap<>();
+
+        // Prepares the return map
+        for(String actorType : getAllWorldActorTypes()){
+
+            // filters if there is a filter
+            if (filter == null || filter.contains(actorType)) {
+                allActorsInWorld.put(actorType, new HashSet<>());
+                //System.out.println(actorType);
+            }
+        }
+
+        Map<Object, Location> Actors = world.getEntities();
+
+        for(Object actor : Actors.keySet()){
+            String actorType = "";
+
+            if (Actors.get(actor) != null || !onlyActorsOnMap) {
+
+                /* If the filter is not empty the actors actorType is retrieved */
+                if (filter != null) {
+                    if (actor instanceof WorldActor) {
+                        actorType = ((WorldActor) actor).getActorType();
+                        //System.out.println(actor.toString() + ": " + actorType);
+                    }
+                }
+
+                /* filters the actors if there is a filter */
+                if (filter == null || filter.contains(actorType)) {
+                    //if (filter != null) System.out.println(actorType);
+
+                    switch (actor) {
+                        case Wolf w -> allActorsInWorld.get("wolf").add(w);
+                        case Rabbit r -> allActorsInWorld.get("rabbit").add(r);
+                        case Bear b -> allActorsInWorld.get("bear").add(b);
+                        case Grass g -> allActorsInWorld.get("grass").add(g);
+                        case BerryBush b -> allActorsInWorld.get("berryBush").add(b);
+                        case Burrow b -> allActorsInWorld.get("burrow").add(b);
+                        case Putin p -> allActorsInWorld.get("putin").add(p);
+                        case WolfDen w -> allActorsInWorld.get("wolfDen").add(w);
+                        default -> {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //System.out.println("Number of food sources: " + allActorsInWorld.size());
+        //System.out.println();
+        return  allActorsInWorld;
+    }
+
+
+
+
+    /* ----- ----- ----- ----- ----- ----- ----- */
+    // TODO find the correct place for these methods
+
+    /* Not the final place for this */
+    public static List<String> getAllWorldActorTypes() {
+        List<String> actorTypes = new ArrayList<>();
+        actorTypes.add("grass");
+        actorTypes.add("rabbit");
+        actorTypes.add("bear");
+        actorTypes.add("berry");
+        actorTypes.add("wolf");
+        actorTypes.add("burrow");
+        actorTypes.add("wolfDen");
+        actorTypes.add("putin");
+        return actorTypes;
+    }
+    /* Not the final place for this */
+    public static List<String> getAllAnimalTypes() {
+        List<String> actorTypes = new ArrayList<>();
+        actorTypes.add("rabbit");
+        actorTypes.add("bear");
+        actorTypes.add("wolf");
+        actorTypes.add("putin");
+        return actorTypes;
+    }
 
 }

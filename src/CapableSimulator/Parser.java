@@ -21,7 +21,9 @@ public class Parser {
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
             int worldSize = Integer.parseInt(sc.nextLine());
-            System.out.println(worldSize);
+
+            //System.out.println(worldSize);
+
             map.put(new String("#" + String.valueOf(worldSize) + "#"), null);
 
             lineNumber++;   // Debug line number
@@ -114,17 +116,20 @@ public class Parser {
 
     public static int getWorldSize(Map<String, InputFileStruct> map) {
         if (map == null || map.isEmpty()) return 0;
+        String worldSizeKey = null;
+
         for (String key : map.keySet()) {
             if (key.contains("#")) {
                 Pattern pattern = Pattern.compile("\\#(\\d+)\\#");  // Regular expression that accepts Strings of the form "#<integer>#"
                 Matcher matcher = pattern.matcher(key);
                 if (matcher.matches()) {
-                    //System.out.println(matcher.group(1));
-                    //worldSizeKey = key;
+                    System.out.println("DEBUG in getWorldSize(), in Parser. \tWorld Size: " + matcher.group(1));
+                    worldSizeKey = key;
                     return Integer.parseInt(matcher.group(1));
                 }
             }
         }
+        map.remove(worldSizeKey);
         return 0;
     }
 }

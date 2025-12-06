@@ -5,6 +5,10 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +21,15 @@ public class SpawningAgent {
         this.world = world;
     }
 
-    public void generateActors(InputFileStruct fileStruct){
+    public void generateActors(InputFileStruct fileStruct) {
+        List<WorldActor> actors = new ArrayList<>();
+        generateActors(fileStruct, actors);
+    }
+
+    public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
         TileFinder tileFinder = new TileFinder();
 
+        // TODO eval if list should be used for all types of actors
         switch (fileStruct.actorType){
             case "wolf":
                 WolfGang gang = null;
@@ -33,6 +43,9 @@ public class SpawningAgent {
                         if (gang == null) gang = new WolfGang(o);
                         else gang.addWolfToGang(o);
                         o.updateOnMap(world, location, true);
+
+
+                        listOfActors.add(o);
                     }
                     else
                         System.out.println("Failed to create an actor of type " + fileStruct.actorType);
@@ -50,6 +63,8 @@ public class SpawningAgent {
                     if (location != null) {
                         Rabbit r = new Rabbit();
                         r.updateOnMap(world, location, true);
+
+                        listOfActors.add(r);
                     }
                 }
                 break;
@@ -60,6 +75,8 @@ public class SpawningAgent {
                     if (location != null) {
                         Bear b = new Bear(fileStruct.staticSpawnLocation != null ? fileStruct.staticSpawnLocation : location);
                         world.setTile(location, b);
+
+                        listOfActors.add(b);
                     }
                     else
                         System.out.println("Failed to create an actor of type " + fileStruct.actorType);
@@ -72,16 +89,20 @@ public class SpawningAgent {
                     if (location != null) {
                         Putin p = new Putin();
                         p.updateOnMap(world, location, true);
+
+                        listOfActors.add(p);
                     }
                 }
                 break;
 
             case "grass":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, false);
                     if (location != null) {
                         Grass g = new Grass();
                         world.setTile(location, g);
+
+                        listOfActors.add(g);
                     }
                 }
                 break;
@@ -91,8 +112,9 @@ public class SpawningAgent {
                     Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         BerryBush b = new BerryBush();
-                        bushList.add(b);
                         world.setTile(location, b);
+
+                        listOfActors.add(b);
                     }
                     else
                         System.out.println("Failed to create an actor of type " + fileStruct.actorType);
@@ -101,10 +123,12 @@ public class SpawningAgent {
 
             case "burrow":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, false);
                     if (location != null) {
                         Burrow b = new Burrow();
                         world.setTile(location, b);
+
+                        listOfActors.add(b);
                     }
                 }
                 break;
@@ -112,18 +136,47 @@ public class SpawningAgent {
             default:
                 break;
         }
+
     }
 
-    public void delayedSpawns(World world) {
-        Pattern pattern = Pattern.compile("([A-Za-z]+"+actorSpawnCycle+")"); // Makes sure that only actor of the given spawn cycle spawns
+    public Map<String, List<WorldActor>> handleSpawnCycle(Map<String, InputFileStruct> inputMap, boolean isInitSpawns) {
+        if (inputMap == null || inputMap.isEmpty()) {
+            String errorType = "";
+            if (inputMap == null) errorType = "null";
+            else errorType = "empty";
+
+            throw new NullPointerException("In handleSpawnCycle(): inputMap is " + errorType);
+        }
+
+        // TODO maybe the list could be something like 'Class<? extends Actor>' if at all possible
+        Map<String, List<WorldActor>> worldActorsSpawned = new HashMap<>();
+
+        // Sets the pattern filter to filter the entries by
+        Pattern pattern;
+        if (isInitSpawns) {
+            System.out.println("Init Spawns:");
+            pattern = Pattern.compile("([A-Za-z]+)");
+        }
+        else {
+            System.out.println("Delayed Spawns:");
+            pattern = Pattern.compile("([A-Za-z]+\\d)");
+        }
+
+        // Iterates though all the entries of the input map and spawns all the actors of the specified type, and adding the list of actors to the return map
         for (String key :  inputMap.keySet()) {
-            Matcher matcher = pattern.matcher(key);
+            Matcher matcher = pattern.matcher(key); // filters the entries
             if (matcher.matches()) {
-                generateActors2(inputMap.get(key), world);
+                InputFileStruct input = inputMap.get(key);
+                List<WorldActor> spawnedActors = new ArrayList<>();
+
+                generateActors(input, spawnedActors);   // spawns the actors
+                worldActorsSpawned.put(input.actorType, spawnedActors); // adds the list of spawned actors to the return map
             }
         }
-        actorSpawnCycle++;
+
+        return worldActorsSpawned;
     }
+
 
 
 
