@@ -1,5 +1,7 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.SpawningAgent;
+import CapableSimulator.TileFinder;
 import CapableSimulator.WorldUtils;
 import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
@@ -98,6 +100,8 @@ public class Wolf extends Predator {
     //Act method implemented from Actor, every step the wolf is updated and methods are called.
     @Override
     public void act(World world){
+        if (dead) return;
+
         if (world.isNight()) {
             if (isOnMap) goIntoDen(world);
             else {
@@ -157,7 +161,7 @@ public class Wolf extends Predator {
             // This is dumb because there is no priority in the food source
             for (String actorType : allPossibleFoodActors.keySet()) {
                 for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                    double distance = distance(getLocation(world), world.getLocation(actor));
+                    double distance = distance(getLocation(), world.getLocation(actor));
                     if (distance < shortestDistance) {
                         shortestDistance = distance;
                         nearestFoodActor = actor;
@@ -176,7 +180,7 @@ public class Wolf extends Predator {
         for (String actorType : allPossibleFoodActors.keySet()) {
             distances.put(actorType, Double.MAX_VALUE);
             for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                double distance = distance(getLocation(world), world.getLocation(actor));
+                double distance = distance(getLocation(), world.getLocation(actor));
                 if (distance < distances.get(actorType)) {
                     distances.put(actorType, distance);
                     nearestPreyActors.put(actorType, new PreyDist(actor, distance));
@@ -192,9 +196,9 @@ public class Wolf extends Predator {
     }
 
     public void followAlpha(World world, Location alphaLocation) {
-        if (!isOnMap) return;
+        if (!isOnMap || dead) return;
 
-        Location wolfLocation = world.getLocation(this);
+        Location wolfLocation = getLocation();
         double distance =distance(wolfLocation, alphaLocation);
 
 
@@ -205,31 +209,22 @@ public class Wolf extends Predator {
         Location moveToLocation = getMoveToTile(world, wolfLocation, alphaLocation);
         if (moveToLocation != null) world.move(this, moveToLocation);
         else move(world);
-        List<Wolf> enemies = new ArrayList<>();
-        /*if (lookForWolf(world, enemies)) {
-            System.out.println(this.toString() + " wolf is attacking");
-            attackEnemy(world, enemies.getFirst());
-        }
-        else lookForFood(world, 1);*/
-        lookForFood(world, 1);
-    }
-
-    protected boolean lookForWolf(World world, List<Wolf> enemyWolfs) {
-        List<Wolf> surroundingWolfs = new ArrayList<>();
-        Set<Location> neighbors = world.getSurroundingTiles(getLocation(world));
-        for (Location l : neighbors) {
-            Object o = world.getTile(l);
-            if (o instanceof Wolf) {
-                surroundingWolfs.add((Wolf) o);
+        List<Predator> enemies = new ArrayList<>();
+        if (lookForEnemy(enemies, 1)) {
+            Wolf enemy = null;
+            for (Predator p : enemies) {
+                if (p instanceof Wolf w) {
+                    enemy = w;
+                }
             }
-        }
-        if (surroundingWolfs.isEmpty()) return false;
-        for (Wolf wolf : surroundingWolfs) {
-            if (wolf.getWolfGang() != wolfGang) enemyWolfs.add(wolf);
-        }
+            if (enemy == null) return;
 
-        return !enemyWolfs.isEmpty();
+            System.out.println(this + " wolf is attacking");
+            attackEnemy(world, enemy);
+        }
+        else lookForFood(world, 1);
     }
+
 
     protected void attackEnemy(World world, Wolf enemy) {
         double winChance = 0.0;
@@ -273,20 +268,31 @@ public class Wolf extends Predator {
 
 
     private void digWolfDen(World world) {
+        Object nonBlocking = world.getNonBlocking(getLocation());
+        if (nonBlocking != null) {
+            if (nonBlocking instanceof Burrow || nonBlocking instanceof WolfDen) return;
+            else world.delete(nonBlocking);
+        }
         wolfDen = new WolfDen(wolfGang);
-        Object nonBlocking = world.getNonBlocking(getLocation(world));
-        if (nonBlocking != null) world.delete(nonBlocking);
-        world.setTile(world.getLocation(this), wolfDen);
+        new SpawningAgent(world).spawnActorAtLocation(wolfDen, getLocation());
         wolfGang.wolfDenCreated(world, wolfDen);
     }
 
+
     public void setWolfDen(WolfDen wolfDen) {
-        this.wolfDen = this.wolfDen ==  null ? wolfDen : this.wolfDen;
+        if (wolfDen == null) {
+            throw new NullPointerException("In SetWolfDen(): WolfDen is null");
+        }
+        if (this.wolfDen != null) {
+            System.out.println("setWolfDen(): WolfDen is already set");
+            return;
+        }
+        this.wolfDen = wolfDen;
     }
 
     protected void goIntoDen(World world) {
         if (wolfGang.denLocation == null) return;
-        Location wolfLocation = getLocation(world);
+        Location wolfLocation = getLocation();
 
         if (distance(wolfLocation, wolfGang.denLocation) <= 2 && isOnMap) {
             updateOnMap(world, wolfLocation, false);
@@ -297,20 +303,17 @@ public class Wolf extends Predator {
             if (moveToTile != null) world.move(this, moveToTile);
         }
 
-        if (isOnMap && world.getCurrentTime() == 19) System.out.println(distance(wolfLocation, wolfGang.denLocation));
-
+        //if (isOnMap && world.getCurrentTime() == 19) System.out.println(distance(wolfLocation, wolfGang.denLocation));
     }
 
     protected void exitDen(World world) {
         if (wolfGang == null && wolfGang.denLocation == null) return;
 
-        List<Location> possibleLocations = new ArrayList<>(world.getEmptySurroundingTiles(wolfGang.denLocation));
-        if (possibleLocations.isEmpty()) {
-            //System.out.println("No tiles found");
-            return;
-        }
-        Location apperAt = possibleLocations.get(new Random().nextInt(possibleLocations.size()));
-        updateOnMap(world, apperAt, true);
+        TileFinder tileFinder = new TileFinder(world);
+        Location spawnAt = tileFinder.getEmptyTileAroundActor(wolfDen, true);
+        if (spawnAt == null) return;
+
+        updateOnMap(world, spawnAt, true);
         wolfDen.wolfLeftDen(this);
     }
 
@@ -318,6 +321,7 @@ public class Wolf extends Predator {
     public void die(World world) {
         wolfGang.wolfDied(this);
         world.delete(this);
+        dead = true;
     }
 
     @Override
@@ -406,4 +410,19 @@ public class Wolf extends Predator {
 
         return di;
     }
+
+    @Override
+    protected boolean isAnimalEnemy(Predator possibleEnemy) {
+        if (possibleEnemy instanceof Wolf wolf) {
+            return (wolf.getWolfGang() != this.wolfGang);
+        }
+        else if (possibleEnemy instanceof Bear){
+            List<Wolf> nearbyWolfsFromGang = new ArrayList<>();
+            wolfGang.getNearbyWolfsFromGang(this, nearbyWolfsFromGang);
+
+            return nearbyWolfsFromGang.size() >= 3;
+        }
+        return false;
+    }
+
 }

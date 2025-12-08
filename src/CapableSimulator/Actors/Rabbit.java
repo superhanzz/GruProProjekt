@@ -1,5 +1,7 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.SpawningAgent;
+import CapableSimulator.TileFinder;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -185,11 +187,19 @@ public class Rabbit extends Animals {
         if (mate.age < matingAge) return;
         if (mate.matingCooldown > 0) return;
 
+
+        // Findes empty location around this rabbit
+        TileFinder tileFinder = new TileFinder(world);
+        Location offSpringLocation = tileFinder.getEmptyTileAroundActor(this, false);
+        if (offSpringLocation == null) return;
+
         // makes new rabbit
         Rabbit offSpring = new Rabbit();
-        Location[] possibleSpawns = world.getEmptySurroundingTiles(world.getLocation(this)).toArray(new Location[0]);
-        Location offSpringLocation = possibleSpawns[new Random().nextInt(possibleSpawns.length)];
-        offSpring.updateOnMap(world, offSpringLocation, true);
+
+        // Spawn offspring at location
+        SpawningAgent spawningAgent = new SpawningAgent(world);
+        spawningAgent.spawnActorAtLocation(offSpring,  offSpringLocation);
+
         mate.matingCooldown = 20;
         matingCooldown = 20;
     }
@@ -262,6 +272,7 @@ public class Rabbit extends Animals {
         }
 
         burrow = new Burrow(this);
+        new SpawningAgent(world).spawnActorAtLocation(burrow, getLocation());   // spawns the burrow on the map
         world.setTile(world.getLocation(this), burrow);
         burrowLocation = world.getLocation(this);
 

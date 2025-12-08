@@ -88,4 +88,17 @@ public class Bear extends Predator {
     public DisplayInformation getInformation() {
         return diBear;
     }
+
+    @Override
+    protected boolean isAnimalEnemy(Predator possibleEnemy) {
+        if (possibleEnemy instanceof Wolf wolf) {
+            List<Wolf> nearbyWolfs = new ArrayList<>();
+            wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
+            return nearbyWolfs.size() < 3;
+        }
+        else if (possibleEnemy instanceof Bear){
+            return (age > matingAge && matingCooldown <= 0);
+        }
+        return false;
+    }
 }

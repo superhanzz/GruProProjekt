@@ -57,6 +57,11 @@ public class CapableSim {
         NIGHT;
     }
 
+    private static final int time_JustBeforeNight = 9;
+    private static final int time_WolfMatingTime = 14;
+    private static final int time_NightFall = 10;
+    private static final int time_DayBreak = 0;
+
 
     /* A map of all the Actor's constructors, though lambda's */
     private static final Map<String, Supplier<Actor>> actorConstructorRegistry = new HashMap<>();
@@ -165,17 +170,12 @@ public class CapableSim {
 
         /* Parses the input file into a map */
         Parser parser = new Parser();
-        inputMap = parser.parseInputsFromFile2(new  File(inputDataFilePath));
+        inputMap = parser.parseInputsFromFile(new  File(inputDataFilePath));
         worldSize = parser.getWorldSize(inputMap); // Retrieves the world size and removes that entry from the input map
-
-
-
 
         if (program == null) {
             setupSimulation();
         }
-
-
 
         // Spawns all the actors specified in the input file, it only spawns the first entry of a given actor type
         Map<String, List<WorldActor>> allSpawnedActors;
@@ -183,31 +183,21 @@ public class CapableSim {
         initWorldActorContainer(allSpawnedActors);
 
 
-
-
         EventListener<Void> dis_Start = this::startSim;
         simStepDispacher.addEventListener(dis_Start);
 
-
         program.show();
+        program.run();
         if (false) {
-
-
-            // Actual simulation
-
-            List<Double> times = new ArrayList<>();
-            for (int i = 0; i < simulationSteps; i++) {
-                double startTime = System.nanoTime();
-
-                simulationStep();
-
-                double endTime = System.nanoTime();
-                times.add((endTime - startTime) / 1000000.0);
-            }
-
             // timer thing
+            /*
+            List<Double> times = new ArrayList<>();
+            double startTime = System.nanoTime();
+            double endTime = System.nanoTime();
+            times.add((endTime - startTime) / 1000000.0);
             double averageTime = times.stream().mapToDouble(Double::doubleValue).sum() / times.size();  // Calculates the average time of a simulation step
             System.out.println(averageTime);
+            */
         }
     }
 
@@ -222,38 +212,46 @@ public class CapableSim {
                 }
             }
         }
+
         updateWorldActorContainer();    // Should be first to be executed on each simulation step
         //System.out.println(simulator.getSteps()); // prints the current simulation step
 
+        switch (world.getCurrentTime()) {
+            case time_DayBreak:
+                dayNightStatus = DayNightStatus.DAY;
+                onDayNightChange();
+                break;
 
-        if (world.getCurrentTime() == 9){
-            Map<Object, Location> entities = world.getEntities();
+            case time_NightFall:
+                dayNightStatus = DayNightStatus.NIGHT;
+                onDayNightChange();
+                break;
 
-            for (String key : worldActorContainer.keySet()) {
-                if (CapableFunc.getAllAnimalTypes().contains(key)) {
-                    for (WorldActor actor : worldActorContainer.get(key)) {
-                        if (entities.containsKey(actor) && entities.get(actor) == null) {
-                            //world.delete(entity);
-                            //System.out.println("Removed entity" + entity);
+            case time_JustBeforeNight:
+                // checks if animals doesn't apper to return onto the map on day break. deletes animal
+                if (false) {
+                    Map<Object, Location> entities = world.getEntities();
+                    for (String key : worldActorContainer.keySet()) {
+                        if (CapableFunc.getAllAnimalTypes().contains(key)) {
+                            for (WorldActor actor : worldActorContainer.get(key)) {
+                                if (entities.containsKey(actor) && entities.get(actor) == null) {
+                                    world.delete(actor);
+                                    System.out.println("Removed entity" + actor);
+                                }
+                            }
                         }
                     }
                 }
-            }
-            //CapableFunc.getAllAnimals(world);
+                // Handles the events surrounding it almost beeing night
+                onAlmostNight();
+                break;
 
-            List<Animals> animals = worldUtils.getAllAnimals();
-            for (Animals animal : animals) {
-                animal.almostNight(world);
-            }
+            case time_WolfMatingTime:
+                initiateWolfMating();
+                break;
 
-            //animals.forEach(animal -> {animal.almostNight(world);});
-        }
-        else if (world.getCurrentTime() == 14) {
-            /*Set<WorldActor> Dens = CapableFunc.getAllWorldActorsAsMap(world, new ArrayList<>(List.of("wolfDen")), true).get("wolfDen");
-            for (WorldActor actor : Dens) {
-                //System.out.println("TryMate");
-                ((WolfDen) actor).makeCup(world);
-            }*/
+            default:
+                break;
         }
 
         // Tries to spawn berrys on all the bushes in the world
@@ -264,21 +262,6 @@ public class CapableSim {
                 }
             }
         }
-
-        switch (dayNightStatus) {
-            case DAY:
-                if (!world.isDay()) {
-                    dayNightStatus = DayNightStatus.NIGHT;
-                    onDayNightChange(dayNightStatus);
-                }
-                break;
-            case NIGHT:
-                if (!world.isNight()) {
-                    dayNightStatus = DayNightStatus.DAY;
-                    onDayNightChange(dayNightStatus);
-                }
-                break;
-        }
     }
 
     public void startSim(Void un) {
@@ -288,17 +271,14 @@ public class CapableSim {
 
 
 
-    void onDayNightChange(DayNightStatus dayNightStatus){
+    void onDayNightChange(){
         List<Animals> animals = worldUtils.getAllAnimals();
-        List<WolfDen> wolfDens = new ArrayList<>();
-
         switch (dayNightStatus){
             case DAY:
-
                 animals.forEach((animal) -> {animal.onDay(world);});
-
                 dayNumber++;
-                //delayedSpawns(world);
+
+                if (dayNumber > 0) spawningAgent.handleSpawnCycle(inputMap, false);
                 break;
             case NIGHT:
                 //System.out.println("it has become night");
@@ -321,7 +301,7 @@ public class CapableSim {
         for (String actorType : CapableFunc.getAllWorldActorTypes()) {
             if (!worldActorContainer.containsKey(actorType)) {
                 worldActorContainer.put(actorType, new ArrayList<>());
-                System.out.println("actorType: " + actorType);
+                //System.out.println("actorType: " + actorType);
             }
         }
 
@@ -342,7 +322,7 @@ public class CapableSim {
             if(!(e instanceof WorldActor actor)) continue;
             String actorType = actor.getActorType();
 
-            if (actorType == null) throw new NullPointerException("actorType is null in actor: " + actor.toString());
+            if (actorType == null) throw new NullPointerException("actorType is null in actor: " + actor);
 
             if(worldActorContainer.containsKey(actorType)) {
                 List<WorldActor> list = worldActorContainer.get(actorType);
@@ -361,6 +341,12 @@ public class CapableSim {
             System.out.println("Num of actors to remove: " + removeActorList.size());
         }
 
+        for (WorldActor actor : removeActorList) {
+            if (actor instanceof Wolf wolf) {
+                wolf.getWolfGang().removeWolfFromGang(wolf);
+            }
+        }
+
         // Removes the actors in removeActorList from worldActorContainer
         removeActorList.forEach(worldActor -> {
             worldActorContainer.get(worldActor.getActorType()).remove(worldActor);
@@ -375,11 +361,29 @@ public class CapableSim {
             for (WorldActor actor : worldActorContainer.get(actorType)) {
                 if (!worldEntities.containsKey(actor)) {
                     deletedActors.add(actor);
-                    System.out.println("Actor to be removed: " + actor.toString());
+                    //System.out.println("Actor to be removed: " + actor.toString());
                 }
             }
         }
         return deletedActors;
+    }
+
+    private void onAlmostNight() {
+        for (Animals animal : worldUtils.getAllAnimals()) {
+            animal.almostNight(world);
+        }
+    }
+
+    /** Initiates the mating of wolf's
+     * */
+    private void initiateWolfMating() {
+        List<WorldActor> wolfDens = worldActorContainer.get("wolfDen");
+        for (WorldActor actor : wolfDens) {
+            if (actor instanceof WolfDen wolfDen) {
+                //System.out.println("Trying to mate in WolfDen: " + wolfDen);
+                wolfDen.makeCup(world);
+            }
+        }
     }
 
 

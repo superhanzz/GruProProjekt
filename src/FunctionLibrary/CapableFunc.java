@@ -83,6 +83,18 @@ public class CapableFunc {
         actorTypes.add("wolf");
         actorTypes.add("burrow");
         actorTypes.add("wolfDen");
+        actorTypes.add("carcass");
+        actorTypes.add("putin");
+        return actorTypes;
+    }
+
+    public static List<String> getAllBlockingActorTypes() {
+        List<String> actorTypes = new ArrayList<>();
+        actorTypes.add("rabbit");
+        actorTypes.add("bear");
+        actorTypes.add("berry");
+        actorTypes.add("wolf");
+        actorTypes.add("carcass");
         actorTypes.add("putin");
         return actorTypes;
     }

@@ -51,11 +51,12 @@ public abstract class Animals extends WorldActor {
      * */
     protected final int MATING_COOLDOWN_DURATION;
 
+    public boolean dead = false;
 
     protected AnimalState animalState;
     protected AnimalSize animalSize;
 
-
+    protected World world;
 
 
 
@@ -107,6 +108,8 @@ public abstract class Animals extends WorldActor {
         super(actorType);
         this.matingAge = 20;
         this.MATING_COOLDOWN_DURATION = 20;
+
+        world = null;
     }
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
@@ -143,7 +146,8 @@ public abstract class Animals extends WorldActor {
 
 
     public void lookForFood(World world, int searchRadius){
-        Location[] neighbours = world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+        Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
+
         List<WorldActor> foodTiles = findFoodFromSource(world, neighbours);
 
         if(!foodTiles.isEmpty()){
@@ -157,7 +161,7 @@ public abstract class Animals extends WorldActor {
     protected abstract List<WorldActor> findFoodFromSource(World world, Location[] neighbours);
 
     protected void kill(World world, WorldActor actor) {
-        if (Math.ceil(distance(getLocation(world), world.getLocation(actor))) != 1) {
+        if (Math.ceil(distance(getLocation(), world.getLocation(actor))) != 1) {
             Location goTo = this.getClosestTile(world, world.getLocation(actor));
             world.move(this, goTo);
         }
@@ -173,7 +177,7 @@ public abstract class Animals extends WorldActor {
     }
 
     public Carcass makeCarcass(World world) {
-        Location location = getLocation(world);
+        Location location = getLocation();
         die(world);
         Carcass carcass = new Carcass(this.energy, this.animalSize);
         world.setTile(location, carcass);
@@ -210,7 +214,12 @@ public abstract class Animals extends WorldActor {
     }
 
 
-    public Location getLocation(World world) {
+    public Location getLocation() {
+        if (world == null) throw new NullPointerException("In getLocation(): World is null");
+        if (!isOnMap) {
+            System.out.println(this + " isn't on map");
+            return null;
+        }
         return world.getLocation(this);
     }
 
@@ -331,9 +340,14 @@ public abstract class Animals extends WorldActor {
 
 
                 Object o = world.getTile(testMoveTo);
+                if (o == null || o instanceof NonBlocking) {
+                    moveToLocations.add(testMoveTo);
+                }
+                /*
                 if (o instanceof NonBlocking || !(o instanceof Animals)) {
                     moveToLocations.add(testMoveTo);
                 }
+                */
             }
         }
         if (!moveToLocations.isEmpty()) {
@@ -353,9 +367,16 @@ public abstract class Animals extends WorldActor {
 
     public void die(World world) {
         world.delete(this);
+        dead = true;
     }
 
     public void updateOnMap(World world, Location location, boolean putOnMap) {
+        if(world == null || location == null) {
+            if (world == null) throw new NullPointerException("In updateOnMap(): World is null");
+            else throw new NullPointerException("In updateOnMap(): Location is null");
+        }
+        if (this.world != world) this.world = world;
+
         if (putOnMap) {
             if (world.isTileEmpty(location)) {
                 world.setTile(location, this);

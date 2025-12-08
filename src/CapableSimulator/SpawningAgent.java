@@ -29,7 +29,8 @@ public class SpawningAgent {
     }
 
     public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
-        TileFinder tileFinder = new TileFinder();
+        TileFinder tileFinder = new TileFinder(world);
+        System.out.println(fileStruct.actorType);
 
         // TODO eval if list should be used for all types of actors
         switch (fileStruct.actorType){
@@ -142,12 +143,8 @@ public class SpawningAgent {
     }
 
     public Map<String, List<WorldActor>> handleSpawnCycle(Map<String, InputFileStruct> inputMap, boolean isInitSpawns) {
-        if (inputMap == null || inputMap.isEmpty()) {
-            String errorType = "";
-            if (inputMap == null) errorType = "null";
-            else errorType = "empty";
-
-            throw new NullPointerException("In handleSpawnCycle(): inputMap is " + errorType);
+        if (inputMap == null) {
+            throw new NullPointerException("In handleSpawnCycle(): inputMap is null");
         }
 
         // TODO maybe the list could be something like 'Class<? extends Actor>' if at all possible
@@ -165,6 +162,7 @@ public class SpawningAgent {
         }
 
         // Iterates though all the entries of the input map and spawns all the actors of the specified type, and adding the list of actors to the return map
+        List<String> keysToRemove = new ArrayList<>();
         for (String key :  inputMap.keySet()) {
             Matcher matcher = pattern.matcher(key); // filters the entries
             if (matcher.matches()) {
@@ -173,7 +171,11 @@ public class SpawningAgent {
 
                 generateActors(input, spawnedActors);   // spawns the actors
                 worldActorsSpawned.put(input.actorType, spawnedActors); // adds the list of spawned actors to the return map
+                keysToRemove.add(key);
             }
+        }
+        for (String key : keysToRemove) {
+            inputMap.remove(key);
         }
 
         return worldActorsSpawned;

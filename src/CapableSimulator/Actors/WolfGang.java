@@ -30,10 +30,8 @@ public class WolfGang {
 
     public void alphaMoved(World world, Location location) {
         for (Wolf npc : NPCs) {
-            if (!world.getEntities().keySet().contains(npc)) return;
-
-
             try {
+                //if (!world.getEntities().containsKey(npc)) System.out.println(this);
                 npc.followAlpha(world, location);
             } catch (Exception e) {
                 System.out.println(npc.toString() + " ERROR, message:\t" + e.getMessage());
@@ -42,13 +40,19 @@ public class WolfGang {
     }
 
     public void wolfDied(Wolf wolf) {
-        if (Alpha == wolf) NPCs.getFirst().promoteToAlpha();
-        //else NPCs.remove(wolf);
+        if (Alpha == wolf) {
+            NPCs.getFirst().promoteToAlpha();
+            NPCs.remove(Alpha);
+        }
         System.out.println("Wolf Dead.");
         //System.out.println("Wolf Dead. Wolf removed from NPC list: " + !NPCs.contains(wolf));
     }
 
-    public void cleanGangList(World world) {
+    public void removeWolfFromGang(Wolf wolf) {
+        NPCs.remove(wolf);
+    }
+
+    public void cleanNPCList(World world) {
         List<Wolf> wolfsToKill = new ArrayList<>();
         for (Wolf wolf : NPCs) {
             if (!world.getEntities().keySet().contains(wolf)) {
@@ -87,6 +91,15 @@ public class WolfGang {
 
     public int getRadiusAroundAlpha() {
         return radiusAroundAlpha;
+    }
+
+    public void getNearbyWolfsFromGang(Wolf askingWolf, List<Wolf> nearbyWolfs) {
+        for (Wolf wolf : NPCs) {
+            double distance = wolf.distance(askingWolf.getLocation(), wolf.getLocation());
+            if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(wolf);
+        }
+        double distance = Alpha.distance(askingWolf.getLocation(), Alpha.getLocation());
+        if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(Alpha);
     }
 
 }

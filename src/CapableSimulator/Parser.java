@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class Parser {
 
 
-    public static Map<String, InputFileStruct> parseInputsFromFile2(File file){
+    public static Map<String, InputFileStruct> parseInputsFromFile(File file){
         if (file == null) return null;      // TODO make exeption or something
 
         Map<String, InputFileStruct> map = new HashMap<>();
@@ -21,13 +21,9 @@ public class Parser {
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
             int worldSize = Integer.parseInt(sc.nextLine());
-
-            //System.out.println(worldSize);
-
             map.put(new String("#" + String.valueOf(worldSize) + "#"), null);
 
             lineNumber++;   // Debug line number
-
             while(sc.hasNextLine()){
                 String line = sc.nextLine();    // saves the input line as a string
                 if (line.contains(" ")) {       // Makes sure there is a " " before splitting the line
@@ -45,15 +41,12 @@ public class Parser {
                                     numOfSameActorType++;
                             }
                         }
-
                         mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
                     }
                     map.put(mapKey, inputFile);
-
                     lineNumber++;   // Debug line number
                 }
             }
-
         }
         catch (Exception e) {
             System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());
@@ -61,7 +54,6 @@ public class Parser {
             System.out.println(filePath);
             System.out.println();
         }
-
         return map;
     }
 
@@ -117,19 +109,20 @@ public class Parser {
     public static int getWorldSize(Map<String, InputFileStruct> map) {
         if (map == null || map.isEmpty()) return 0;
         String worldSizeKey = null;
+        int worldSize = 0;
 
         for (String key : map.keySet()) {
             if (key.contains("#")) {
                 Pattern pattern = Pattern.compile("\\#(\\d+)\\#");  // Regular expression that accepts Strings of the form "#<integer>#"
                 Matcher matcher = pattern.matcher(key);
                 if (matcher.matches()) {
-                    System.out.println("DEBUG in getWorldSize(), in Parser. \tWorld Size: " + matcher.group(1));
+                    //System.out.println("DEBUG in getWorldSize(), in Parser. \tWorld Size: " + matcher.group(1));
                     worldSizeKey = key;
-                    return Integer.parseInt(matcher.group(1));
+                    worldSize = Integer.parseInt(matcher.group(1));
                 }
             }
         }
         map.remove(worldSizeKey);
-        return 0;
+        return worldSize;
     }
 }
