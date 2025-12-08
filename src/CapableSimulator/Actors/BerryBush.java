@@ -35,7 +35,7 @@ public class BerryBush extends WorldActor {
 
     }
 
-    public void trySpawnBerrys(Program program) {
+    public void trySpawnBerrys() {
         if (hasBerrys) return;
 
         Random rand = new Random();

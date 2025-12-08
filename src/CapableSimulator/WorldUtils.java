@@ -58,7 +58,7 @@ public class WorldUtils {
 
     public List<Animals> getAllAnimals(){
         List<Animals> animals = new ArrayList<>();
-        Map<String , Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, getAllAnimalTypes(),true);
+        Map<String , Set<WorldActor>> worldActors = getAllWorldActorsAsMap(getAllAnimalTypes(),true);
         for (String actorType : worldActors.keySet()) {
             for (WorldActor actor : worldActors.get(actorType)) {
                 if (actor instanceof Animals) {

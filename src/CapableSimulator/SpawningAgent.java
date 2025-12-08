@@ -17,6 +17,8 @@ public class SpawningAgent {
 
     World world;
 
+    private final Dispacher<WorldActor> simulateDispacher =  new Dispacher<>();
+
     public SpawningAgent(World world) {
         this.world = world;
     }
@@ -177,6 +179,21 @@ public class SpawningAgent {
         return worldActorsSpawned;
     }
 
+
+    public void spawnActorAtLocation(WorldActor actor, Location location) {
+        if (location == null || actor == null) {
+            if (location == null) throw new NullPointerException("In spawnActorAtLocation(): location is null");
+            else throw new NullPointerException("In spawnActorAtLocation(): actor is null");
+        }
+
+        if (actor instanceof Animals) {
+            ((Animals) actor).updateOnMap(world, location, true);
+        }
+        else {
+            world.setTile(location, actor);
+        }
+
+    }
 
 
 

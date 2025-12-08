@@ -72,18 +72,7 @@ public class CapableFunc {
         return numOfActors;
     }
 
-    public static List<Animals> getAllAnimals(World world){
-        List<Animals> animals = new ArrayList<>();
-        Map<String ,Set<WorldActor>> worldActors = CapableFunc.getAllWorldActorsAsMap(world, getAllAnimalTypes(),true);
-        for (String actorType : worldActors.keySet()) {
-            for (WorldActor actor : worldActors.get(actorType)) {
-                if (actor instanceof Animals) {
-                    animals.add((Animals) actor);
-                }
-            }
-        }
-        return animals;
-    }
+
 
     public static List<String> getAllWorldActorTypes() {
         List<String> actorTypes = new ArrayList<>();
@@ -107,74 +96,6 @@ public class CapableFunc {
         return actorTypes;
     }
 
-    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, with no filter
-     * */
-    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world) {
-        return getAllWorldActorsAsMap(world, null, false);
-    }
-
-    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, List<String> filter) {
-        return getAllWorldActorsAsMap(world, filter, false);
-    }
-
-    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, boolean onlyActorsOnMap) {
-        return getAllWorldActorsAsMap(world, null, onlyActorsOnMap);
-    }
-
-    /** Return a map consisting of actorTypes and sets of all the WorldActors in the world, filtered
-     * */
-    public static Map<String, Set<WorldActor>> getAllWorldActorsAsMap(World world, List<String> filter, boolean onlyActorsOnMap) {
-        Map<String, Set<WorldActor>> allActorsInWorld = new HashMap<>();
-
-        // Prepares the return map
-        for(String actorType : getAllWorldActorTypes()){
-
-            // filters if there is a filter
-            if (filter == null || filter.contains(actorType)) {
-                allActorsInWorld.put(actorType, new HashSet<>());
-                //System.out.println(actorType);
-            }
-        }
-
-        Map<Object, Location> Actors = world.getEntities();
-
-        for(Object actor : Actors.keySet()){
-            String actorType = "";
-
-            if (Actors.get(actor) != null || !onlyActorsOnMap) {
-
-                /* If the filter is not empty the actors actorType is retrieved */
-                if (filter != null) {
-                    if (actor instanceof WorldActor) {
-                        actorType = ((WorldActor) actor).getActorType();
-                        //System.out.println(actor.toString() + ": " + actorType);
-                    }
-                }
-
-                /* filters the actors if there is a filter */
-                if (filter == null || filter.contains(actorType)) {
-                    //if (filter != null) System.out.println(actorType);
-
-                    switch (actor) {
-                        case Wolf w -> allActorsInWorld.get("wolf").add(w);
-                        case Rabbit r -> allActorsInWorld.get("rabbit").add(r);
-                        case Bear b -> allActorsInWorld.get("bear").add(b);
-                        case Grass g -> allActorsInWorld.get("grass").add(g);
-                        case BerryBush b -> allActorsInWorld.get("berryBush").add(b);
-                        case Burrow b -> allActorsInWorld.get("burrow").add(b);
-                        case Putin p -> allActorsInWorld.get("putin").add(p);
-                        case WolfDen w -> allActorsInWorld.get("wolfDen").add(w);
-                        default -> {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        //System.out.println("Number of food sources: " + allActorsInWorld.size());
-        //System.out.println();
-        return  allActorsInWorld;
-    }
 
 
 

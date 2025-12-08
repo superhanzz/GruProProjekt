@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CapableSimulator.Dispacher;
 import itumulator.display.Canvas;
 import itumulator.display.Frame;
 import itumulator.world.Location;
@@ -20,6 +21,9 @@ public class Simulator {
     private ExecutorService executor;
     private int delay;
     private Frame frame;
+
+    private final Dispacher<Void> simulateDispacher =  new Dispacher<>();
+    //private final Dispacher<Actor> entityEventDispacher =  new Dispacher<>();
 
     /**
      * Initializes a new simulation based on an existing world, canvas, and initial delay.
@@ -116,6 +120,7 @@ public class Simulator {
      *              if {@link run() run} is not currently executing.
      */
     public synchronized void stop(){
+        //System.out.println("Stopping Simulator");
         if(!isRunning()) throw new IllegalStateException("No current execution to stop");
         executor.shutdownNow();
         canvas.reduceImgQueue();
@@ -126,6 +131,7 @@ public class Simulator {
      * Executes simulation steps in a parallel process. Can be stopped using {@link stop() stop}.
      */
     public synchronized void run() {
+        //System.out.println("Starting Simulator");
         if (isRunning())
             return;
         running.set(true);
@@ -145,6 +151,7 @@ public class Simulator {
                             Thread.currentThread().interrupt();
                             return;
                         }
+                        simulateDispacher.dispach(null);
                         canvas.acquireRenderPermit(); // to not produce too many images
                         simulate();
                         if (delay == 0){
@@ -157,6 +164,12 @@ public class Simulator {
                 }
             }
         });
+
+
+    }
+
+    public Dispacher<Void> getStartDispacher(){
+        return simulateDispacher;
     }
 
 }

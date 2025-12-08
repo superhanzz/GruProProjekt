@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.WorldUtils;
 import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
@@ -138,7 +139,7 @@ public class Wolf extends Predator {
     // alpha can see whole map TODO
     private void alphaSight(World world) {
         // Gets references to all the possible food sources
-        Map<String, Set<WorldActor>> allPossibleFoodActors = CapableFunc.getAllWorldActorsAsMap(world, eatableFoodTypes.get(actorType));
+        Map<String, Set<WorldActor>> allPossibleFoodActors = new WorldUtils(world).getAllWorldActorsAsMap(eatableFoodTypes.get(actorType));
 
         if (false) {    // Debug
             System.out.println(allPossibleFoodActors.size());
