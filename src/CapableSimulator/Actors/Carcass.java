@@ -7,7 +7,8 @@ import java.awt.*;
 
 public class Carcass extends WorldActor {
 
-    private final int energy;
+    private int energy;
+    private final static int MAX_ENERGY_CONSUME_AMOUNT = 5;
 
     DisplayInformation diCarcass = new DisplayInformation(Color.BLACK, "carcass");
     DisplayInformation diCarcassSmall = new DisplayInformation(Color.BLACK, "carcass-small");
@@ -26,6 +27,20 @@ public class Carcass extends WorldActor {
         super("carcass");
         this.energy = 0;
         this.size = AnimalSize.ADULT;
+    }
+
+    public int getConsumed(World world, int consumerMissingEnergy) {
+        int consumeAmount = Math.clamp(MAX_ENERGY_CONSUME_AMOUNT, 0 , energy);
+
+        if (consumerMissingEnergy < consumeAmount) {
+            consumeAmount = consumeAmount - (consumeAmount - consumerMissingEnergy);
+        }
+        energy -= consumeAmount;
+        if (energy <= 0) {
+            //System.out.println("\t\tCarcass has been consumed!");
+            world.delete(this);
+        }
+        return consumeAmount;
     }
 
     @Override

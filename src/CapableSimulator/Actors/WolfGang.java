@@ -41,8 +41,13 @@ public class WolfGang {
 
     public void wolfDied(Wolf wolf) {
         if (Alpha == wolf) {
-            NPCs.getFirst().promoteToAlpha();
-            NPCs.remove(Alpha);
+            if (NPCs.isEmpty()) {
+                System.out.println("No NPCs Wolfs Left");
+            }
+            else {
+                NPCs.getFirst().promoteToAlpha();
+                NPCs.remove(Alpha);
+            }
         }
         System.out.println("Wolf Dead.");
         //System.out.println("Wolf Dead. Wolf removed from NPC list: " + !NPCs.contains(wolf));

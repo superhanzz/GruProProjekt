@@ -48,6 +48,13 @@ public class BerryBush extends WorldActor {
         return hasBerrys;
     }
 
+    public int getEaten() {
+        if (!hasBerrys) return 0;
+
+        hasBerrys = false;
+        return energyValue;
+    }
+
     public void updateBerryStatus(boolean berryStatus){
         if(berryStatus){
             hasBerrys = false;

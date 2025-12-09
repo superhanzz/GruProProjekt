@@ -75,9 +75,11 @@ public abstract class Animals extends WorldActor {
         bearDiet.add("rabbit");
         bearDiet.add("wolf");
         bearDiet.add("berry");
+        bearDiet.add("carcass");
 
         List<String> wolfDiet = new ArrayList<>();
         wolfDiet.add("rabbit");
+        wolfDiet.add("carcass");
 
         List<String> rabbitDiet = new ArrayList<>();
         rabbitDiet.add("grass");
@@ -88,17 +90,6 @@ public abstract class Animals extends WorldActor {
 
         eatableFoodTypes.put("rabbit", rabbitDiet);
     }
-
-
-    private static final Map<CapableSim.ActorTypes, Class<? extends Actor>> actorClassTypes = new HashMap<>();
-    static {
-        actorClassTypes.put(CapableSim.ActorTypes.GRASS, Grass.class); // Her bliver actor typen Grass placeret inde i mappet, hvor Grass peger på Grass.class
-        actorClassTypes.put(CapableSim.ActorTypes.RABBIT, Rabbit.class);
-        actorClassTypes.put(CapableSim.ActorTypes.BURROW, Burrow.class);
-        actorClassTypes.put(CapableSim.ActorTypes.WOLF, Wolf.class);
-
-    }
-
 
 
 
@@ -120,10 +111,17 @@ public abstract class Animals extends WorldActor {
         this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
     }
 
-    public record Vector(int x, int y) {}
+    @Override
+    public void act(World world) {
+        doEverySimStep();
+    }
 
-
-
+    protected void doEverySimStep() {
+        energy--;
+        if(energy <= 0) die(world);
+        age++;
+        if (animalSize == AnimalSize.BABY && age > 10) animalSize = AnimalSize.ADULT;
+    }
 
     protected Location[] getPossibleFoodTiles(World world, int searchRadius) {
         return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
@@ -145,61 +143,104 @@ public abstract class Animals extends WorldActor {
     }
 
 
-    public void lookForFood(World world, int searchRadius){
+    public void lookForFood(int searchRadius){
         Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
 
-        List<WorldActor> foodTiles = findFoodFromSource(world, neighbours);
+        List<WorldActor> foodTiles = findFoodFromSource(neighbours);
 
-        if(!foodTiles.isEmpty()){
-            WorldActor eatableActor = foodTiles.get(new Random().nextInt(foodTiles.size()));
-            kill(world, eatableActor);
-        }else
+        WorldActor eatableActor = getNearestActor(foodTiles);
+
+        if(eatableActor != null){
+            prepareToEat(eatableActor);
+        }else {
+            System.out.println(actorType + ": No food found");
             if (!hasSpecialMovementBehaviour) move(world);
+        }
     }
 
-    // findFoodFromSource
-    protected abstract List<WorldActor> findFoodFromSource(World world, Location[] neighbours);
+    protected WorldActor getNearestActor(List<WorldActor> actors) {
+        double shortestDistance = Double.MAX_VALUE;
+        WorldActor nearestActor = null;
 
-    protected void kill(World world, WorldActor actor) {
-        if (Math.ceil(distance(getLocation(), world.getLocation(actor))) != 1) {
-            Location goTo = this.getClosestTile(world, world.getLocation(actor));
-            world.move(this, goTo);
+        for (WorldActor actor : actors) {
+            double distance = distance(getLocation(), world.getLocation(actor));
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                nearestActor = actor;
+            }
         }
-        Carcass carcass = null;
-        if(actor instanceof Animals){
-            carcass = ((Animals) actor).makeCarcass(world);
-
-        }
-        if(carcass != null){
-            //eat(world, carcass);
-        }
-
+        return nearestActor;
     }
+
+    protected void prepareToEat(WorldActor eatableActor) {
+        if (eatableActor instanceof NonBlocking) {
+            Location goTo = world.getLocation(eatableActor);
+            if (world.isTileEmpty(goTo)) {
+                world.move(this, goTo);
+                eat(eatableActor);
+            }
+        }
+        else if  (eatableActor instanceof BerryBush) {
+            System.out.println(actorType + " trying to eat a BerryBush");
+        }
+        else {
+            eat(eatableActor);
+        }
+    }
+
+    // findFoodFromSources
+    protected List<WorldActor> findFoodFromSource(Location[] neighbours) {
+        List<WorldActor> foodSources = new ArrayList<>();
+
+        for (Location location : neighbours) {
+            Object o =  world.getTile(location);
+            if (o instanceof WorldActor actor){
+                if (eatableFoodTypes.get(actorType).contains(actor.actorType)) {
+                    if (actor instanceof BerryBush berryBush) {
+                        if (berryBush.getBerryStatus())
+                            foodSources.add(actor);
+                    }
+                    else {
+                        foodSources.add(actor);
+                    }
+                }
+            }
+        }
+        return foodSources;
+    }
+
 
     public Carcass makeCarcass(World world) {
         Location location = getLocation();
         die(world);
-        Carcass carcass = new Carcass(this.energy, this.animalSize);
+        Carcass carcass = new Carcass(Math.max(energy, 10), animalSize);
         world.setTile(location, carcass);
         System.out.println("Carcass has been created");
 
         return carcass;
     }
 
-    protected void eat(World world, WorldActor actor){
-        this.energy += actor.getEnergyValue();
-        Location goTo = world.getLocation(actor);
-        world.delete(actor);
-        world.move(this, goTo);
+    protected void eat(WorldActor actor){
+        if (actor instanceof Carcass carcass) {
+            System.out.print("\t" + actorType + ": eat from Carcass, missing energy: " + (maxEnergy - energy));
+            int gainedEnergy = carcass.getConsumed(world, (maxEnergy - energy));
+            System.out.println(", and gained: " + gainedEnergy + " energy");
+            energy += gainedEnergy;
+        }
+        else if (actor instanceof BerryBush berryBush) {
+            energy = berryBush.getEaten();
+        }
+        else {
+            System.out.println("\t" + actorType + " eats a: " + actor.getActorType());
+            this.energy += actor.getEnergyValue();
+            world.delete(actor);
+        }
     }
 
 
 
 
-    @Override
-    public void act(World world) {
 
-    }
 
     public void onDay(World world) {
 
@@ -367,6 +408,7 @@ public abstract class Animals extends WorldActor {
 
     public void die(World world) {
         world.delete(this);
+        if (actorType.equals("bear")) System.out.println("bear dead");
         dead = true;
     }
 

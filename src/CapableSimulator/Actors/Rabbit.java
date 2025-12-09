@@ -95,7 +95,7 @@ public class Rabbit extends Animals {
         matingCooldown = Math.clamp(matingCooldown, 0, 100);
 
         //lookForGrass(world);
-        lookForFood(world, 2);
+        lookForFood(2);
 
 
         energy--;
@@ -116,7 +116,7 @@ public class Rabbit extends Animals {
 
 
 
-    @Override
+    /*@Override
     protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours) {
         List<WorldActor> worldActorList = new ArrayList<>();
         for (Location location : neighbours) {
@@ -125,7 +125,7 @@ public class Rabbit extends Animals {
                 worldActorList.add((WorldActor) o);
         }
         return worldActorList;
-    }
+    }*/
 
 
     /** Tries to find food.
@@ -273,7 +273,6 @@ public class Rabbit extends Animals {
 
         burrow = new Burrow(this);
         new SpawningAgent(world).spawnActorAtLocation(burrow, getLocation());   // spawns the burrow on the map
-        world.setTile(world.getLocation(this), burrow);
         burrowLocation = world.getLocation(this);
 
     }

@@ -20,7 +20,7 @@ public class Putin extends Animals {
         this.maxEnergy = 1000;
         this.age = 73;
     }
-    @Override
+   /* @Override
     protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours){
         List<WorldActor> worldActorList = new ArrayList<>();
         for(Location location : neighbours){
@@ -30,13 +30,13 @@ public class Putin extends Animals {
             }
         }
         return worldActorList;
-    }
+    }*/
     @Override
     public DisplayInformation getInformation() { return diPutin; }
 
     @Override
     public void act(World world){
-        lookForFood(world, 5);
+        lookForFood(5);
 
     }
 }

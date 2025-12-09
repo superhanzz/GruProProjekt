@@ -64,7 +64,7 @@ public class Wolf extends Predator {
     public Wolf(WolfGang wolfgang, boolean isAlpha) {
         super("wolf");
         //this.energy = isAlpha ? 20 : 100;
-        this.energy = 100;
+        this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
         this.wolfGang = wolfgang;
@@ -80,7 +80,7 @@ public class Wolf extends Predator {
 
     public Wolf(WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, AnimalSize animalSize, AnimalState animalState) {
         super("wolf");
-        this.energy = 100;
+        this.energy = 20;
         this.maxEnergy = 30;
         this.age = 0;
 
@@ -115,13 +115,13 @@ public class Wolf extends Predator {
             }
             else {
                 if (!alpha.isOnMap) {
-                    lookForFood(world, 1);
+                    lookForFood(1);
                 }
             }
         }
 
         if (wolfType == WolfType.ALPHA && world.isDay() && isOnMap) {
-            lookForFood(world, 1);
+            lookForFood(1);
             wolfGang.alphaMoved(world, world.getLocation(this));
 
 
@@ -222,7 +222,7 @@ public class Wolf extends Predator {
             System.out.println(this + " wolf is attacking");
             attackEnemy(world, enemy);
         }
-        else lookForFood(world, 1);
+        else lookForFood(1);
     }
 
 
@@ -247,7 +247,7 @@ public class Wolf extends Predator {
         else return;
 
         if (new Random().nextDouble() < winChance) {
-            kill(world, enemy);
+            kill(enemy);
         }
         else {
             makeCarcass(world);
@@ -345,7 +345,7 @@ public class Wolf extends Predator {
         }
     }
 
-    @Override
+    /*@Override
     protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours) {
         List<WorldActor> worldActorList = new ArrayList<>();
         for (Location location : neighbours) {
@@ -354,7 +354,7 @@ public class Wolf extends Predator {
                 worldActorList.add((WorldActor) o);
         }
         return worldActorList;
-    }
+    }*/
 /*
     //Method to make the wolf move around looking for food, in this case Objects of the type Rabbit.
     public void lookForFood(World world){

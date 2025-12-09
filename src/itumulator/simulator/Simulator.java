@@ -74,6 +74,8 @@ public class Simulator {
         frame.updateDayNightLabel(world.isDay());
         frame.updateStepLabel(steps);
 
+        simulateDispacher.dispach(null);
+
         // iterate all actors of the world and execute their actions.
         Map<Object, Location> entities = world.getEntities();
         for(Object o : entities.keySet()){
@@ -151,7 +153,6 @@ public class Simulator {
                             Thread.currentThread().interrupt();
                             return;
                         }
-                        simulateDispacher.dispach(null);
                         canvas.acquireRenderPermit(); // to not produce too many images
                         simulate();
                         if (delay == 0){

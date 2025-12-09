@@ -13,10 +13,16 @@ public class Parser {
     public static Map<String, InputFileStruct> parseInputsFromFile(File file){
         if (file == null) return null;      // TODO make exeption or something
 
+        final String RED = "\u001B[31m";
+        final String GREEN = "\u001B[32m";
+        final String RESET = "\u001B[0m";
+
         Map<String, InputFileStruct> map = new HashMap<>();
 
         int lineNumber = 0;                 // Debug line number
         String filePath = file.getPath();   // Debug file path
+
+        System.out.printf("Parsing file: %s%s%s %n", RED, filePath, RESET);
 
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
@@ -44,9 +50,12 @@ public class Parser {
                         mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
                     }
                     map.put(mapKey, inputFile);
+
+                    System.out.printf("%-10s* %-10s%s%n",GREEN, inputFile.actorType,  RESET);
                     lineNumber++;   // Debug line number
                 }
             }
+            System.out.println();
         }
         catch (Exception e) {
             System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());

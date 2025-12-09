@@ -187,7 +187,7 @@ public class CapableSim {
         simStepDispacher.addEventListener(dis_Start);
 
         program.show();
-        program.run();
+        //program.run();
         if (false) {
             // timer thing
             /*

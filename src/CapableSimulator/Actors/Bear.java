@@ -21,28 +21,54 @@ public class Bear extends Predator {
         super("bear");
         this.territoryCenter = new Location(0, 0);
         this.territoryRadius = 6;
+        this.energy = 20;
+        this.maxEnergy = 30;
     }
 
     public Bear(Location territoryCenter) {
         super("bear");
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 1;
+
+        this.energy = 3;
+        this.maxEnergy = 30;
     }
 
     @Override
+    public void act(World world) {
+        super.act(world);
+        if (!dead){
+            lookForFood(2);
+        }
+        else {
+            System.out.println("Dead, energy = " + energy);
+        }
+    }
+
+    /*@Override
     protected List<WorldActor> findFoodFromSource(World world, Location[] neighbours) {
         List<WorldActor> worldActorList = new ArrayList<>();
         for (Location location : neighbours) {
             Object o =  world.getTile(location);
-            if (o instanceof Wolf || o instanceof Rabbit)
-                worldActorList.add((WorldActor) o);
-            else if(o instanceof BerryBush){
-                if(((BerryBush) o).getBerryStatus())
+            if (o instanceof WorldActor actor){
+
+                if (eatableFoodTypes.get(actorType).contains(actor.actorType)) {
+                    if (actor instanceof BerryBush berryBush) {
+                        if (berryBush.getBerryStatus())
+                            worldActorList.add(actor);
+                    }
+                    else {
+                        worldActorList.add(actor);
+                    }
+                }
+            }
+            else if(o instanceof BerryBush berryBush){
+                if(berryBush.getBerryStatus())
                     worldActorList.add((WorldActor) o);
             }
         }
         return worldActorList;
-    }
+    }*/
 
     @Override
     public void move(World world){
@@ -66,23 +92,18 @@ public class Bear extends Predator {
     }
     // TODO make test that test if a bear moves out of it territory.
 
-    @Override
+    /*@Override
     public void eat(World world, WorldActor actor){
         if(actor instanceof BerryBush){
             this.energy += actor.getEnergyValue();
             Location GoTo = this.getClosestTile(world, world.getLocation(actor));
             ((BerryBush) actor).updateBerryStatus(((BerryBush) actor).getBerryStatus());
             world.move(this, GoTo);
-        }else {
+        }
+        else {
             super.eat(world, actor);
         }
-    }
-
-    @Override
-    public void act(World world) {
-
-        lookForFood(world, 2);
-    }
+    }*/
 
     @Override
     public DisplayInformation getInformation() {

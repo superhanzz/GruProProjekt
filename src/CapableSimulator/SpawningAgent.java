@@ -77,8 +77,7 @@ public class SpawningAgent {
                     Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Bear b = new Bear(fileStruct.staticSpawnLocation != null ? fileStruct.staticSpawnLocation : location);
-                        world.setTile(location, b);
-
+                        b.updateOnMap(world, location, true);
                         listOfActors.add(b);
                     }
                     else
@@ -136,7 +135,24 @@ public class SpawningAgent {
                 }
                 break;
 
+            case  "carcass":
+                for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    if (location != null) {
+                        Carcass c = new Carcass();
+                        world.setTile(location, c);
+
+                        listOfActors.add(c);
+                    }
+                }
+                break;
+
+            case "carcass fungi":
+                System.out.println("carcass fungi");
+                break;
+
             default:
+                System.out.println("Unknown Spawn Type: " + fileStruct.actorType);
                 break;
         }
 
@@ -154,11 +170,11 @@ public class SpawningAgent {
         Pattern pattern;
         if (isInitSpawns) {
             System.out.println("Init Spawns:");
-            pattern = Pattern.compile("([A-Za-z]+)");
+            pattern = Pattern.compile("([A-Za-z\\s]+)");
         }
         else {
             System.out.println("Delayed Spawns:");
-            pattern = Pattern.compile("([A-Za-z]+\\d)");
+            pattern = Pattern.compile("([A-Za-z\\s]+\\d)");
         }
 
         // Iterates though all the entries of the input map and spawns all the actors of the specified type, and adding the list of actors to the return map
