@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Utils;
 
 import FunctionLibrary.CapableFunc;
 

@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.World;
@@ -7,19 +8,12 @@ import itumulator.world.World;
 public abstract class WorldActor implements Actor, DynamicDisplayInformationProvider {
 
     public final String actorType;
+    protected CapableEnums.FungiState fungiState;
 
-    protected enum AnimalState {
-        AWAKE,
-        SLEEPING;
-    }
-
-    public enum AnimalSize {
-        BABY,
-        ADULT;
-    }
 
     protected WorldActor(String actorType) {
         this.actorType = actorType;
+        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     @Override
@@ -29,6 +23,15 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
 
     //public abstract void setActorType(String actorType);
     public String getActorType() {return actorType;}
+
+
+    public CapableEnums.FungiState getFungiState() {
+        return fungiState;
+    }
+
+    public void makeFungi() {
+        fungiState = CapableEnums.FungiState.FUNGI;
+    }
 
     protected abstract int getEnergyValue();
 }

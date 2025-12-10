@@ -1,8 +1,7 @@
-package CapableSimulator;
+package CapableSimulator.Utils;
 
 import itumulator.world.Location;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;

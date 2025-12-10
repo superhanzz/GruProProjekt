@@ -1,12 +1,10 @@
 package CapableSimulator.Actors;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
-import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Predator extends Animals {
 
@@ -59,7 +57,7 @@ public abstract class Predator extends Animals {
 
     protected void kill(Animals animal) {
         Carcass carcass = null;
-        carcass = animal.makeCarcass(world);
+        carcass = animal.becomeCarcass(world);
         if(carcass != null){
             eat(carcass);
         }

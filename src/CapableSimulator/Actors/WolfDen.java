@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -42,7 +43,7 @@ public class WolfDen extends WorldActor implements NonBlocking {
         }
         if (grownWolfsInDen < 2) return;    // There needs to be more than 2 grown wolf's in the den before procreation can occur
         if (new Random().nextDouble() < procreationSuccessChance) {
-            Wolf cup = new Wolf(owners, owners.Alpha, this, AnimalSize.BABY, AnimalState.SLEEPING);
+            Wolf cup = new Wolf(owners, owners.Alpha, this, CapableEnums.AnimalSize.BABY, CapableEnums.AnimalState.SLEEPING);
             owners.addWolfToGang(cup);
             System.out.println("Wolf cup created");
             world.add(cup);

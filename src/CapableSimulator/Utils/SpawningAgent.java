@@ -1,7 +1,7 @@
-package CapableSimulator;
+package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
-import itumulator.simulator.Actor;
+import CapableSimulator.EventHandeling.Dispacher;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +29,8 @@ public class SpawningAgent {
 
     public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
         TileFinder tileFinder = new TileFinder(world);
-        System.out.println(fileStruct.actorType);
+        //System.out.println(fileStruct.actorType);
+        System.out.print(fileStruct.actorType);
 
         // TODO eval if list should be used for all types of actors
         switch (fileStruct.actorType){
@@ -156,6 +156,7 @@ public class SpawningAgent {
                 break;
         }
 
+        System.out.println(": " + listOfActors.size());
     }
 
     public Map<String, List<WorldActor>> handleSpawnCycle(Map<String, InputFileStruct> inputMap, boolean isInitSpawns) {

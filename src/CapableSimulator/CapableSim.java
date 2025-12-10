@@ -1,6 +1,9 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.EventHandeling.Dispacher;
+import CapableSimulator.EventHandeling.EventListener;
+import CapableSimulator.Utils.*;
 import FunctionLibrary.CapableFunc;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
@@ -33,7 +36,7 @@ public class CapableSim {
     private SpawningAgent spawningAgent;
     private WorldUtils worldUtils;
 
-    DayNightStatus dayNightStatus;
+    CapableEnums.DayNightStatus dayNightStatus;
 
     Map<String, InputFileStruct> inputMap;
     private final Map<String, List<WorldActor>> worldActorContainer = new HashMap<>();
@@ -52,10 +55,6 @@ public class CapableSim {
 
     }
 
-    public enum DayNightStatus {
-        DAY,
-        NIGHT;
-    }
 
     private static final int time_JustBeforeNight = 9;
     private static final int time_WolfMatingTime = 14;
@@ -101,18 +100,6 @@ public class CapableSim {
     }
 
 
-    /*public CapableSim(Canvas canvas, int simulationSteps, int displaySize, int simulationDelay, String inputDataFilePath) {
-        super(null, canvas, simulationDelay);
-        this.simulationSteps = simulationSteps;
-        this.displaySize = displaySize;
-        this.simulationDelay = simulationDelay;
-        this.inputDataFilePath = inputDataFilePath;
-
-        program = null;
-        worldSize = 0;
-        actorSpawnCycle = 0;
-        dayNumber = 0;
-    }*/
 
     public CapableSim(int simulationSteps, int displaySize, int simulationDelay, String inputDataFilePath) {
         this.simulationSteps = simulationSteps;
@@ -149,7 +136,7 @@ public class CapableSim {
         spawningAgent = new SpawningAgent(world);
         worldUtils = new WorldUtils(world);
 
-        dayNightStatus = world.isDay() ? DayNightStatus.DAY : DayNightStatus.NIGHT;
+        dayNightStatus = world.isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
 
         simStepDispacher = simulator.getStartDispacher();
     }
@@ -218,12 +205,12 @@ public class CapableSim {
 
         switch (world.getCurrentTime()) {
             case time_DayBreak:
-                dayNightStatus = DayNightStatus.DAY;
+                dayNightStatus = CapableEnums.DayNightStatus.DAY;
                 onDayNightChange();
                 break;
 
             case time_NightFall:
-                dayNightStatus = DayNightStatus.NIGHT;
+                dayNightStatus = CapableEnums.DayNightStatus.NIGHT;
                 onDayNightChange();
                 break;
 

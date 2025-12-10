@@ -1,7 +1,6 @@
-package CapableSimulator;
+package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
-import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 import itumulator.world.World;
 

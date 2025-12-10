@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.EventHandeling;
 
 @FunctionalInterface
 public interface EventListener<T> {

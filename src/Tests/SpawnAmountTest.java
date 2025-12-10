@@ -2,7 +2,7 @@ package Tests;
 
 import CapableSimulator.CapableSim;
 import CapableSimulator.Actors.Grass;
-import CapableSimulator.WorldUtils;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;

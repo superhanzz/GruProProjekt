@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
 
@@ -13,10 +14,10 @@ public class Carcass extends WorldActor {
     DisplayInformation diCarcass = new DisplayInformation(Color.BLACK, "carcass");
     DisplayInformation diCarcassSmall = new DisplayInformation(Color.BLACK, "carcass-small");
 
-    protected AnimalSize size;
+    protected CapableEnums.AnimalSize size;
     private int age;
 
-    public Carcass(int energy, AnimalSize size) {
+    public Carcass(int energy, CapableEnums.AnimalSize size) {
         super("carcass");
         this.energy = energy;
         this.size = size;
@@ -26,7 +27,7 @@ public class Carcass extends WorldActor {
     public Carcass() {
         super("carcass");
         this.energy = 0;
-        this.size = AnimalSize.ADULT;
+        this.size = CapableEnums.AnimalSize.ADULT;
     }
 
     public int getConsumed(World world, int consumerMissingEnergy) {
@@ -41,6 +42,16 @@ public class Carcass extends WorldActor {
             world.delete(this);
         }
         return consumeAmount;
+    }
+
+    protected void decompose(World world) {
+        switch(fungiState) {
+            case NORMAL:
+                world.delete(this);
+                break;
+            case FUNGI:
+
+        }
     }
 
     @Override
@@ -58,7 +69,7 @@ public class Carcass extends WorldActor {
     @Override
     public DisplayInformation getInformation(){
         //System.out.println("et eller andet");
-        if(size.equals(AnimalSize.ADULT)) return diCarcass;
+        if(size.equals(CapableEnums.AnimalSize.ADULT)) return diCarcass;
         else return diCarcassSmall;
     }
 }

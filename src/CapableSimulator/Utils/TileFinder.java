@@ -1,4 +1,4 @@
-package CapableSimulator;
+package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.WorldActor;
 import itumulator.world.Location;

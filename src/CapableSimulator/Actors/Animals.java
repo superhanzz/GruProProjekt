@@ -1,8 +1,7 @@
 package CapableSimulator.Actors;
 
-import CapableSimulator.CapableSim;
+import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -53,18 +52,10 @@ public abstract class Animals extends WorldActor {
 
     public boolean dead = false;
 
-    protected AnimalState animalState;
-    protected AnimalSize animalSize;
+    protected CapableEnums.AnimalState animalState;
+    protected CapableEnums.AnimalSize animalSize;
 
     protected World world;
-
-
-
-    protected static final Map<AnimalState, Map<AnimalSize, DisplayInformation>> displayInformations = new HashMap<>();
-    static {
-        displayInformations.put(AnimalState.AWAKE, new HashMap<>());
-        displayInformations.put(AnimalState.SLEEPING, new HashMap<>());
-    }
 
     protected  boolean hasSpecialMovementBehaviour;
     boolean isOnMap;
@@ -91,7 +82,7 @@ public abstract class Animals extends WorldActor {
         eatableFoodTypes.put("rabbit", rabbitDiet);
     }
 
-
+    /* ----- ----- ----- Constructors ----- ----- ----- */
 
     /** Default constructor
      * */
@@ -111,24 +102,15 @@ public abstract class Animals extends WorldActor {
         this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
     }
 
+    /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
+
     @Override
     public void act(World world) {
         doEverySimStep();
     }
 
-    protected void doEverySimStep() {
-        energy--;
-        if(energy <= 0) die(world);
-        age++;
-        if (animalSize == AnimalSize.BABY && age > 10) animalSize = AnimalSize.ADULT;
-    }
-
-    protected Location[] getPossibleFoodTiles(World world, int searchRadius) {
-        return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
-    }
-
     public void move(World world) {
-        Location[] neighbours = getPossibleFoodTiles(world, 1);
+        Location[] neighbours = getPossibleFoodTiles(1);
         List<Location> emptyNeighbours = new ArrayList<>();
         for (Location neighbour : neighbours) {
             if (world.getTile(neighbour) == null || world.getTile(neighbour) instanceof NonBlocking) emptyNeighbours.add(neighbour);
@@ -142,6 +124,17 @@ public abstract class Animals extends WorldActor {
         world.move(this, searchLocation);
     }
 
+    protected void doEverySimStep() {
+        energy--;
+        if(energy <= 0) die(world);
+        age++;
+        if (animalSize == CapableEnums.AnimalSize.BABY && age > 10) animalSize = CapableEnums.AnimalSize.ADULT;
+    }
+
+
+
+
+
 
     public void lookForFood(int searchRadius){
         Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
@@ -153,7 +146,6 @@ public abstract class Animals extends WorldActor {
         if(eatableActor != null){
             prepareToEat(eatableActor);
         }else {
-            System.out.println(actorType + ": No food found");
             if (!hasSpecialMovementBehaviour) move(world);
         }
     }
@@ -188,6 +180,20 @@ public abstract class Animals extends WorldActor {
         }
     }
 
+    protected void eat(WorldActor actor){
+        if (actor instanceof Carcass carcass) {
+            int gainedEnergy = carcass.getConsumed(world, (maxEnergy - energy));
+            energy += gainedEnergy;
+        }
+        else if (actor instanceof BerryBush berryBush) {
+            energy = berryBush.getEaten();
+        }
+        else {
+            energy += actor.getEnergyValue();
+            world.delete(actor);
+        }
+    }
+
     // findFoodFromSources
     protected List<WorldActor> findFoodFromSource(Location[] neighbours) {
         List<WorldActor> foodSources = new ArrayList<>();
@@ -209,8 +215,9 @@ public abstract class Animals extends WorldActor {
         return foodSources;
     }
 
+    /* ----- ----- ----- World Related ----- ----- ----- */
 
-    public Carcass makeCarcass(World world) {
+    public Carcass becomeCarcass(World world) {
         Location location = getLocation();
         die(world);
         Carcass carcass = new Carcass(Math.max(energy, 10), animalSize);
@@ -220,40 +227,14 @@ public abstract class Animals extends WorldActor {
         return carcass;
     }
 
-    protected void eat(WorldActor actor){
-        if (actor instanceof Carcass carcass) {
-            System.out.print("\t" + actorType + ": eat from Carcass, missing energy: " + (maxEnergy - energy));
-            int gainedEnergy = carcass.getConsumed(world, (maxEnergy - energy));
-            System.out.println(", and gained: " + gainedEnergy + " energy");
-            energy += gainedEnergy;
-        }
-        else if (actor instanceof BerryBush berryBush) {
-            energy = berryBush.getEaten();
-        }
-        else {
-            System.out.println("\t" + actorType + " eats a: " + actor.getActorType());
-            this.energy += actor.getEnergyValue();
-            world.delete(actor);
-        }
-    }
-
-
-
-
-
-
-    public void onDay(World world) {
+    private void becomeFungi() {
 
     }
 
-    public void onNight(World world) {
-
+    public void die(World world) {
+        world.delete(this);
+        dead = true;
     }
-
-    public void almostNight(World world) {
-
-    }
-
 
     public Location getLocation() {
         if (world == null) throw new NullPointerException("In getLocation(): World is null");
@@ -264,41 +245,57 @@ public abstract class Animals extends WorldActor {
         return world.getLocation(this);
     }
 
+    public void updateOnMap(World world, Location location, boolean putOnMap) {
+        if(world == null || location == null) {
+            if (world == null) throw new NullPointerException("In updateOnMap(): World is null");
+            else throw new NullPointerException("In updateOnMap(): Location is null");
+        }
+        if (this.world != world)
+            this.world = world;
+
+        if (putOnMap) {
+            if (world.isTileEmpty(location)) {
+                world.setTile(location, this);
+                isOnMap = true;
+            }
+        }
+        else {
+            world.remove(this);
+            isOnMap = false;
+        }
+    }
+
+    /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
+
+    /** onDay() is an event that is executed when the world's current time is 0.
+     * */
+    public abstract void onDay(World world);
+
+    /** onNight() is an event that is executed when the world's current time is 10.
+     * */
+    public abstract void onNight(World world);
+
+    /** almostNight() is an event that is executed  when the world's current time is 9.
+     * */
+    public abstract void almostNight(World world);
+
+
+    protected Location[] getPossibleFoodTiles(int searchRadius) {
+        return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+    }
+
     public Location getMovementVector(Location start, Location end) {
         int x = end.getX() - start.getX();
         int y = end.getY() - start.getY();
         return new Location(x, y);
     }
 
-    /*public Location getMoveToLocation(Location start, Location end) {
-        Location moveToLocation = null;
-        Location movementVector = null;
-        int moveX = 0;
-        int moveY = 0;
-
-        if (Math.abs(start.getX()) == Math.abs(end.getX())) {
-
-            switch (new Random().nextInt(1)) {
-                case 0: //
-
-            }
-        }
-        if (Math.abs(start.getX()) < Math.abs(end.getX())) {
-
-        }
-
-        int minElement = Math.min(end.getX(), end.getY());
-        // to move take end + start
-        minElement == 0
-
-        return moveToLocation;
-    }*/
-
     public Location locationAddition(Location A, Location B) {
         int x = A.getX() + B.getX();
         int y = A.getY() + B.getY();
         return new Location(x, y);
     }
+
 
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
@@ -404,35 +401,15 @@ public abstract class Animals extends WorldActor {
         return moveToLocation;
     }
 
-    /* ----- ----- ----- -----   ----- ----- ----- ----- */
+    /* ----- ----- ----- ----- Getters and setters ----- ----- ----- ----- */
 
-    public void die(World world) {
-        world.delete(this);
-        if (actorType.equals("bear")) System.out.println("bear dead");
-        dead = true;
+    /** Method for getting the key to find the correct display information */
+    protected String getDisplayInformationsKey() {
+        String key = animalSize.label + "-" + fungiState.label + "-" + animalState.label;
+        return key;
     }
 
-    public void updateOnMap(World world, Location location, boolean putOnMap) {
-        if(world == null || location == null) {
-            if (world == null) throw new NullPointerException("In updateOnMap(): World is null");
-            else throw new NullPointerException("In updateOnMap(): Location is null");
-        }
-        if (this.world != world) this.world = world;
-
-        if (putOnMap) {
-            if (world.isTileEmpty(location)) {
-                world.setTile(location, this);
-                isOnMap = true;
-            }
-        }
-        else {
-            world.remove(this);
-            isOnMap = false;
-        }
-    }
-
-    public boolean isAnimalAdult() {return (animalSize.equals(AnimalSize.ADULT));}
-
+    public boolean isAnimalAdult() {return (animalSize.equals(CapableEnums.AnimalSize.ADULT));}
 
     @Override
     protected int getEnergyValue() {
