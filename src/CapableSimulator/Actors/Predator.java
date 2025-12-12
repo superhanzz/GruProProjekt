@@ -37,6 +37,8 @@ public abstract class Predator extends Animals {
         return !enemies.isEmpty();
     }
 
+    protected abstract void attackEnemy(Predator enemy);
+
     @Override
     protected void prepareToEat(WorldActor eatableActor) {
         if (eatableActor == null) {

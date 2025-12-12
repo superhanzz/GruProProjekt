@@ -412,7 +412,7 @@ public abstract class Animals extends WorldActor {
     public boolean isAnimalAdult() {return (animalSize.equals(CapableEnums.AnimalSize.ADULT));}
 
     @Override
-    protected int getEnergyValue() {
+    public int getEnergyValue() {
         return energy;
     }
 }

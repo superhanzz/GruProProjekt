@@ -32,14 +32,17 @@ public class CapableSim {
     int dayNumber;
     int actorSpawnCycle;
 
+    /** The dispacher is the binding element between this and the ITUmulator's simulator */
     Dispacher<Void> simStepDispacher;
+
     private SpawningAgent spawningAgent;
     private WorldUtils worldUtils;
+    private EntityHandler entityHandler;
 
     CapableEnums.DayNightStatus dayNightStatus;
 
     Map<String, InputFileStruct> inputMap;
-    private final Map<String, List<WorldActor>> worldActorContainer = new HashMap<>();
+
 
 
 
@@ -55,7 +58,7 @@ public class CapableSim {
 
     }
 
-
+    /* ----- Time Specific Events ----- */
     private static final int time_JustBeforeNight = 9;
     private static final int time_WolfMatingTime = 14;
     private static final int time_NightFall = 10;
@@ -99,7 +102,7 @@ public class CapableSim {
         actorClassTypes.put(ActorTypes.PUTIN, Putin.class);
     }
 
-
+    /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     public CapableSim(int simulationSteps, int displaySize, int simulationDelay, String inputDataFilePath) {
         this.simulationSteps = simulationSteps;
@@ -124,10 +127,13 @@ public class CapableSim {
         dayNumber = 0;
     }
 
+    /* ----- ----- ----- ----- Pre-Simulation ----- ----- ----- ----- */
+
     /**
      * Denne metode instantiere et nyt Program, derudover gemmer den også hvorvidt det er dag eller nat, og derefter kalder setUpDisplayInformation();
      */
     void setupSimulation() {
+
         program = new Program(worldSize, displaySize, simulationDelay);
         world = program.getWorld();
         simulator = program.getSimulator();
@@ -135,12 +141,14 @@ public class CapableSim {
 
         spawningAgent = new SpawningAgent(world);
         worldUtils = new WorldUtils(world);
+        entityHandler = new EntityHandler(world);
+
+
 
         dayNightStatus = world.isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
 
         simStepDispacher = simulator.getStartDispacher();
     }
-
 
 
     /**
@@ -154,7 +162,6 @@ public class CapableSim {
      * Til sidst eksekveres itumulator's simulerings kode.(eksempelvis act() metoden)
      */
     public void runSimulation(){
-
         /* Parses the input file into a map */
         Parser parser = new Parser();
         inputMap = parser.parseInputsFromFile(new  File(inputDataFilePath));
@@ -167,7 +174,7 @@ public class CapableSim {
         // Spawns all the actors specified in the input file, it only spawns the first entry of a given actor type
         Map<String, List<WorldActor>> allSpawnedActors;
         allSpawnedActors = spawningAgent.handleSpawnCycle(inputMap, true);
-        initWorldActorContainer(allSpawnedActors);
+        entityHandler.initWorldActorContainer(allSpawnedActors);
 
 
         EventListener<Void> dis_Start = this::startSim;
@@ -188,19 +195,10 @@ public class CapableSim {
         }
     }
 
-    public void simulationStep() {
-        // DEBUG THING, Needs to be before updateWorldActorContainer()
-        if (false) {
-            if ((worldActorContainer.get("wolf").size() > 3)) {
-                List<WorldActor> actors = worldActorContainer.get("wolf");
-                WorldActor actor = actors.get(new Random().nextInt(actors.size()));
-                if (actor instanceof Wolf wolf) {
-                    wolf.die(world);
-                }
-            }
-        }
+    /* ----- ----- ----- ----- Simulation ----- ----- ----- ----- */
 
-        updateWorldActorContainer();    // Should be first to be executed on each simulation step
+    public void simulationStep() {
+        entityHandler.updateWorldActorContainer();    // Should be first to be executed on each simulation step
         //System.out.println(simulator.getSteps()); // prints the current simulation step
 
         switch (world.getCurrentTime()) {
@@ -217,17 +215,7 @@ public class CapableSim {
             case time_JustBeforeNight:
                 // checks if animals doesn't apper to return onto the map on day break. deletes animal
                 if (false) {
-                    Map<Object, Location> entities = world.getEntities();
-                    for (String key : worldActorContainer.keySet()) {
-                        if (CapableFunc.getAllAnimalTypes().contains(key)) {
-                            for (WorldActor actor : worldActorContainer.get(key)) {
-                                if (entities.containsKey(actor) && entities.get(actor) == null) {
-                                    world.delete(actor);
-                                    System.out.println("Removed entity" + actor);
-                                }
-                            }
-                        }
-                    }
+                    removeStuckActors();
                 }
                 // Handles the events surrounding it almost beeing night
                 onAlmostNight();
@@ -242,7 +230,8 @@ public class CapableSim {
         }
 
         // Tries to spawn berrys on all the bushes in the world
-        if (!worldActorContainer.containsKey("berry")) {
+        if (entityHandler.containsActor("berry")) {
+            Map<String, List<WorldActor>> worldActorContainer = entityHandler.getWorldActorContainer();
             for (WorldActor actor : worldActorContainer.get("berry")) {
                 if (actor instanceof BerryBush bush) {
                     bush.trySpawnBerrys();
@@ -251,13 +240,26 @@ public class CapableSim {
         }
     }
 
-    public void startSim(Void un) {
-        //System.out.println("Starting simulation");
-        simulationStep();
+    private void removeStuckActors() {
+        Map<Object, Location> entities = world.getEntities();
+        Map<String, List<WorldActor>> worldActorContainer = entityHandler.getWorldActorContainer();
+
+        for (String key : worldActorContainer.keySet()) {
+            if (CapableFunc.getAllAnimalTypes().contains(key)) {
+                for (WorldActor actor : worldActorContainer.get(key)) {
+                    if (entities.containsKey(actor) && entities.get(actor) == null) {
+                        world.delete(actor);
+                        System.out.println("Removed entity" + actor);
+                    }
+                }
+            }
+        }
     }
 
 
+    /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
+    /** Handles the execution of event's connected to when it goes from day to night, and night to day */
     void onDayNightChange(){
         List<Animals> animals = worldUtils.getAllAnimals();
         switch (dayNightStatus){
@@ -276,94 +278,16 @@ public class CapableSim {
         }
     }
 
-    private void initWorldActorContainer(Map<String, List<WorldActor>> tempMap){
-        if  (tempMap == null || tempMap.isEmpty()) {
-            if (tempMap == null) System.out.println("tempMap is null");
-            else System.out.println("tempMap is empty");
-            return;
-        }
-        for (String actorType : tempMap.keySet()) {
-            worldActorContainer.put(actorType, tempMap.get(actorType));
-        }
-        for (String actorType : CapableFunc.getAllWorldActorTypes()) {
-            if (!worldActorContainer.containsKey(actorType)) {
-                worldActorContainer.put(actorType, new ArrayList<>());
-                //System.out.println("actorType: " + actorType);
-            }
-        }
-
-        //System.out.println("Entries in worldActorContainer: " + worldActorContainer.size());
-    }
-
-    /** Updates the worldActorContainer, should be called at each simulation step.
-     *  Iterates though each entity in the world, and checks if the entity is already is in the worldActorContainer
-     *  if it isn't then it is added.
-     *  If the world isn't set then it returns.
-     * */
-    private void updateWorldActorContainer() {
-        if (world == null) return;
-
-        // Handels new actors in the world
-        Map<Object, Location> worldEntities = world.getEntities();
-        for (Object e : worldEntities.keySet()) {
-            if(!(e instanceof WorldActor actor)) continue;
-            String actorType = actor.getActorType();
-
-            if (actorType == null) throw new NullPointerException("actorType is null in actor: " + actor);
-
-            if(worldActorContainer.containsKey(actorType)) {
-                List<WorldActor> list = worldActorContainer.get(actorType);
-                if (!(list.contains(actor))) {
-                    list.add(actor);
-                    //System.out.println("Added actor of type: " + actorType + " to world actor container");
-                }
-            }
-        }
-
-        // Handles the flagging of deleted actors.
-        List<WorldActor> removeActorList = getWorldDeletedActors(worldEntities);
-
-        // Debug message
-        if (!removeActorList.isEmpty()) {
-            System.out.println("Num of actors to remove: " + removeActorList.size());
-        }
-
-        for (WorldActor actor : removeActorList) {
-            if (actor instanceof Wolf wolf) {
-                wolf.getWolfGang().removeWolfFromGang(wolf);
-            }
-        }
-
-        // Removes the actors in removeActorList from worldActorContainer
-        removeActorList.forEach(worldActor -> {
-            worldActorContainer.get(worldActor.getActorType()).remove(worldActor);
-        });
-    }
-
-    /** Findes all the worldActors that no longer exist in the world's entity list
-     * */
-    private List<WorldActor> getWorldDeletedActors(Map<Object, Location> worldEntities) {
-        List<WorldActor> deletedActors = new ArrayList<>();
-        for (String actorType : worldActorContainer.keySet()) {
-            for (WorldActor actor : worldActorContainer.get(actorType)) {
-                if (!worldEntities.containsKey(actor)) {
-                    deletedActors.add(actor);
-                    //System.out.println("Actor to be removed: " + actor.toString());
-                }
-            }
-        }
-        return deletedActors;
-    }
-
     private void onAlmostNight() {
         for (Animals animal : worldUtils.getAllAnimals()) {
             animal.almostNight(world);
         }
     }
 
-    /** Initiates the mating of wolf's
-     * */
+    /** Initiates the mating of wolf's */
     private void initiateWolfMating() {
+        Map<String, List<WorldActor>> worldActorContainer = entityHandler.getWorldActorContainer();
+
         List<WorldActor> wolfDens = worldActorContainer.get("wolfDen");
         for (WorldActor actor : wolfDens) {
             if (actor instanceof WolfDen wolfDen) {
@@ -373,7 +297,13 @@ public class CapableSim {
         }
     }
 
+    /** Executed though the dispacher in the simulator, is called at each simulation step */
+    public void startSim(Void un) {
+        simulationStep();
+    }
 
+
+    /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
 
     public SpawningAgent getSpawningAgent() {return spawningAgent;}
 
