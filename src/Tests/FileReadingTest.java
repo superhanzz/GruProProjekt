@@ -1,9 +1,12 @@
 package Tests;
 
 import CapableSimulator.CapableSim;
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.InputFileStruct;
+import CapableSimulator.Utils.Parser;
 import CapableSimulator.Utils.SpawningAgent;
 import CapableSimulator.Utils.WorldUtils;
+import FunctionLibrary.CapableFunc;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,20 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileReadingTest {
 
-    static List<String> actorTypes = new ArrayList<>();
-    static {
-        actorTypes.add("grass");
-        actorTypes.add("rabbit");
-        actorTypes.add("burrow");
-        actorTypes.add("wolf");
-        actorTypes.add("bear");
-    }
+
 
     @BeforeEach
     public void setup() {
 
     }
-    /*
+
 
     @RepeatedTest(1)
     public void testReadFile() {
@@ -47,15 +43,20 @@ public class FileReadingTest {
 
 
 
-        for (String actorType : actorTypes) {
+        for (String actorType : CapableFunc.getAllWorldActorTypes()) {
+            if (actorType.equals("carcass") || actorType.equals("putin")) continue;
+
             System.out.printf("Testing for actorType: %5s%s%s.", RED, actorType.toUpperCase(), RESET);
             System.out.println();
 
             Map<String, Map<String, InputFileStruct>> inputFilesToTest = new HashMap<>();
+            Parser parser = new Parser();
 
             // Retrieves all the files containing the actor type
-            Map<String, Map<String, InputFileStruct>> allInputs = new HashMap<>(); // = CapableFunc.getAllInputs(dataFolder);
+            Map<String, Map<String, InputFileStruct>> allInputs = parser.getAllInputs(dataFolder);
+
             for (String fileName : allInputs.keySet()) {
+
                 Map<String, InputFileStruct> input = allInputs.get(fileName);
                 for (String key : input.keySet()) {
                     if (input.get(key) == null) continue;
@@ -71,12 +72,11 @@ public class FileReadingTest {
                 Map<String, InputFileStruct> input = inputFilesToTest.get(fileName);
 
                 // Retrieves the world size and removes it from the inputs map
-                int worldSize = 0; //CapableFunc.getWorldSize(input); // Retrieves the world size
+                int worldSize = parser.getWorldSize(input); // Retrieves the world size
                 if (worldSize == 0) continue;   // If there was no world size then skip this file
 
                 // Creates the simulation environment
-                World world = new World(worldSize);
-                CapableSim sim = new CapableSim(world, worldSize);
+                CapableWorld world = new CapableWorld(worldSize);
 
                 SpawningAgent  spawningAgent = new SpawningAgent(world);
                 WorldUtils worldUtils = new WorldUtils(world);
@@ -84,13 +84,16 @@ public class FileReadingTest {
                 // Creates all the actors of the specified type
                 for (String key : input.keySet()) {
                     if (input.get(key) == null) continue;
+
                     InputFileStruct inputFile = input.get(key);
                     if (!inputFile.actorType.equals(actorType)) continue;
 
                     int preNum = worldUtils.getNumOfActors(actorType);
                     spawningAgent.generateActors(inputFile);
                     int postNum = worldUtils.getNumOfActors(actorType);
+
                     int spawnedNum = postNum - preNum;
+
                     String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
                     //System.out.println(spawnedNum + ",\t ");
                     System.out.print("\t");
@@ -107,7 +110,7 @@ public class FileReadingTest {
             System.out.println();
         }
     }
-    */
+
 
     @AfterEach
     public void tearDown() {

@@ -31,7 +31,7 @@ public class SpawningAgent {
     public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
         TileFinder tileFinder = new TileFinder(world);
         //System.out.println(fileStruct.actorType);
-        System.out.print(fileStruct.actorType);
+        //System.out.print(fileStruct.actorType);
 
         // TODO eval if list should be used for all types of actors
         switch (fileStruct.actorType){
@@ -69,6 +69,7 @@ public class SpawningAgent {
                     Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Bear b = new Bear(world, fileStruct.staticSpawnLocation != null ? fileStruct.staticSpawnLocation : location);
+
                         b.updateOnMap(location, true);
                         listOfActors.add(b);
                     }
@@ -107,7 +108,6 @@ public class SpawningAgent {
                     if (location != null) {
                         BerryBush b = new BerryBush(world);
                         world.setTile(location, b);
-
                         listOfActors.add(b);
                     }
                     else
@@ -148,7 +148,7 @@ public class SpawningAgent {
                 break;
         }
 
-        System.out.println(": " + listOfActors.size());
+        //System.out.println(": " + listOfActors.size());
     }
 
     public Map<String, List<WorldActor>> handleSpawnCycle(Map<String, InputFileStruct> inputMap, boolean isInitSpawns) {

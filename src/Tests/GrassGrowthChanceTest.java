@@ -1,6 +1,7 @@
 package Tests;
 
 import CapableSimulator.Actors.Grass;
+import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
@@ -12,20 +13,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GrassGrowthChanceTest {
 
-    World world;
+    CapableWorld world;
     int sampleSize;
     int grassGrowths;
     double expectedGrowthChance;
 
-    /*
+
     @BeforeEach
     void setUp() {
-        world = new World(3);
+        world = new CapableWorld(3);
         sampleSize = 1000;
         grassGrowths = 0;
 
         // Retrieves the expected grass growth chance from a grass actor, the destroys that instance.
-        Grass g = new Grass();
+        Grass g = new Grass(world);
         expectedGrowthChance = g.getGrowthChance();
         g = null;
     }
@@ -34,7 +35,7 @@ public class GrassGrowthChanceTest {
     void GrassGrowthChanceTest() {
 
         for (int i = 0; i <= sampleSize; i++) {
-            Grass motherGrass = new Grass();
+            Grass motherGrass = new Grass(world);
             Location location = new Location(1, 1);
 
             world.setTile(location, motherGrass);
@@ -50,7 +51,7 @@ public class GrassGrowthChanceTest {
 
         assertEquals(0.01, (grassGrowths / sampleSize), 0.01);
     }
-    */
+
     @AfterEach
     void tearDown() {
 

@@ -44,9 +44,10 @@ public class WorldUtils {
                 for(Object actor : actors){
                     if(actor instanceof Bear) numOfActors++;
                 }
+                break;
             case "berry":
                 for(Object actor : actors){
-                    if(actor instanceof Bear) numOfActors++;
+                    if(actor instanceof BerryBush) numOfActors++;
                 }
                 break;
         }
