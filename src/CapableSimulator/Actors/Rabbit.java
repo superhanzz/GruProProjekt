@@ -111,7 +111,7 @@ public class Rabbit extends Animals {
      * */
     public void findMate(int radius) {
         // If Rabbit can't reproduce, the do nothing
-        if (canMate())
+        if (!canMate())
             return;
 
         // Findes rabbits on surrounding tiles

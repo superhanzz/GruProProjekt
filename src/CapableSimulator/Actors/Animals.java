@@ -283,7 +283,7 @@ public abstract class Animals extends WorldActor {
     }
 
     public void updateOnMap(Location location, boolean putOnMap) {
-        if(location == null) {
+        if(location == null && putOnMap) {
             throw new NullPointerException("In updateOnMap(): Location is null");
         }
 

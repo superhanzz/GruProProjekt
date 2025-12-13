@@ -15,7 +15,7 @@ public class Bear extends Predator {
     /** The center location of the bear's territory.
      *  The bear will only move around within the territory, except if it findes food just outside its territory.
      * */
-    Location territoryCenter;
+    private Location territoryCenter;
 
     /** The size of the bear's territory, given as a radius from the center location.
      * */
@@ -86,17 +86,21 @@ public class Bear extends Predator {
 
     @Override
     public void move(World world){
-        Set<Location> territory = world.getSurroundingTiles(territoryCenter, territoryRadius);
+        Set<Location> territory = world.getSurroundingTiles(territoryCenter, territoryRadius- 1);
         Location[] neighbours = getPossibleFoodTiles(2);
+
         List<Location> validNeighbours = new ArrayList<>();
         for (Location neighbour : neighbours) {
-            if (territory.contains(neighbour) && world.isTileEmpty(neighbour)) validNeighbours.add(neighbour);
+            if (Math.ceil(distance(getTerritoryCenter(), neighbour)) <= territoryRadius) {
+                if (world.isTileEmpty(neighbour)) validNeighbours.add(neighbour);
+            }
+
         }
         Location searchLocation;
         if (validNeighbours.isEmpty()) {
             Location nearestLocation = getClosestTile(world,territoryCenter);
             if (nearestLocation == null) return;
-            searchLocation =  nearestLocation;
+            searchLocation = nearestLocation;
         }
         else {
             Random rand = new Random();
@@ -105,6 +109,12 @@ public class Bear extends Predator {
         world.move(this, searchLocation);
     }
     // TODO make test that test if a bear moves out of it territory.
+
+    @Override
+    public void updateOnMap(Location location, boolean isOnMap) {
+        super.updateOnMap(location, isOnMap);
+        territoryCenter = location;
+    }
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
 
@@ -147,4 +157,8 @@ public class Bear extends Predator {
 
         return returnValue;
     }
+
+    public Location getTerritoryCenter() { return territoryCenter; }
+
+    public int getTerritoryRadius() { return territoryRadius; }
 }
