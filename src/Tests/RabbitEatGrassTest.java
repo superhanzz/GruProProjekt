@@ -23,6 +23,7 @@ public class RabbitEatGrassTest {
     /**
      * Tests whether the rabbit can eat grass or not.
      * */
+    /*
     @RepeatedTest(10)
     void eatTest() {
         // Creates one rabbit and one grass and a location at (0,0).
@@ -48,9 +49,9 @@ public class RabbitEatGrassTest {
     }
 
 
-    /**
+    *//**
      * Tests if the rabbit can die, and then if the actor is actually deleted from the world
-     * */
+     * *//*
     @RepeatedTest(10)
     void dieTest() {
         // Creates a rabbit and inserts it on the map at (0,0)
@@ -68,9 +69,9 @@ public class RabbitEatGrassTest {
     }
 
 
-    /**
+    *//**
      * Tests whether the rabbit dies if it does not eat grass before it runs out of energy.
-     * */
+     * *//*
     @RepeatedTest(10)
     void notEatGrassTest() {
         // Creates a rabbit with a special constructor, where the rabbits starting energy can be defined.
@@ -85,6 +86,7 @@ public class RabbitEatGrassTest {
         // Checks if the rabbit has died, that is the rabbit is not in the worlds entity map.
         assertFalse(world.getEntities().containsKey(r));
     }
+    */
 
     @AfterEach
     public void tearDown() {

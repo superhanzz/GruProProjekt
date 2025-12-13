@@ -76,7 +76,7 @@ public class EntityHandler {
 
         for (WorldActor actor : removeActorList) {
             if (actor instanceof Wolf wolf) {
-                wolf.getWolfGang().removeWolfFromGang(wolf);
+                //wolf.getWolfGang().removeWolfFromGang(wolf);
             }
         }
 

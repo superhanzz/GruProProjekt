@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
@@ -17,8 +18,8 @@ public class Grass extends WorldActor implements NonBlocking{
     DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
 
 
-    public Grass(){
-        super("grass");
+    public Grass(CapableWorld world){
+        super("grass", world);
         growthChance = 0.15;
         energyValue = 2;
     }
@@ -29,10 +30,10 @@ public class Grass extends WorldActor implements NonBlocking{
         if ( world.isNight())
             return;
 
-        grow(world);
+        grow();
     }
 
-    public void grow(World world) {
+    public void grow() {
         Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this));
         List<Location> locations = new ArrayList<>();
         for (Location location : tiles){
@@ -47,7 +48,7 @@ public class Grass extends WorldActor implements NonBlocking{
         int index = rand.nextInt(locations.size());
         Location location = locations.get(index);
         if(rand.nextDouble() < growthChance){
-            world.setTile(location, new Grass());
+            world.setTile(location, new Grass(world));
         }
 
 

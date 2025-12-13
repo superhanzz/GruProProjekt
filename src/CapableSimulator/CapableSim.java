@@ -2,16 +2,12 @@ package CapableSimulator;
 
 import CapableSimulator.Actors.*;
 import CapableSimulator.EventHandeling.Dispacher;
-import CapableSimulator.EventHandeling.EventListener;
 import CapableSimulator.Utils.*;
-import FunctionLibrary.CapableFunc;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.simulator.Simulator;
-import itumulator.world.Location;
 import itumulator.world.World;
 
-import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
@@ -77,6 +73,7 @@ public class CapableSim {
      * Når koden kører vil der blive regristreret en reference til den tilhørende constructor uden parametre,
      * hvor at strengen er nøglen til den tilhørende constructor.
      **/
+    /*
     static {
         actorConstructorRegistry.put("grass", Grass::new); // Her bliver der skabt en reference til "new Grass()" uden parametre, hvor "grass" er nøglen.
         actorConstructorRegistry.put("rabbit", Rabbit::new);
@@ -86,6 +83,7 @@ public class CapableSim {
         actorConstructorRegistry.put("berry", BerryBush::new);
         actorConstructorRegistry.put("putin", Putin::new);
     }
+    */
 
 
     /**
@@ -132,7 +130,7 @@ public class CapableSim {
     /**
      * Denne metode instantiere et nyt Program, derudover gemmer den også hvorvidt det er dag eller nat, og derefter kalder setUpDisplayInformation();
      */
-    void setupSimulation() {
+    /*void setupSimulation() {
 
         program = new Program(worldSize, displaySize, simulationDelay);
         world = program.getWorld();
@@ -148,7 +146,7 @@ public class CapableSim {
         dayNightStatus = world.isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
 
         simStepDispacher = simulator.getStartDispacher();
-    }
+    }*/
 
 
     /**
@@ -161,8 +159,8 @@ public class CapableSim {
      *
      * Til sidst eksekveres itumulator's simulerings kode.(eksempelvis act() metoden)
      */
-    public void runSimulation(){
-        /* Parses the input file into a map */
+    /*public void runSimulation(){
+        *//* Parses the input file into a map *//*
         Parser parser = new Parser();
         inputMap = parser.parseInputsFromFile(new  File(inputDataFilePath));
         worldSize = parser.getWorldSize(inputMap); // Retrieves the world size and removes that entry from the input map
@@ -184,20 +182,20 @@ public class CapableSim {
         //program.run();
         if (false) {
             // timer thing
-            /*
+            *//*
             List<Double> times = new ArrayList<>();
             double startTime = System.nanoTime();
             double endTime = System.nanoTime();
             times.add((endTime - startTime) / 1000000.0);
             double averageTime = times.stream().mapToDouble(Double::doubleValue).sum() / times.size();  // Calculates the average time of a simulation step
             System.out.println(averageTime);
-            */
+            *//*
         }
-    }
+    }*/
 
     /* ----- ----- ----- ----- Simulation ----- ----- ----- ----- */
 
-    public void simulationStep() {
+    /*public void simulationStep() {
         entityHandler.updateWorldActorContainer();    // Should be first to be executed on each simulation step
         //System.out.println(simulator.getSteps()); // prints the current simulation step
 
@@ -238,9 +236,9 @@ public class CapableSim {
                 }
             }
         }
-    }
+    }*/
 
-    private void removeStuckActors() {
+    /*private void removeStuckActors() {
         Map<Object, Location> entities = world.getEntities();
         Map<String, List<WorldActor>> worldActorContainer = entityHandler.getWorldActorContainer();
 
@@ -254,7 +252,7 @@ public class CapableSim {
                 }
             }
         }
-    }
+    }*/
 
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
@@ -264,14 +262,14 @@ public class CapableSim {
         List<Animals> animals = worldUtils.getAllAnimals();
         switch (dayNightStatus){
             case DAY:
-                animals.forEach((animal) -> {animal.onDay(world);});
+                //animals.forEach((animal) -> {animal.onDawn(world);});
                 dayNumber++;
 
                 if (dayNumber > 0) spawningAgent.handleSpawnCycle(inputMap, false);
                 break;
             case NIGHT:
                 //System.out.println("it has become night");
-                animals.forEach((animal) -> {animal.onNight(world);});
+                //animals.forEach((animal) -> {animal.onNightFall(world);});
                 break;
             default:
                 return;
@@ -280,7 +278,7 @@ public class CapableSim {
 
     private void onAlmostNight() {
         for (Animals animal : worldUtils.getAllAnimals()) {
-            animal.almostNight(world);
+            animal.onDusk();
         }
     }
 
@@ -292,15 +290,13 @@ public class CapableSim {
         for (WorldActor actor : wolfDens) {
             if (actor instanceof WolfDen wolfDen) {
                 //System.out.println("Trying to mate in WolfDen: " + wolfDen);
-                wolfDen.makeCup(world);
+                wolfDen.makeCup();
             }
         }
     }
 
     /** Executed though the dispacher in the simulator, is called at each simulation step */
-    public void startSim(Void un) {
-        simulationStep();
-    }
+
 
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */

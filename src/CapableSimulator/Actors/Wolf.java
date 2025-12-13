@@ -1,11 +1,11 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
 import CapableSimulator.Utils.TileFinder;
 import CapableSimulator.Utils.WorldUtils;
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Wolf extends Predator {
+public class Wolf extends Predator implements FlockAnimal {
 
     //the pack that the wolf is part of
     //Set<Actor> wolfGang;
@@ -44,55 +44,35 @@ public class Wolf extends Predator {
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     //Default constructor for wolf, used in the actorConstructorRegistry
-    public Wolf() {
-        super("wolf");
-        this.energy = 20;
-        this.maxEnergy = 30;
-        this.age = 0;
+    public Wolf(CapableWorld world) {
+        super("wolf",  world, 30, 0, 30);
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
         fungiState = CapableEnums.FungiState.NORMAL;
+
         wolfType = CapableEnums.WolfType.NPC;
 
-        //actorType = "wolf";
+        wolfGang = null;
     }
 
-    //Wolf constructor used for instantiating new wolves, with a pack as parameter.
-    public Wolf(Set<Actor> wolfgang) {
-        super("wolf");
-        this.energy = 20;
-        this.maxEnergy = 30;
-        this.age = 0;
-        //this.wolfGang = wolfgang;
+    public Wolf(CapableWorld world, WolfGang wolfgang, boolean isAlpha) {
+        super("wolf", world, 30, 0, 30);
 
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
-        wolfType = CapableEnums.WolfType.NPC;
-    }
-
-    public Wolf(WolfGang wolfgang, boolean isAlpha) {
-        super("wolf");
-        //this.energy = isAlpha ? 20 : 100;
-        this.energy = 20;
-        this.maxEnergy = 30;
-        this.age = 0;
         this.wolfGang = wolfgang;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
         fungiState = CapableEnums.FungiState.NORMAL;
-        wolfType = isAlpha ? CapableEnums.WolfType.ALPHA : CapableEnums.WolfType.NPC;
 
-        hasSpecialMovementBehaviour = wolfType.equals(CapableEnums.WolfType.NPC);
+        if (isAlpha)
+            wolfType = CapableEnums.WolfType.ALPHA;
+        else
+            wolfType = CapableEnums.WolfType.NPC;
     }
 
-    public Wolf(WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState) {
-        super("wolf");
-        this.energy = 20;
-        this.maxEnergy = 30;
-        this.age = 0;
+    public Wolf(CapableWorld world, WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState, CapableEnums.FungiState fungiState) {
+        super("wolf", world, 30, 0, 30);
 
         this.wolfGang = wolfgang;
         this.alpha = alpha;
@@ -100,10 +80,9 @@ public class Wolf extends Predator {
 
         this.animalSize = animalSize;
         this.animalState = animalState;
-        fungiState = CapableEnums.FungiState.NORMAL;
-        wolfType = CapableEnums.WolfType.NPC;
+        this.fungiState = fungiState;
 
-        hasSpecialMovementBehaviour = true;
+        wolfType = CapableEnums.WolfType.NPC;
     }
 
 
@@ -112,10 +91,11 @@ public class Wolf extends Predator {
     //Act method implemented from Actor, every step the wolf is updated and methods are called.
     @Override
     public void act(World world){
+        super.act(world);
         if (dead) return;
 
         if (world.isNight()) {
-            if (isOnMap) goIntoDen(world);
+            if (isOnMap) tryEnterDen();
             else {
 
             }
@@ -123,20 +103,18 @@ public class Wolf extends Predator {
         else {
             //if (alpha == null) System.out.println(wolfType.toString());
             if (!isOnMap) {
-                exitDen(world);
+                exitDen();
             }
             else {
                 if (!alpha.isOnMap) {
-                    lookForFood(1);
+                    move(world);
                 }
             }
         }
 
         if (wolfType == CapableEnums.WolfType.ALPHA && world.isDay() && isOnMap) {
             lookForFood(1);
-            wolfGang.alphaMoved(world, world.getLocation(this));
-
-
+            wolfGang.alphaMoved(world.getLocation(this));
         }
 
     }
@@ -152,7 +130,7 @@ public class Wolf extends Predator {
                 kill(enemy);
             }
             else {
-                becomeCarcass(world);
+                becomeCarcass();
             }
         }
         // other enemy
@@ -178,46 +156,70 @@ public class Wolf extends Predator {
         return winChance;
     }
 
-    protected void goIntoDen(World world) {
-        if (wolfGang.denLocation == null) return;
-        Location wolfLocation = getLocation();
+    /**
+     * @throws NullPointerException If actor isn't on the world map*/
+    private void tryEnterDen() {
+        if (wolfDen == null) return;
 
-        if (distance(wolfLocation, wolfGang.denLocation) <= 2 && isOnMap) {
-            updateOnMap(world, wolfLocation, false);
-            wolfDen.wolfEnteredDen(this);
+        if (distance(getLocation(), wolfGang.getShelterLocation()) <= 2) {
+            enterDen();
         }
         else {
-            Location moveToTile = getMoveToTile(world, wolfLocation, wolfGang.denLocation);
-            if (moveToTile != null) world.move(this, moveToTile);
+            goToDen();
         }
+    }
 
-        //if (isOnMap && world.getCurrentTime() == 19) System.out.println(distance(wolfLocation, wolfGang.denLocation));
+    private void goToDen() {
+        Location moveToTile = getMoveToTile(world, getLocation(), wolfGang.getShelterLocation());
+        if (moveToTile != null) world.move(this, moveToTile);
+    }
+
+    private void enterDen() {
+        updateOnMap(new Location(0,0), false);
+        wolfDen.wolfEnteredDen(this);
+    }
+
+    protected void exitDen() {
+        if (isOnMap) return;
+
+        TileFinder tileFinder = new TileFinder(world);
+        Location spawnAt = tileFinder.getEmptyTileAroundActor(wolfDen, true);
+        if (spawnAt == null) return;
+
+        updateOnMap(spawnAt, true);
+        wolfDen.wolfLeftDen(this);
     }
 
     @Override
     public void die(World world) {
-        wolfGang.wolfDied(this);
+        System.out.println("Wolf Died");
+        wolfGang.flockMemberDied(this); //wolfDied(this);
         world.delete(this);
-        dead = true;
+        isOnMap = false;
     }
 
 
     /* ----- ----- ----- ----- NPC Wolf Specific ----- ----- ----- ----- */
 
-    public void followAlpha(World world, Location alphaLocation) {
-        if (!isOnMap || dead) return;
+    public void followAlpha(Location alphaLocation) {
+        if (!isOnMap) return;
 
         Location wolfLocation = getLocation();
-        double distance =distance(wolfLocation, alphaLocation);
+        double distance = Math.ceil(distance(wolfLocation, alphaLocation));
 
 
-        if (distance >= wolfGang.radiusAroundAlpha) { // if the wolf is within the allowed radius of the alpha
-            //something
+        if (distance >= wolfGang.getAllowedRadiusAroundAlpha()) { // if the wolf is within the allowed radius of the alpha
+            Location moveToLocation = getMoveToTile(world, wolfLocation, alphaLocation);
+            if (moveToLocation != null) world.move(this, moveToLocation);
         }
+        if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
+            tryFight();
+        else
+            lookForFood(1);
+    }
 
-        Location moveToLocation = getMoveToTile(world, wolfLocation, alphaLocation);
-        if (moveToLocation != null) world.move(this, moveToLocation);
-        else move(world);
+    private void tryFight() {
+        System.out.println("Wolf Attacking");
         List<Predator> enemies = new ArrayList<>();
         if (lookForEnemy(enemies, 1)) {
             Wolf enemy = null;
@@ -237,36 +239,26 @@ public class Wolf extends Predator {
 
     /* ----- ----- ----- ----- Alpha Wolf Specific ----- ----- ----- ----- */
 
-    public void promoteToAlpha() {
-        wolfType = CapableEnums.WolfType.ALPHA;
-        wolfGang.setNewAlpha(this);
-        setAlpha(alpha);
-    }
-
-    private void digWolfDen(World world) {
+    private void digWolfDen() {
         Object nonBlocking = world.getNonBlocking(getLocation());
         if (nonBlocking != null) {
-            if (nonBlocking instanceof Burrow || nonBlocking instanceof WolfDen) return;
+            if (nonBlocking instanceof AnimalShelter) return;
             else world.delete(nonBlocking);
         }
-        wolfDen = new WolfDen(wolfGang);
+
+        wolfDen = new WolfDen(world, wolfGang);
         new SpawningAgent(world).spawnActorAtLocation(wolfDen, getLocation());
-        wolfGang.wolfDenCreated(world, wolfDen);
+
+        wolfGang.flockShelterCreated(wolfDen);
     }
 
-    protected void exitDen(World world) {
-        if (wolfGang == null && wolfGang.denLocation == null) return;
-
-        TileFinder tileFinder = new TileFinder(world);
-        Location spawnAt = tileFinder.getEmptyTileAroundActor(wolfDen, true);
-        if (spawnAt == null) return;
-
-        updateOnMap(world, spawnAt, true);
-        wolfDen.wolfLeftDen(this);
+    private void promoteToAlpha() {
+        wolfType = CapableEnums.WolfType.ALPHA;
     }
+
 
     // alpha can see whole map TODO and move to animals or something
-    private void alphaSight(World world) {
+    private void alphaSight() {
         // Gets references to all the possible food sources
         Map<String, Set<WorldActor>> allPossibleFoodActors = new WorldUtils(world).getAllWorldActorsAsMap(eatableFoodTypes.get(actorType));
 
@@ -324,26 +316,69 @@ public class Wolf extends Predator {
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
-    public void onDay(World world) {
+    public void onDawn() {
         animalState = CapableEnums.AnimalState.AWAKE;
-        if (!isOnMap) exitDen(world);
+        if (!isOnMap) exitDen();
     }
 
     @Override
-    public void onNight(World world) {
+    public void onNightFall() {
         animalState = CapableEnums.AnimalState.SLEEPING;
+        if (isOnMap) tryEnterDen();
     }
 
     @Override
-    public void almostNight(World world) {
+    public void onDusk() {
         if (wolfType.equals(CapableEnums.WolfType.ALPHA) && wolfDen == null) {
-            digWolfDen(world);
+            digWolfDen();
         }
         if (wolfDen != null) {
-            //System.out.println("go to den");
+            goToDen();
         }
     }
 
+
+    /* ----- ----- ----- ----- Flock Animal Behavior ----- ----- ----- ----- */
+
+    /** Updates the wolf's alpha. This is called from the Wolf's AnimalFlock.
+     *
+     * @param newLeader The new leader of the flock
+     * @throws IllegalArgumentException when newLeader isn't an instance of Wolf
+     */
+    public void newFlockLeader(Animals newLeader) {
+        if (newLeader instanceof Wolf wolf) {
+            setAlpha(wolf);
+        }
+        else {
+            throw new IllegalArgumentException("In (Wolf) newFlockLeader(): newLeader must be instance of Wolf");
+        }
+    }
+
+    /** Sets the wolf's wolfDen. This is called from the Wolf's AnimalFlock.
+     * @param shelter Is the reference to be set
+     * @throws IllegalArgumentException If the shelter isn't an instance of WolfDen
+     */
+    public void setFlockShelter(AnimalShelter shelter) {
+        if (shelter instanceof WolfDen den) {
+            wolfDen = den;
+        }
+        else {
+            throw new IllegalArgumentException("In (Wolf) setFlockDen(): shelter must be instance of WolfDen");
+        }
+    }
+
+    /** Sets the wolf's wolfGang. This is called from the Wolf's AnimalFlock.
+     * @param flock Is the reference to be set
+     * @throws IllegalArgumentException If the shelter isn't an instance of WolfGang
+     */
+    public void setFlock(AnimalFlock flock) {
+        if (flock instanceof WolfGang wolfGang) {
+            this.wolfGang = wolfGang;
+        }
+        else {
+            throw new IllegalArgumentException("In (Wolf) setFlock(): flock must be instance of WolfGang");
+        }
+    }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
 
@@ -354,7 +389,7 @@ public class Wolf extends Predator {
     @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         if (possibleEnemy instanceof Wolf wolf) {
-            return (wolf.getWolfGang() != this.wolfGang);
+            return (wolfGang.isMemberOfFlock(wolf));
         }
         else if (possibleEnemy instanceof Bear){
             List<Wolf> nearbyWolfsFromGang = new ArrayList<>();
@@ -376,23 +411,17 @@ public class Wolf extends Predator {
         return returnValue;
     }
 
+    @Override
+    protected boolean getHasSpecialMovementBehaviour()  {return wolfType.equals(CapableEnums.WolfType.NPC);}
+
 
     /* ----- ----- ----- ----- Setters ----- ----- ----- ----- */
 
     public void setAlpha(Wolf wolf) {
-        this.alpha = wolf;
-        hasSpecialMovementBehaviour = false;
-    }
-
-    public void setWolfDen(WolfDen wolfDen) {
-        if (wolfDen == null) {
-            throw new NullPointerException("In SetWolfDen(): WolfDen is null");
+        alpha = wolf;
+        if(wolf == this) {
+            promoteToAlpha();
         }
-        if (this.wolfDen != null) {
-            System.out.println("setWolfDen(): WolfDen is already set");
-            return;
-        }
-        this.wolfDen = wolfDen;
     }
 
 }

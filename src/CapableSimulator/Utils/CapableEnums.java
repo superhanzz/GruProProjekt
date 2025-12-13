@@ -4,7 +4,10 @@ public class CapableEnums {
 
     public enum DayNightStatus {
         DAY,
-        NIGHT;
+        NIGHT,
+        DUSK,
+        DAWN,
+        MIDNIGHT;
     }
 
 
@@ -58,5 +61,10 @@ public class CapableEnums {
         SIZE,
         FUNGI_STATE,
         STATE;
+    }
+
+    public enum SimulationType {
+        NORMAL,
+        TEST;
     }
 }

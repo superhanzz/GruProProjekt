@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -8,8 +9,12 @@ import java.util.*;
 
 public abstract class Predator extends Animals {
 
-    protected Predator(String actorType) {
-        super(actorType);
+    protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
+        super(actorType, world,  energy, age, MAX_ENERGY);
+    }
+
+    protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+        super(actorType, world,  energy, age, MAX_ENERGY,  MATING_AGE, MATING_COOLDOWN_DURATION);
     }
 
     @Override
@@ -59,7 +64,7 @@ public abstract class Predator extends Animals {
 
     protected void kill(Animals animal) {
         Carcass carcass = null;
-        carcass = animal.becomeCarcass(world);
+        carcass = animal.becomeCarcass();
         if(carcass != null){
             eat(carcass);
         }

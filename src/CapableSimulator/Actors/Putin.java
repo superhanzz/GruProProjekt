@@ -1,13 +1,11 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
-import itumulator.world.Location;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -32,11 +30,11 @@ public class Putin extends Animals {
 
     DisplayInformation diPutin = new DisplayInformation(Color.blue, "putin");
 
-    public Putin(){
-        super("putin");
-        this.energy = 100;
-        this.maxEnergy = 1000;
-        this.age = 73;
+    public Putin(CapableWorld world){
+        super("putin", world, 50, 0,100);
+        /*this.energy = 100;
+        this.MAX_ENERGY = 1000;
+        this.age = 73;*/
     }
 
 
@@ -48,20 +46,21 @@ public class Putin extends Animals {
     }
 
 
+
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
-    public void onDay(World world){
+    public void onDawn(){
 
     }
 
     @Override
-    public void onNight(World world){
+    public void onNightFall(){
 
     }
 
     @Override
-    public void almostNight(World world) {
+    public void onDusk() {
 
     }
 

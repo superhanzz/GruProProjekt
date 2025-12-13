@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
@@ -32,8 +33,8 @@ public class Fungi extends WorldActor {
     /** The default constructor where the only param is the actorType.
      *  Both 'energy' and 'size' is set to default value
      * */
-    public Fungi(String actorType) {
-        super(actorType);
+    public Fungi(CapableWorld world) {
+        super("fungi", world );
         this.energy = DEFAULT_ENERGY_VALUE;
         this.size = DEFAULT_SIZE;
     }
@@ -41,8 +42,8 @@ public class Fungi extends WorldActor {
     /** This constructor should be used when converting a 'Carcass' to a fungi.
      *  The fungi's size decides the 'energy' value.
      * */
-    public Fungi(String actorType, CapableEnums.AnimalSize size) {
-        super(actorType);
+    public Fungi(CapableWorld world, CapableEnums.AnimalSize size) {
+        super("fungi", world);
         this.size = size;
 
         this.energy = switch (size) {
@@ -52,8 +53,8 @@ public class Fungi extends WorldActor {
     }
     /** No actual use at the moment.
      * */
-    public Fungi(String actorType, CapableEnums.AnimalSize size, int energy) {
-        super(actorType);
+    public Fungi(CapableWorld world, CapableEnums.AnimalSize size, int energy) {
+        super("fungi", world);
         this.energy = energy;
         this.size = size;
     }

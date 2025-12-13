@@ -1,7 +1,7 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
-import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -15,7 +15,7 @@ public abstract class Animals extends WorldActor {
     /** The maximal amount of energy the animal can have.
      *  if the animal eats and the energy exceeds the maximal value, energy is clamped.
      * */
-    protected int maxEnergy;
+    private final int MAX_ENERGY;
 
     /** The energy variable is the variable that keeps track of the animal energy.
      *  If energy = 0, the animal dies at the end of the simulation step.
@@ -33,31 +33,25 @@ public abstract class Animals extends WorldActor {
     /** Defines the age of the animal before it can mate.
      * Default is set to 10 in Animal class
      * */
-    protected final int matingAge;
-
-    /** The animal should not be able to mate during nights, this keeps that from happening.
-     * */
-    protected boolean canMate;
+    private final int MATING_AGE;
 
     /** The cooldown period after an animal has mated.
      *  It goes down by one after each simulation step
      * */
-    protected int matingCooldown;
+    private int matingCooldown;
 
     /** What the matingCooldown is set to after a successful mating has occurred.
      * Set's the cooldown in both parrents.
      * Default is set to 20 in Animal class
      * */
-    protected final int MATING_COOLDOWN_DURATION;
+    private final int MATING_COOLDOWN_DURATION;
 
     public boolean dead = false;
 
     protected CapableEnums.AnimalState animalState;
     protected CapableEnums.AnimalSize animalSize;
 
-    protected World world;
-
-    protected  boolean hasSpecialMovementBehaviour;
+    private  boolean hasSpecialMovementBehaviour;
     boolean isOnMap;
 
     protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
@@ -86,19 +80,31 @@ public abstract class Animals extends WorldActor {
 
     /** Default constructor
      * */
-    public Animals(String actorType) {
-        super(actorType);
-        this.matingAge = 20;
-        this.MATING_COOLDOWN_DURATION = 20;
+    public Animals(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
+        super(actorType, world);
 
-        world = null;
+        // Non-statics
+        this.energy = energy;
+        this.age = age;
+
+        // Statics
+        this.MAX_ENERGY = MAX_ENERGY;
+        this.MATING_AGE = 20;
+        this.MATING_COOLDOWN_DURATION = 20;
     }
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
      * */
-    public Animals(String actorType, int matingAge, int MATING_COOLDOWN_DURATION) {
-        super(actorType);
-        this.matingAge = matingAge;
+    public Animals(String actorType, CapableWorld world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+        super(actorType, world);
+
+        // Non-statics
+        this.energy = energy;
+        this.age = age;
+
+        // Statics
+        this.MAX_ENERGY = MAX_ENERGY;
+        this.MATING_AGE = MATING_AGE;
         this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
     }
 
@@ -125,10 +131,22 @@ public abstract class Animals extends WorldActor {
     }
 
     protected void doEverySimStep() {
+        if (world.isNight()) {
+            return;
+        }
+
         energy--;
         if(energy <= 0) die(world);
         age++;
-        if (animalSize == CapableEnums.AnimalSize.BABY && age > 10) animalSize = CapableEnums.AnimalSize.ADULT;
+
+        // Handles child becoming adult
+        if (animalSize.equals(CapableEnums.AnimalSize.BABY)) {
+            if (age > 10) animalSize = CapableEnums.AnimalSize.ADULT;
+        }
+
+        // Updates the matingCooldown
+        matingCooldown--;
+        matingCooldown = Math.clamp(matingCooldown, 0, MATING_COOLDOWN_DURATION);
     }
 
 
@@ -146,7 +164,7 @@ public abstract class Animals extends WorldActor {
         if(eatableActor != null){
             prepareToEat(eatableActor);
         }else {
-            if (!hasSpecialMovementBehaviour) move(world);
+            if (!getHasSpecialMovementBehaviour()) move(world);
         }
     }
 
@@ -182,7 +200,7 @@ public abstract class Animals extends WorldActor {
 
     protected void eat(WorldActor actor){
         if (actor instanceof Carcass carcass) {
-            int gainedEnergy = carcass.getConsumed(world, (maxEnergy - energy));
+            int gainedEnergy = carcass.getConsumed(world, (MAX_ENERGY - energy));
             energy += gainedEnergy;
         }
         else if (actor instanceof BerryBush berryBush) {
@@ -217,14 +235,33 @@ public abstract class Animals extends WorldActor {
 
     /* ----- ----- ----- World Related ----- ----- ----- */
 
-    public Carcass becomeCarcass(World world) {
+    /** Converts the dead animal to a carcass
+     *  @return A reference to the newly created carcass
+     */
+    public Carcass becomeCarcass() {
         Location location = getLocation();
         die(world);
-        Carcass carcass = new Carcass(Math.max(energy, 10), animalSize);
+        Carcass carcass = new Carcass(world, Math.max(energy, 10), animalSize);
         world.setTile(location, carcass);
         System.out.println("Carcass has been created");
 
         return carcass;
+    }
+
+    /** Checks all the criteria for mating.
+     *  returns true if all the criteria are met, otherwise returns false
+     */
+    public boolean canMate() {
+        boolean canReproduce = (
+                        matingCooldown <= 0 &&
+                        age >= MATING_AGE &&
+                        world.isDay());
+
+        return canReproduce;
+    }
+
+    public void animalJustReproduce() {
+        matingCooldown = MATING_COOLDOWN_DURATION;
     }
 
     private void becomeFungi() {
@@ -245,13 +282,11 @@ public abstract class Animals extends WorldActor {
         return world.getLocation(this);
     }
 
-    public void updateOnMap(World world, Location location, boolean putOnMap) {
-        if(world == null || location == null) {
-            if (world == null) throw new NullPointerException("In updateOnMap(): World is null");
-            else throw new NullPointerException("In updateOnMap(): Location is null");
+    public void updateOnMap(Location location, boolean putOnMap) {
+        if(location == null) {
+            throw new NullPointerException("In updateOnMap(): Location is null");
         }
-        if (this.world != world)
-            this.world = world;
+
 
         if (putOnMap) {
             if (world.isTileEmpty(location)) {
@@ -269,33 +304,15 @@ public abstract class Animals extends WorldActor {
 
     /** onDay() is an event that is executed when the world's current time is 0.
      * */
-    public abstract void onDay(World world);
-
-    /** onNight() is an event that is executed when the world's current time is 10.
-     * */
-    public abstract void onNight(World world);
+    public abstract void onDawn();
 
     /** almostNight() is an event that is executed  when the world's current time is 9.
      * */
-    public abstract void almostNight(World world);
+    public abstract void onDusk();
 
-
-    protected Location[] getPossibleFoodTiles(int searchRadius) {
-        return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
-    }
-
-    public Location getMovementVector(Location start, Location end) {
-        int x = end.getX() - start.getX();
-        int y = end.getY() - start.getY();
-        return new Location(x, y);
-    }
-
-    public Location locationAddition(Location A, Location B) {
-        int x = A.getX() + B.getX();
-        int y = A.getY() + B.getY();
-        return new Location(x, y);
-    }
-
+    /** onNight() is an event that is executed when the world's current time is 10.
+     * */
+    public abstract void onNightFall();
 
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
@@ -401,6 +418,22 @@ public abstract class Animals extends WorldActor {
         return moveToLocation;
     }
 
+    public Location getMovementVector(Location start, Location end) {
+        int x = end.getX() - start.getX();
+        int y = end.getY() - start.getY();
+        return new Location(x, y);
+    }
+
+    protected Location[] getPossibleFoodTiles(int searchRadius) {
+        return world.getSurroundingTiles(world.getLocation(this),searchRadius).toArray(new Location[0]);
+    }
+
+    public Location locationAddition(Location A, Location B) {
+        int x = A.getX() + B.getX();
+        int y = A.getY() + B.getY();
+        return new Location(x, y);
+    }
+
     /* ----- ----- ----- ----- Getters and setters ----- ----- ----- ----- */
 
     /** Method for getting the key to find the correct display information */
@@ -415,4 +448,7 @@ public abstract class Animals extends WorldActor {
     public int getEnergyValue() {
         return energy;
     }
+
+    protected boolean getHasSpecialMovementBehaviour() {return false; }
+    //protected void setHasSpecialMovementBehaviour(boolean hasSpecialMovementBehaviour) { this.hasSpecialMovementBehaviour = hasSpecialMovementBehaviour; }
 }

@@ -1,0 +1,10 @@
+Program:
+    Added a setter for: World.
+    Added a setter for: Simulator
+
+Simulator:
+
+World:
+
+Canvas:
+    added a setter for: World

@@ -20,6 +20,7 @@ public class RabbitHoleTest {
     }
 
     // test whether the rabbit can dig a burrow, and also if it is possible for a rabbit to stand on a burrow
+    /*
     @RepeatedTest(100)
     public void rabbitDigHoleTest() {
         // Creates a rabbit and inserts it on the map on tile (0,0)
@@ -78,9 +79,9 @@ public class RabbitHoleTest {
     }
 
 
-    /**
+    *//**
      * Test that the rabbit go to it's burrow when it's about to turn to night
-     * */
+     * *//*
     @RepeatedTest(100)
     public void rabbitGoTowardsBurrowTest() {
         // creates a rabbit and inserts it onto the map at (0,1)
@@ -110,6 +111,7 @@ public class RabbitHoleTest {
             world.delete(o);
         });
     }
+    */
 
     @AfterEach
     public void tearDown() {

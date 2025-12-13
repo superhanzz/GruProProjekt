@@ -9,15 +9,19 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
+    private static final Map<String, InputFileStruct>  inputMap = new  HashMap<>();
+    private final String inputFilePath;
 
-    public static Map<String, InputFileStruct> parseInputsFromFile(File file){
-        if (file == null) return null;      // TODO make exeption or something
+    public Parser(String inputFilePath) {
+        this.inputFilePath = inputFilePath;
+    }
+
+    public void parseInputsFromFile(){
+        File file = new File(inputFilePath);
 
         final String RED = "\u001B[31m";
         final String GREEN = "\u001B[32m";
         final String RESET = "\u001B[0m";
-
-        Map<String, InputFileStruct> map = new HashMap<>();
 
         int lineNumber = 0;                 // Debug line number
         String filePath = file.getPath();   // Debug file path
@@ -27,7 +31,7 @@ public class Parser {
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
             int worldSize = Integer.parseInt(sc.nextLine());
-            map.put(new String("#" + String.valueOf(worldSize) + "#"), null);
+            inputMap.put(new String("#" + String.valueOf(worldSize) + "#"), null);
 
             lineNumber++;   // Debug line number
             while(sc.hasNextLine()){
@@ -37,19 +41,19 @@ public class Parser {
                     String mapKey = inputFile.actorType;
 
                     // Handles the case of the return map already contains an entry of the same class.
-                    if (map.containsKey(inputFile.actorType)) {
+                    if (inputMap.containsKey(inputFile.actorType)) {
 
                         // Findes the amount of times the same actory type is present in the map.
                         int numOfSameActorType = 0;
-                        for (String key : map.keySet()) {
-                            if (map.get(key) != null) {     // Ignores the world size entry
-                                if (map.get(key).actorType.equals(inputFile.actorType))
+                        for (String key : inputMap.keySet()) {
+                            if (inputMap.get(key) != null) {     // Ignores the world size entry
+                                if (inputMap.get(key).actorType.equals(inputFile.actorType))
                                     numOfSameActorType++;
                             }
                         }
                         mapKey += String.valueOf(numOfSameActorType); // Updates the mapKey
                     }
-                    map.put(mapKey, inputFile);
+                    inputMap.put(mapKey, inputFile);
 
                     System.out.printf("%-10s* %-10s%s%n",GREEN, inputFile.actorType,  RESET);
                     lineNumber++;   // Debug line number
@@ -63,10 +67,9 @@ public class Parser {
             System.out.println(filePath);
             System.out.println();
         }
-        return map;
     }
 
-    public static Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
+    public Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
         Map<File, List<File>> map = new HashMap<>();
 
         //File dataFolder = new File("src/Data");
@@ -82,7 +85,7 @@ public class Parser {
         return map;
     }
 
-    public static String getInputFileName(File file){
+    public String getInputFileName(File file){
         String fileName = file.getPath();
         if(!fileName.contains("src/Data/")){
             throw new RuntimeException("Tried to get input file name from file: " + fileName + ".\n \t - Which is not in the DataFolder. \n \t -In CapableFunc.getInputFileName().");
@@ -90,7 +93,7 @@ public class Parser {
         return fileName.replaceAll(".*/([^/]+)\\.[^/]+$", "$1");
     }
 
-    public static Map<String, Map<String, InputFileStruct>> getAllInputs(File dataFolder) {
+    public Map<String, Map<String, InputFileStruct>> getAllInputs(File dataFolder) {
         if (dataFolder == null) return null;    // TODO make exeption or something
 
         Map<String, Map<String, InputFileStruct>> allInputs = new HashMap<>();
@@ -115,12 +118,16 @@ public class Parser {
         return allInputs;
     }
 
-    public static int getWorldSize(Map<String, InputFileStruct> map) {
-        if (map == null || map.isEmpty()) return 0;
+    public Map<String, InputFileStruct>  getInputMap() {
+        return inputMap;
+    }
+
+    public int getWorldSize() {
+        if (inputMap.isEmpty()) return 0;
         String worldSizeKey = null;
         int worldSize = 0;
 
-        for (String key : map.keySet()) {
+        for (String key : inputMap.keySet()) {
             if (key.contains("#")) {
                 Pattern pattern = Pattern.compile("\\#(\\d+)\\#");  // Regular expression that accepts Strings of the form "#<integer>#"
                 Matcher matcher = pattern.matcher(key);
@@ -131,7 +138,7 @@ public class Parser {
                 }
             }
         }
-        map.remove(worldSizeKey);
+        inputMap.remove(worldSizeKey);
         return worldSize;
     }
 }

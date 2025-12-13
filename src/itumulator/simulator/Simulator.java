@@ -74,7 +74,7 @@ public class Simulator {
         frame.updateDayNightLabel(world.isDay());
         frame.updateStepLabel(steps);
 
-        simulateDispacher.dispach(null);
+        //simulateDispacher.dispach(null);
 
         // iterate all actors of the world and execute their actions.
         Map<Object, Location> entities = world.getEntities();

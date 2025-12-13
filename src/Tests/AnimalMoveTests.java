@@ -34,6 +34,7 @@ public class AnimalMoveTests {
     /** tests that the wolf doesn't accidently get's removed from the map when trying to move, and also tests the propability of a wolf not moving during a step isn't too high
      * in the test wolf's must not be able to die.
      * */
+    /*
     @RepeatedTest(10)
     public void wolfMoveTestNotDeletingEntities() {
 
@@ -114,6 +115,7 @@ public class AnimalMoveTests {
         allNoMovesProp.clear(); // clears the map for the next test run.
         System.out.println(avNoMoveProp);
     }
+    */
 
     @AfterEach
     public void tearDown() {

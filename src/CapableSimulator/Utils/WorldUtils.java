@@ -1,6 +1,7 @@
 package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -8,9 +9,9 @@ import java.util.*;
 
 public class WorldUtils {
 
-    World world;
+    CapableWorld world;
 
-    public WorldUtils(World world) {
+    public WorldUtils(CapableWorld world) {
         this.world = world;
     }
 

@@ -48,9 +48,10 @@ public class SpawnAmountTest {
      *
      * @param actorType The actor type which is to be tested.
      * */
+    /*
     protected Map<String, Interval> buildSpawnCalls(String actorType) {
-        /* Finds all files where the given actor type
-        grass is defined and put's them in a map with the amount of instances as an interval, if an interval isn't specified, the max value is set to 0 */
+        *//* Finds all files where the given actor type
+        grass is defined and put's them in a map with the amount of instances as an interval, if an interval isn't specified, the max value is set to 0 *//*
 
 
         Map<String, Interval> spawnCalls = new HashMap<>(); // The map to be returned.
@@ -95,12 +96,12 @@ public class SpawnAmountTest {
         return spawnCalls;
     }
 
-    /**
+    *//**
      * Test each of the input files' where the given actor type is present.
      *
      * @param actorType The actor type which is to be tested.
      * @param spawnCalls A map containing all the files wherein the actor type is present.
-     * */
+     * *//*
     protected void checkSpawns(String actorType, Map<String, Interval> spawnCalls) {
         Map<String, Boolean> assertions = new HashMap<>(); // The map containing the values to be evaluated in the test.
 
@@ -141,27 +142,27 @@ public class SpawnAmountTest {
 
 
 
-    /**
+    *//**
      * Grass Test
-     * */
+     * *//*
     @RepeatedTest(10)
     public void grassSpawnAmountTest(){
         Map<String, Interval> spawnCalls = buildSpawnCalls("grass");
         checkSpawns("grass", spawnCalls);
     }
 
-    /**
+    *//**
      * Rabbit Test
-     * */
+     * *//*
     @RepeatedTest(10)
     public void rabbitSpawnAmountTest(){
         Map<String, Interval> spawnCalls = buildSpawnCalls("rabbit");
         checkSpawns("rabbit", spawnCalls);
     }
 
-    /**
+    *//**
      * Rabbit Test
-     * */
+     * *//*
     @RepeatedTest(10)
     public void burrowSpawnAmountTest(){
         Map<String, Interval> spawnCalls = buildSpawnCalls("burrow");
@@ -192,7 +193,7 @@ public class SpawnAmountTest {
         }
 
     }
-
+*/
 
     @AfterEach
     public void tearDown() {

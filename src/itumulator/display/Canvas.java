@@ -277,4 +277,5 @@ public class Canvas extends JPanel {
         }
     }
 
+    public void setWorld(World world) { this.world = world; }
 }

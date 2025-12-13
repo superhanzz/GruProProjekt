@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class WolfDen extends WorldActor implements NonBlocking {
+public class WolfDen extends AnimalShelter implements NonBlocking {
 
     WolfGang owners;
     private Set<Wolf> wolfsInDen;
@@ -19,11 +20,11 @@ public class WolfDen extends WorldActor implements NonBlocking {
     DisplayInformation di = new DisplayInformation(Color.ORANGE, "hole");
 
 
-    public WolfDen(WolfGang owners) {
-        super("wolfDen");
+    public WolfDen(CapableWorld world, WolfGang owners) {
+        super("wolfDen", world);
         this.owners = owners;
         wolfsInDen = new HashSet<>();
-        procreationSuccessChance = 1;
+        procreationSuccessChance = 0.5;
     }
 
     public void wolfEnteredDen(Wolf wolf) {
@@ -34,17 +35,21 @@ public class WolfDen extends WorldActor implements NonBlocking {
         wolfsInDen.remove(wolf);
     }
 
-    public void makeCup(World world) {
+
+    public void makeCup() {
         if (wolfsInDen.size() < 2) return;  // there needs to be more than 2 wolf's in the den before procreation can occur
+
         // checks the number of grown wolf's in the den
         int grownWolfsInDen = 0;
         for (Wolf wolf : wolfsInDen) {
             if (wolf.isAnimalAdult()) grownWolfsInDen++;
         }
         if (grownWolfsInDen < 2) return;    // There needs to be more than 2 grown wolf's in the den before procreation can occur
+
         if (new Random().nextDouble() < procreationSuccessChance) {
-            Wolf cup = new Wolf(owners, owners.Alpha, this, CapableEnums.AnimalSize.BABY, CapableEnums.AnimalState.SLEEPING);
-            owners.addWolfToGang(cup);
+            //Wolf cup = new Wolf(world, owners, owners.Alpha, this, CapableEnums.AnimalSize.BABY, CapableEnums.AnimalState.SLEEPING, CapableEnums.FungiState.NORMAL);
+            Wolf cup = new Wolf(world);
+            owners.addNewFlockMember(cup);
             System.out.println("Wolf cup created");
             world.add(cup);
         }

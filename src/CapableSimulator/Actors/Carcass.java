@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
@@ -17,15 +18,15 @@ public class Carcass extends WorldActor {
     protected CapableEnums.AnimalSize size;
     private int age;
 
-    public Carcass(int energy, CapableEnums.AnimalSize size) {
-        super("carcass");
+    public Carcass(CapableWorld world, int energy, CapableEnums.AnimalSize size) {
+        super("carcass", world);
         this.energy = energy;
         this.size = size;
         age = 0;
     }
 
-    public Carcass() {
-        super("carcass");
+    public Carcass(CapableWorld world) {
+        super("carcass",  world);
         this.energy = 0;
         this.size = CapableEnums.AnimalSize.ADULT;
     }

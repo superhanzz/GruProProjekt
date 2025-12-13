@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -18,7 +19,7 @@ public class Bear extends Predator {
 
     /** The size of the bear's territory, given as a radius from the center location.
      * */
-    int territoryRadius;
+    private int territoryRadius;
 
 
 
@@ -42,29 +43,27 @@ public class Bear extends Predator {
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
-    public Bear() {
-        super("bear");
+    public Bear(CapableWorld world) {
+        super("bear", world, 20, 0, 35);
+
         this.territoryCenter = new Location(0, 0);
-        this.territoryRadius = 6;
-        this.energy = 20;
-        this.maxEnergy = 30;
+        this.territoryRadius = 5;
+
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.FUNGI;
+        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    public Bear(Location territoryCenter) {
-        super("bear");
-        this.territoryCenter = territoryCenter;
-        this.territoryRadius = 1;
+    public Bear(CapableWorld world, Location territoryCenter) {
+        super("bear", world, 20, 0, 35);
 
-        this.energy = 3;
-        this.maxEnergy = 30;
+        this.territoryCenter = territoryCenter;
+        this.territoryRadius = 5;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.FUNGI;
+        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -78,6 +77,11 @@ public class Bear extends Predator {
         else {
             System.out.println("Dead, energy = " + energy);
         }
+    }
+
+    @Override
+    protected void attackEnemy(Predator enemy) {
+
     }
 
     @Override
@@ -112,7 +116,7 @@ public class Bear extends Predator {
             return nearbyWolfs.size() < 3;
         }
         else if (possibleEnemy instanceof Bear){
-            return (age > matingAge && matingCooldown <= 0);
+            return canMate();
         }
         return false;
     }
@@ -120,13 +124,19 @@ public class Bear extends Predator {
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
-    public void onDay(World world) {}
+    public void onDawn() {
+
+    }
 
     @Override
-    public void onNight(World world) {}
+    public void onNightFall() {
+
+    }
 
     @Override
-    public void almostNight(World world) {}
+    public void onDusk() {
+
+    }
 
     /* ----- ----- ----- ----- Getters and Setters ----- ----- ----- ----- */
 

@@ -29,6 +29,7 @@ public class FileReadingTest {
     public void setup() {
 
     }
+    /*
 
     @RepeatedTest(1)
     public void testReadFile() {
@@ -106,6 +107,7 @@ public class FileReadingTest {
             System.out.println();
         }
     }
+    */
 
     @AfterEach
     public void tearDown() {

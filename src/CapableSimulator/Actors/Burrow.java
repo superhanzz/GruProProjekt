@@ -1,5 +1,6 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -13,14 +14,14 @@ public class Burrow extends WorldActor implements NonBlocking {
     List<Rabbit> owners;
     DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
 
-    public Burrow(Rabbit rabbit){
-        super("burrow");
+    public Burrow(CapableWorld world, Rabbit rabbit){
+        super("burrow", world);
         owners = new ArrayList<Rabbit>();
         owners.add(rabbit);
     }
 
-    public Burrow(){
-        super("burrow");
+    public Burrow(CapableWorld world){
+        super("burrow", world);
         owners = new ArrayList<>();
     }
 
