@@ -56,19 +56,14 @@ public class Wolf extends Predator implements FlockAnimal {
         wolfGang = null;
     }
 
-    public Wolf(CapableWorld world, WolfGang wolfgang, boolean isAlpha) {
-        super("wolf", world, 30, 0, 30);
-
-        this.wolfGang = wolfgang;
+    public Wolf(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+        super("wolf", world, 30, age, 30, MATING_AGE, MATING_COOLDOWN_DURATION);
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
         fungiState = CapableEnums.FungiState.NORMAL;
 
-        if (isAlpha)
-            wolfType = CapableEnums.WolfType.ALPHA;
-        else
-            wolfType = CapableEnums.WolfType.NPC;
+        wolfType = CapableEnums.WolfType.NPC;
     }
 
     public Wolf(CapableWorld world, WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState, CapableEnums.FungiState fungiState) {

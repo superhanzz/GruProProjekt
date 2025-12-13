@@ -130,7 +130,7 @@ public abstract class Animals extends WorldActor {
         world.move(this, searchLocation);
     }
 
-    protected void doEverySimStep() {
+    public void doEverySimStep() {
         if (world.isNight()) {
             return;
         }
@@ -255,6 +255,7 @@ public abstract class Animals extends WorldActor {
         boolean canReproduce = (
                         matingCooldown <= 0 &&
                         age >= MATING_AGE &&
+                        animalSize.equals(CapableEnums.AnimalSize.ADULT) &&
                         world.isDay());
 
         return canReproduce;

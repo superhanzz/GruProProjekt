@@ -72,8 +72,8 @@ public class Rabbit extends Animals {
     /**
      * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
      * */
-    public Rabbit(CapableWorld world, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
-        super("rabbit", world, 15, 0, 25,  MATING_AGE, MATING_COOLDOWN_DURATION);
+    public Rabbit(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+        super("rabbit", world, 15, 25, age,  MATING_AGE, MATING_COOLDOWN_DURATION);
 
         burrow = null;
         isOnMap = false;

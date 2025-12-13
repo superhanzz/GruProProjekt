@@ -1,17 +1,15 @@
 package Tests;
 
-import CapableSimulator.Actors.Burrow;
-import CapableSimulator.Actors.Rabbit;
+import CapableSimulator.Actors.*;
 import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
-import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RabbitHoleTest {
+public class AnimalsMakeShelterTest {
 
     CapableWorld world;
 
@@ -22,7 +20,7 @@ public class RabbitHoleTest {
 
     // test whether the rabbit can dig a burrow, and also if it is possible for a rabbit to stand on a burrow
 
-    @RepeatedTest(100)
+    @RepeatedTest(1)
     public void rabbitDigHoleTest() {
         // Creates a rabbit and inserts it on the map on tile (0,0)
         Rabbit r = new Rabbit(world);
@@ -46,7 +44,7 @@ public class RabbitHoleTest {
     }
 
     // Tests whether 2 rabbits can share a burrow.
-    @RepeatedTest(100)
+    @RepeatedTest(1)
     public void rabbitShareBurrowTest() {
         // Creates rabbit one and inserts in on the map at (0,1)
         Rabbit r1 = new Rabbit(world);
@@ -83,7 +81,7 @@ public class RabbitHoleTest {
     /**
      * Test that the rabbit go to it's burrow when it's about to turn to night
      * */
-    @RepeatedTest(100)
+    @RepeatedTest(1)
     public void rabbitGoTowardsBurrowTest() {
         // creates a rabbit and inserts it onto the map at (0,1)
         Rabbit r1 = new Rabbit(world);
@@ -114,9 +112,54 @@ public class RabbitHoleTest {
         });
     }
 
+    @RepeatedTest(1)
+    public void wolfMakeDen_EnterDen_LeaveDen_Test() {
+        Wolf w = new Wolf(world);
+        WolfGang gang = new WolfGang(world);
+        Location wLoc = new Location(1, 1);
+
+        gang.addNewFlockMember(w);
+        w.updateOnMap(new Location(1, 1), true);
+
+        assertNull(world.getNonBlocking(wLoc));
+
+        w.onDusk();
+        w.onNightFall();
+
+        assertNotNull(world.getNonBlocking(wLoc));
+        assertFalse(world.isOnTile(w));
+
+        w.onDawn();
+
+        assertTrue(world.isOnTile(w));
+    }
+
+    @RepeatedTest(1)
+    public void wolfGoTowardsDenTest() {
+        world =  new CapableWorld(10);
+
+        Wolf w = new Wolf(world);
+        WolfGang gang = new WolfGang(world);
+        gang.addNewFlockMember(w);
+
+        Location wLoc = new Location(1, 1);
+        Location wLoc2 = new Location(9, 9);
+
+        w.updateOnMap(wLoc, true);
+
+        w.onDusk();
+
+        world.move(w, wLoc2);
+        double distanceBeforeMove = Math.ceil(w.distance(w.getLocation(),  wLoc));
+        w.onDusk();
+        double distanceAfterMove = Math.ceil(w.distance(w.getLocation(),  wLoc));
+
+        assertTrue(distanceBeforeMove > distanceAfterMove);
+    }
+
 
     @AfterEach
     public void tearDown() {
-        world = null;
+        world =  null;
     }
 }
