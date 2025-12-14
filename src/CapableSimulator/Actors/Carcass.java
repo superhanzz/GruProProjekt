@@ -91,6 +91,8 @@ public class Carcass extends WorldActor implements Fungi{
     @Override
     public void spreadSpores(CapableWorld world) {
         if (!isInfected()) return;
+
+        fungiSpore.spread(world.getLocation(this));
     }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
