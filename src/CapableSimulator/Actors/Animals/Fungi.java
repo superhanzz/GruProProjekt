@@ -1,9 +1,9 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 import itumulator.world.World;
 
 import java.awt.*;

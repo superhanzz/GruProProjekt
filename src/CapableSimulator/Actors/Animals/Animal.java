@@ -1,5 +1,8 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.Plants.BerryBush;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.world.Location;
@@ -8,7 +11,7 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Animals extends WorldActor {
+public abstract class Animal extends WorldActor {
 
     /* ----- ----- ----- Energy variables ----- ----- ----- */
 
@@ -80,7 +83,7 @@ public abstract class Animals extends WorldActor {
 
     /** Default constructor
      * */
-    public Animals(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
+    public Animal(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world);
 
         // Non-statics
@@ -95,7 +98,7 @@ public abstract class Animals extends WorldActor {
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
      * */
-    public Animals(String actorType, CapableWorld world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+    public Animal(String actorType, CapableWorld world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super(actorType, world);
 
         // Non-statics
@@ -451,5 +454,5 @@ public abstract class Animals extends WorldActor {
     }
 
     protected boolean getHasSpecialMovementBehaviour() {return false; }
-    //protected void setHasSpecialMovementBehaviour(boolean hasSpecialMovementBehaviour) { this.hasSpecialMovementBehaviour = hasSpecialMovementBehaviour; }
+
 }

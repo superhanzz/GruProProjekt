@@ -1,23 +1,22 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.CapableWorld;
-import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AnimalFlock {
 
-    protected Animals flockLeader;
+    protected Animal flockLeader;
     CapableWorld world;
     private AnimalShelter shelter;
 
     //DisplayInformation displayInfo = new DisplayInformation(Color.cyan);
 
-    protected final List<Animals> flockMembers = new ArrayList<>();
-    protected final List<Animals> deadFlockMembers = new ArrayList<>();
+    protected final List<Animal> flockMembers = new ArrayList<>();
+    protected final List<Animal> deadFlockMembers = new ArrayList<>();
 
     public AnimalFlock(CapableWorld world){
         this.world = world;
@@ -44,7 +43,7 @@ public abstract class AnimalFlock {
     private void setFlockShelter(AnimalShelter shelter){
         this.shelter = shelter;
 
-        for (Animals animal : flockMembers) {
+        for (Animal animal : flockMembers) {
             if (animal instanceof FlockAnimal flockAnimal) {
                 flockAnimal.setFlockShelter(shelter);
             }
@@ -53,7 +52,7 @@ public abstract class AnimalFlock {
 
     /* ----- ----- ----- ----- Flock Members ----- ----- ----- ----- */
 
-    public void flockMemberDied(Animals animal) {
+    public void flockMemberDied(Animal animal) {
         if (animal == flockLeader) {
             if (!flockMembers.isEmpty()) {
                 findNewFlockLeader();
@@ -73,20 +72,20 @@ public abstract class AnimalFlock {
         flockMembers.remove(flockLeader);
     }
 
-    protected void setNewFlockLeader(Animals animal) {
+    protected void setNewFlockLeader(Animal animal) {
         flockLeader = animal;
         communicateNewFlockLeader();
     }
 
     protected void communicateNewFlockLeader() {
-        for (Animals animal : flockMembers) {
+        for (Animal animal : flockMembers) {
             if (animal instanceof FlockAnimal flockAnimal) {
                 flockAnimal.newFlockLeader(flockLeader);
             }
         }
     }
 
-    public void addNewFlockMember(Animals newFlockMember) {
+    public void addNewFlockMember(Animal newFlockMember) {
         if (flockLeader == null) {
             setNewFlockLeader(newFlockMember);
         }
@@ -103,7 +102,7 @@ public abstract class AnimalFlock {
         }
     }
 
-    protected void removeFlockMember(Animals newFlockMember) {
+    protected void removeFlockMember(Animal newFlockMember) {
         flockMembers.remove(newFlockMember);
     }
 
@@ -112,7 +111,7 @@ public abstract class AnimalFlock {
         deadFlockMembers.clear();
     }
 
-    public boolean isMemberOfFlock(Animals animal) {
+    public boolean isMemberOfFlock(Animal animal) {
         return (flockMembers.contains(animal) || animal == flockLeader);
     }
 

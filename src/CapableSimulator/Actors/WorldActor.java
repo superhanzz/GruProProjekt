@@ -36,5 +36,5 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
         fungiState = CapableEnums.FungiState.FUNGI;
     }
 
-    protected abstract int getEnergyValue();
+    public abstract int getEnergyValue();
 }

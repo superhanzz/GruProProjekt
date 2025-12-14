@@ -1,9 +1,8 @@
 package Tests;
 
-import CapableSimulator.Actors.Grass;
+import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
-import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;

@@ -1,9 +1,13 @@
 package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.*;
+import CapableSimulator.Actors.Plants.BerryBush;
+import CapableSimulator.Actors.Plants.Grass;
+import CapableSimulator.Actors.Shelter.Burrow;
+import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
-import itumulator.world.World;
 
 import java.util.*;
 
@@ -57,13 +61,13 @@ public class WorldUtils {
 
 
 
-    public List<Animals> getAllAnimals(){
-        List<Animals> animals = new ArrayList<>();
+    public List<Animal> getAllAnimals(){
+        List<Animal> animals = new ArrayList<>();
         Map<String , Set<WorldActor>> worldActors = getAllWorldActorsAsMap(getAllAnimalTypes(),true);
         for (String actorType : worldActors.keySet()) {
             for (WorldActor actor : worldActors.get(actorType)) {
-                if (actor instanceof Animals) {
-                    animals.add((Animals) actor);
+                if (actor instanceof Animal) {
+                    animals.add((Animal) actor);
                 }
             }
         }

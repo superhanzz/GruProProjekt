@@ -1,6 +1,10 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.*;
+import CapableSimulator.Actors.Plants.Grass;
+import CapableSimulator.Actors.Shelter.Burrow;
+import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.EventHandeling.Dispacher;
 import CapableSimulator.Utils.*;
 import itumulator.executable.Program;
@@ -259,7 +263,7 @@ public class CapableSim {
 
     /** Handles the execution of event's connected to when it goes from day to night, and night to day */
     void onDayNightChange(){
-        List<Animals> animals = worldUtils.getAllAnimals();
+        List<Animal> animals = worldUtils.getAllAnimals();
         switch (dayNightStatus){
             case DAY:
                 //animals.forEach((animal) -> {animal.onDawn(world);});
@@ -277,7 +281,7 @@ public class CapableSim {
     }
 
     private void onAlmostNight() {
-        for (Animals animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : worldUtils.getAllAnimals()) {
             animal.onDusk();
         }
     }

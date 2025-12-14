@@ -1,9 +1,11 @@
 package Tests;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.Rabbit;
+import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.WorldUtils;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AnimalsReproduceTest {
+public class AnimalReproduceTest {
 
     CapableWorld world;
 

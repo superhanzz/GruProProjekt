@@ -1,7 +1,7 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Shelter;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
-import itumulator.simulator.Actor;
 
 public abstract class AnimalShelter extends WorldActor {
 

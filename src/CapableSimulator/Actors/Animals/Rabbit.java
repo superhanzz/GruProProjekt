@@ -1,5 +1,6 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
@@ -12,7 +13,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Rabbit extends Animals {
+public class Rabbit extends Animal {
 
     /* ----- ----- ----- Burrow variables ----- ----- ----- */
 

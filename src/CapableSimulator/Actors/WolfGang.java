@@ -1,10 +1,11 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.Actors.Animals.AnimalFlock;
+import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Animals.Wolf;
 import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
-import itumulator.world.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WolfGang extends AnimalFlock {
@@ -96,7 +97,7 @@ public class WolfGang extends AnimalFlock {
     }*/
 
     public void getNearbyWolfsFromGang(Wolf askingWolf, List<Wolf> nearbyWolfs) {
-        for (Animals animal : flockMembers) {
+        for (Animal animal : flockMembers) {
             if(animal instanceof Wolf wolf) {
                 double distance = wolf.distance(askingWolf.getLocation(), wolf.getLocation());
                 if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(wolf);

@@ -1,10 +1,13 @@
 package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.*;
+import CapableSimulator.Actors.Plants.BerryBush;
+import CapableSimulator.Actors.Plants.Grass;
+import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.EventHandeling.Dispacher;
 import itumulator.world.Location;
-import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -197,7 +200,7 @@ public class SpawningAgent {
             else throw new NullPointerException("In spawnActorAtLocation(): actor is null");
         }
 
-        if (actor instanceof Animals animal) {
+        if (actor instanceof Animal animal) {
             animal.updateOnMap(location, true);
         }
         else {

@@ -1,8 +1,8 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Plants;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
-import itumulator.executable.Program;
 import itumulator.world.World;
 
 import java.awt.*;

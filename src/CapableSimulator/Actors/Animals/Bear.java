@@ -1,4 +1,4 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;

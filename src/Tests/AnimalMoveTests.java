@@ -1,12 +1,11 @@
 package Tests;
 
-import CapableSimulator.Actors.Bear;
-import CapableSimulator.Actors.Rabbit;
-import CapableSimulator.Actors.Wolf;
+import CapableSimulator.Actors.Animals.Bear;
+import CapableSimulator.Actors.Animals.Rabbit;
+import CapableSimulator.Actors.Animals.Wolf;
 import CapableSimulator.Actors.WolfGang;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.TileFinder;
-import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;

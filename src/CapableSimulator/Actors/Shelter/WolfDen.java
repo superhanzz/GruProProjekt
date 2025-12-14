@@ -1,7 +1,8 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Shelter;
 
+import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.WolfGang;
 import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;

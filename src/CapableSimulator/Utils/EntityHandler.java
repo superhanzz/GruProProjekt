@@ -1,7 +1,7 @@
 package CapableSimulator.Utils;
 
-import CapableSimulator.Actors.Animals;
-import CapableSimulator.Actors.Wolf;
+import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Animals.Wolf;
 import CapableSimulator.Actors.WorldActor;
 import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
@@ -82,7 +82,7 @@ public class EntityHandler {
 
         // Removes the actors in removeActorList from worldActorContainer
         removeActorList.forEach(worldActor -> {
-            if (worldActor instanceof Animals animal) {
+            if (worldActor instanceof Animal animal) {
                 System.out.println("Removing actor: " + animal.actorType + ", with energy: " + animal.getEnergyValue());
             }
             worldActorContainer.get(worldActor.getActorType()).remove(worldActor);

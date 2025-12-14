@@ -1,13 +1,14 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
-import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Predator extends Animals {
+public abstract class Predator extends Animal {
 
     protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world,  energy, age, MAX_ENERGY);
@@ -56,13 +57,13 @@ public abstract class Predator extends Animals {
             world.move(this, goTo);
         }
 
-        if (eatableActor instanceof Animals animal) {
+        if (eatableActor instanceof Animal animal) {
             kill(animal);
         }
         else eat(eatableActor);
     }
 
-    protected void kill(Animals animal) {
+    protected void kill(Animal animal) {
         Carcass carcass = null;
         carcass = animal.becomeCarcass();
         if(carcass != null){

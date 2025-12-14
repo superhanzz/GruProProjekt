@@ -1,5 +1,6 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Plants;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -59,7 +60,7 @@ public class Grass extends WorldActor implements NonBlocking{
     }
 
     @Override
-    protected int getEnergyValue() {
+    public int getEnergyValue() {
         return energyValue;
     }
 

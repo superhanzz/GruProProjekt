@@ -1,6 +1,10 @@
 package FunctionLibrary;
 
-import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.Bear;
+import CapableSimulator.Actors.Animals.Rabbit;
+import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.Plants.Grass;
+import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Utils.InputFileStruct;
 import itumulator.world.Location;
 import itumulator.world.World;

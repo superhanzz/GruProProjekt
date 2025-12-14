@@ -1,7 +1,7 @@
 package CapableSimulator;
 
-import CapableSimulator.Actors.Animals;
-import CapableSimulator.Actors.WolfDen;
+import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;
 import itumulator.display.Canvas;
@@ -117,21 +117,21 @@ public class CapableSimulator extends Simulator {
 
     /** Handels the events related to dawn */
     private void onDawn() {
-        for (Animals animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : worldUtils.getAllAnimals()) {
             animal.onDawn();
         }
     }
 
     /** Handels the events related to dusk */
     private void onDusk() {
-        for (Animals animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : worldUtils.getAllAnimals()) {
             animal.onDusk();
         }
     }
 
     /** Handels the events related to nightfall */
     private void onNightFall() {
-        for (Animals animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : worldUtils.getAllAnimals()) {
             animal.onNightFall();
         }
     }

@@ -1,5 +1,9 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Shelter.AnimalShelter;
+import CapableSimulator.Actors.Shelter.WolfDen;
+import CapableSimulator.Actors.WolfGang;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
@@ -340,7 +344,7 @@ public class Wolf extends Predator implements FlockAnimal {
      * @param newLeader The new leader of the flock
      * @throws IllegalArgumentException when newLeader isn't an instance of Wolf
      */
-    public void newFlockLeader(Animals newLeader) {
+    public void newFlockLeader(Animal newLeader) {
         if (newLeader instanceof Wolf wolf) {
             setAlpha(wolf);
         }

@@ -1,5 +1,7 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Shelter;
 
+import CapableSimulator.Actors.Animals.Rabbit;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;

@@ -1,21 +1,10 @@
 package Tests;
 
-import CapableSimulator.CapableSim;
-import CapableSimulator.Actors.Grass;
-import CapableSimulator.Utils.WorldUtils;
-import itumulator.executable.DisplayInformation;
-import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.RepeatedTest;
 
 
-import java.awt.*;
-import java.io.File;
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SpawnAmountTest {
     /**
