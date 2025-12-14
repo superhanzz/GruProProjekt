@@ -7,16 +7,26 @@ import itumulator.world.World;
 
 import java.awt.*;
 
-public class Carcass extends WorldActor {
+public class Carcass extends WorldActor implements Fungi{
 
     private int energy;
     private final static int MAX_ENERGY_CONSUME_AMOUNT = 5;
+
+    FungiSpore fungiSpore;
 
     DisplayInformation diCarcass = new DisplayInformation(Color.BLACK, "carcass");
     DisplayInformation diCarcassSmall = new DisplayInformation(Color.BLACK, "carcass-small");
 
     protected CapableEnums.AnimalSize size;
     private int age;
+
+    /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
+
+    public Carcass(CapableWorld world) {
+        super("carcass",  world);
+        this.energy = 0;
+        this.size = CapableEnums.AnimalSize.ADULT;
+    }
 
     public Carcass(CapableWorld world, int energy, CapableEnums.AnimalSize size) {
         super("carcass", world);
@@ -25,11 +35,7 @@ public class Carcass extends WorldActor {
         age = 0;
     }
 
-    public Carcass(CapableWorld world) {
-        super("carcass",  world);
-        this.energy = 0;
-        this.size = CapableEnums.AnimalSize.ADULT;
-    }
+    /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
 
     public int getConsumed(World world, int consumerMissingEnergy) {
         int consumeAmount = Math.clamp(MAX_ENERGY_CONSUME_AMOUNT, 0 , energy);
@@ -45,6 +51,13 @@ public class Carcass extends WorldActor {
         return consumeAmount;
     }
 
+    @Override
+    public void act(World world) {
+        super.act(world);
+        age++;
+        if (age >= 30) {world.delete(this);}
+    }
+
     protected void decompose(World world) {
         switch(fungiState) {
             case NORMAL:
@@ -55,12 +68,32 @@ public class Carcass extends WorldActor {
         }
     }
 
+    /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
+
     @Override
-    public void act(World world) {
-        super.act(world);
-        age++;
-        if (age >= 30) {world.delete(this);}
+    public void becomeInfected() {
+        fungiSpore = new FungiSpore(world);
+        fungiState = CapableEnums.FungiState.FUNGI;
     }
+
+    @Override
+    public boolean isInfected() {
+        return (fungiSpore != null);
+    }
+
+    @Override
+    public FungiSpore getFungiSpore() {
+        return fungiSpore;
+    }
+
+    /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
+
+    @Override
+    public void spreadSpores(CapableWorld world) {
+        if (!isInfected()) return;
+    }
+
+    /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
 
     @Override
     public int getEnergyValue(){

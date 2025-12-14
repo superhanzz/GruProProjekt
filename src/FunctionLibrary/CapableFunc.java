@@ -1,8 +1,8 @@
 package FunctionLibrary;
 
-import CapableSimulator.Actors.Animals.Bear;
+import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Utils.InputFileStruct;

@@ -1,5 +1,6 @@
-package CapableSimulator.Actors.Animals;
+package CapableSimulator.Actors.Animals.Predators;
 
+import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;

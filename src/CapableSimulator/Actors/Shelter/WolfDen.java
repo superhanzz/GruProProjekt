@@ -1,7 +1,7 @@
 package CapableSimulator.Actors.Shelter;
 
-import CapableSimulator.Actors.Animals.Wolf;
-import CapableSimulator.Actors.WolfGang;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
+import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;

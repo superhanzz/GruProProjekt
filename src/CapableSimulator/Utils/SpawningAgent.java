@@ -2,6 +2,10 @@ package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
 import CapableSimulator.Actors.Animals.*;
+import CapableSimulator.Actors.Animals.Predators.Bear;
+import CapableSimulator.Actors.Animals.Predators.Putin;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
+import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;

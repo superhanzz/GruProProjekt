@@ -1,5 +1,6 @@
-package CapableSimulator.Actors.Animals;
+package CapableSimulator.Actors.Animals.Predators;
 
+import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
@@ -63,7 +64,6 @@ public class Putin extends Animal {
     public void onDusk() {
 
     }
-
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
 

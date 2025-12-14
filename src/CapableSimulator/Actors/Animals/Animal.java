@@ -1,6 +1,8 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.Fungi;
+import CapableSimulator.Actors.FungiSpore;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
@@ -11,7 +13,7 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Animal extends WorldActor {
+public abstract class Animal extends WorldActor implements Fungi {
 
     /* ----- ----- ----- Energy variables ----- ----- ----- */
 
@@ -54,8 +56,9 @@ public abstract class Animal extends WorldActor {
     protected CapableEnums.AnimalState animalState;
     protected CapableEnums.AnimalSize animalSize;
 
-    private  boolean hasSpecialMovementBehaviour;
-    boolean isOnMap;
+    protected boolean isOnMap;
+
+    protected FungiSpore fungiSpore;
 
     protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
     static {
@@ -304,6 +307,30 @@ public abstract class Animal extends WorldActor {
         }
     }
 
+    /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
+
+    @Override
+    public void becomeInfected() {
+        fungiSpore = new FungiSpore(world);
+        fungiState = CapableEnums.FungiState.FUNGI;
+    }
+
+    @Override
+    public boolean isInfected() {
+        return (fungiSpore != null);
+    }
+
+    @Override
+    public FungiSpore getFungiSpore() {
+        return fungiSpore;
+    }
+
+    @Override
+    public void spreadSpores(CapableWorld world) {
+        if (!isInfected()) return;
+
+        fungiSpore.spread(getLocation());
+    }
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     /** onDay() is an event that is executed when the world's current time is 0.

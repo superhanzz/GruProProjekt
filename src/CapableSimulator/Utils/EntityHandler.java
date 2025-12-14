@@ -1,7 +1,7 @@
 package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.Animals.Animal;
-import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.WorldActor;
 import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;

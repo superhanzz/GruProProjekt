@@ -1,8 +1,9 @@
 package Tests;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.Actors.Animals.Wolf;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.WorldUtils;

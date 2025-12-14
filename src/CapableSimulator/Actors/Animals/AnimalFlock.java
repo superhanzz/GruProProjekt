@@ -31,7 +31,7 @@ public abstract class AnimalFlock {
      * @param shelter
      * @throws NullPointerException
      */
-    protected void flockShelterCreated(AnimalShelter shelter) {
+    public void flockShelterCreated(AnimalShelter shelter) {
         if (shelter == null) {
             throw new NullPointerException("AnimalShelter is null");
         }
@@ -107,7 +107,7 @@ public abstract class AnimalFlock {
     }
 
     public void clearDeadFlockMembers() {
-        deadFlockMembers.forEach(flockMembers::remove);
+        deadFlockMembers.forEach(this::removeFlockMember);
         deadFlockMembers.clear();
     }
 

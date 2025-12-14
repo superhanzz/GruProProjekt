@@ -1,8 +1,7 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Animals.AnimalFlock;
 import CapableSimulator.Actors.Animals.Animal;
-import CapableSimulator.Actors.Animals.Wolf;
 import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
 

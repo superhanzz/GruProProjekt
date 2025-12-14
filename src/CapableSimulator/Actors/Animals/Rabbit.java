@@ -252,7 +252,6 @@ public class Rabbit extends Animal {
         world.move(this, closestTile);
     }
 
-
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- ----- */
 
     /** Returns the rabbits burrow reference */

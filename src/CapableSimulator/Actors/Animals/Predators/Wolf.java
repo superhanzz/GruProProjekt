@@ -1,8 +1,10 @@
-package CapableSimulator.Actors.Animals;
+package CapableSimulator.Actors.Animals.Predators;
 
+import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Animals.AnimalFlock;
+import CapableSimulator.Actors.Animals.FlockAnimal;
 import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.WolfDen;
-import CapableSimulator.Actors.WolfGang;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
@@ -259,7 +261,7 @@ public class Wolf extends Predator implements FlockAnimal {
     // alpha can see whole map TODO and move to animals or something
     private void alphaSight() {
         // Gets references to all the possible food sources
-        Map<String, Set<WorldActor>> allPossibleFoodActors = new WorldUtils(world).getAllWorldActorsAsMap(eatableFoodTypes.get(actorType));
+        Map<String, Set<WorldActor>> allPossibleFoodActors = new WorldUtils(world).getAllWorldActorsAsMap(Animal.eatableFoodTypes.get(actorType));
 
         if (false) {    // Debug
             System.out.println(allPossibleFoodActors.size());
@@ -304,7 +306,7 @@ public class Wolf extends Predator implements FlockAnimal {
             }
         }
 
-        for (String at : eatableFoodTypes.get(actorType)) {
+        for (String at : Animal.eatableFoodTypes.get(actorType)) {
 
         }
 
@@ -335,7 +337,6 @@ public class Wolf extends Predator implements FlockAnimal {
             goToDen();
         }
     }
-
 
     /* ----- ----- ----- ----- Flock Animal Behavior ----- ----- ----- ----- */
 

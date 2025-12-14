@@ -1,9 +1,9 @@
 package Tests;
 
-import CapableSimulator.Actors.Animals.Bear;
+import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.Actors.Animals.Wolf;
-import CapableSimulator.Actors.WolfGang;
+import CapableSimulator.Actors.Animals.Predators.Wolf;
+import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.TileFinder;
 import itumulator.world.Location;

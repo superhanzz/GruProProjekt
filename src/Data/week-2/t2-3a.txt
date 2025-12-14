@@ -1,4 +1,4 @@
 10
 wolf 5
 grass 20
-wolf 5
+

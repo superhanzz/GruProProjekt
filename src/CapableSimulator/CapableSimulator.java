@@ -1,6 +1,7 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Fungi;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;
@@ -111,6 +112,9 @@ public class CapableSimulator extends Simulator {
             default:
                 break;
         }
+
+        if (world.getCurrentTime() % 5 == 0)
+            fungiSpreadSpores();
     }
 
     /* ----- ----- ----- ----- Event Handling ----- ----- ----- ----- */
@@ -152,6 +156,14 @@ public class CapableSimulator extends Simulator {
             if (actor instanceof WolfDen wolfDen) {
                 //System.out.println("Trying to mate in WolfDen: " + wolfDen);
                 wolfDen.makeCup();
+            }
+        }
+    }
+
+    private void fungiSpreadSpores() {
+        for (Object o : world.getEntities().keySet()) {
+            if  (o instanceof Fungi fungi) {
+                fungi.spreadSpores(world);
             }
         }
     }
