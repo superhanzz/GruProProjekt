@@ -5,6 +5,7 @@ import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.CapableWorld;
+import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -139,6 +140,8 @@ public class AnimalMakeShelterTest {
 
     @RepeatedTest(1)
     public void wolfGoTowardsDenTest() {
+        PathFinder pathFinder = new PathFinder(world);
+
         world =  new CapableWorld(10);
 
         Wolf w = new Wolf(world);
@@ -153,9 +156,9 @@ public class AnimalMakeShelterTest {
         w.onDusk();
 
         world.move(w, wLoc2);
-        double distanceBeforeMove = Math.ceil(w.distance(w.getLocation(),  wLoc));
+        double distanceBeforeMove = pathFinder.distance(w.getLocation(),  wLoc);
         w.onDusk();
-        double distanceAfterMove = Math.ceil(w.distance(w.getLocation(),  wLoc));
+        double distanceAfterMove = pathFinder.distance(w.getLocation(),  wLoc);
 
         assertTrue(distanceBeforeMove > distanceAfterMove);
     }

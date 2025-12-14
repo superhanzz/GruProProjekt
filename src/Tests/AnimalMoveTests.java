@@ -5,6 +5,7 @@ import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.CapableWorld;
+import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.TileFinder;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -125,6 +126,8 @@ public class AnimalMoveTests {
     public void animalMoveTest_NotWolf() {
         CapableWorld world = new CapableWorld(worldSize);
 
+        PathFinder pathFinder = new PathFinder(world);
+
         TileFinder tileFinder = new TileFinder(world);
 
         Rabbit rabbit = new Rabbit(world);
@@ -146,7 +149,7 @@ public class AnimalMoveTests {
             bear.move(world);
             animalLocationPostMove = bear.getLocation();
 
-            double distanceFromCenter = Math.ceil(bear.distance(bear.getTerritoryCenter(),  animalLocationPostMove));
+            double distanceFromCenter = pathFinder.distance(bear.getTerritoryCenter(),  animalLocationPostMove);
 
             assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
 
@@ -159,6 +162,8 @@ public class AnimalMoveTests {
     @RepeatedTest(1)
     public void WolfFollowAlphaTest() {
         CapableWorld world = new CapableWorld(worldSize);
+
+        PathFinder pathFinder = new PathFinder(world);
 
         Wolf alpha = new Wolf(world);
         Wolf npc = new Wolf(world);
@@ -173,14 +178,14 @@ public class AnimalMoveTests {
         Location alphaLocationPreMove = alpha.getLocation();
         Location npcLocationPreMove = npc.getLocation();
 
-        double npcDistanceFromAlphaPreMove = npc.distance(alphaLocationPreMove, npcLocationPreMove);
+        double npcDistanceFromAlphaPreMove = pathFinder.distance(alphaLocationPreMove, npcLocationPreMove);
 
         alpha.act(world);
 
         Location alphaLocationPostMove = alpha.getLocation();
         Location npcLocationPostMove = npc.getLocation();
 
-        double npcDistanceFromAlphaPostMove = npc.distance(alphaLocationPostMove, npcLocationPostMove);
+        double npcDistanceFromAlphaPostMove = pathFinder.distance(alphaLocationPostMove, npcLocationPostMove);
 
         assertTrue(alphaLocationPreMove.getX() != alphaLocationPostMove.getX() || alphaLocationPreMove.getY() != alphaLocationPostMove.getY());
 

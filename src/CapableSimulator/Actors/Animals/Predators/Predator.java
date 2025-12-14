@@ -53,8 +53,8 @@ public abstract class Predator extends Animal {
             return;
         }
 
-        if (Math.ceil(distance(getLocation(), world.getLocation(eatableActor))) != 1) {
-            Location goTo = getClosestTile(world, world.getLocation(eatableActor));
+        if (pathFinder.distance(getLocation(), world.getLocation(eatableActor)) != 1) {
+            Location goTo = pathFinder.getClosestTile(world.getLocation(eatableActor));
             world.move(this, goTo);
         }
 

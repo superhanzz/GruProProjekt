@@ -140,8 +140,8 @@ public class Rabbit extends Animal {
 
     protected void reproduce(Rabbit mate) {
         // If the distance between this rabbit and the mate is over 1 tile
-        if (Math.ceil(distance(getLocation(), mate.getLocation())) > 1) {
-            Location moveTo = getClosestTile(world, mate.getLocation());
+        if (pathFinder.distance(getLocation(), mate.getLocation()) > 1) {
+            Location moveTo = pathFinder.getClosestTile(mate.getLocation());
             world.move(this,  moveTo);
         }
 
@@ -242,7 +242,7 @@ public class Rabbit extends Animal {
     public void onDusk() {
         if(burrow == null) return;  // If rabbit doesn't have a burrow, then do nothing
 
-        Location closestTile = getClosestTile(world, world.getLocation(burrow));
+        Location closestTile = pathFinder.getClosestTile(world.getLocation(burrow));
         if (closestTile == null) {
             System.out.println("Rabbit could not find a free tile around it's burrow.");    // error message if no empty tile was found around its burrow
             //TODO kill rabbit if no tile was found, burrow might be full

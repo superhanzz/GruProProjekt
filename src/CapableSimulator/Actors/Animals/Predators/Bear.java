@@ -87,18 +87,18 @@ public class Bear extends Predator {
     @Override
     public void move(World world){
         Set<Location> territory = world.getSurroundingTiles(territoryCenter, territoryRadius- 1);
-        Location[] neighbours = getPossibleFoodTiles(2);
+        Set<Location> neighbours = world.getEmptySurroundingTiles(getLocation());
 
         List<Location> validNeighbours = new ArrayList<>();
         for (Location neighbour : neighbours) {
-            if (Math.ceil(distance(getTerritoryCenter(), neighbour)) <= territoryRadius) {
+            if (pathFinder.distance(getTerritoryCenter(), neighbour) <= territoryRadius) {
                 if (world.isTileEmpty(neighbour)) validNeighbours.add(neighbour);
             }
 
         }
         Location searchLocation;
         if (validNeighbours.isEmpty()) {
-            Location nearestLocation = getClosestTile(world,territoryCenter);
+            Location nearestLocation = pathFinder.getClosestTile(territoryCenter);
             if (nearestLocation == null) return;
             searchLocation = nearestLocation;
         }

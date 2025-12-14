@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class AnimalFlock {
 
     protected Animal flockLeader;
-    CapableWorld world;
+    protected CapableWorld world;
     private AnimalShelter shelter;
 
     //DisplayInformation displayInfo = new DisplayInformation(Color.cyan);
