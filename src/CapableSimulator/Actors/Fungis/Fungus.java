@@ -1,5 +1,6 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Fungis;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;

@@ -1,7 +1,7 @@
 package Tests;
 
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.Actors.FungiSpore;
+import CapableSimulator.Actors.Fungis.FungiSpore;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.world.Location;
@@ -22,7 +22,7 @@ public class FungiTests {
     }
 
     @RepeatedTest(1)
-    void fungiSpreadSporesAndProbabilityTest() {
+    void fungiSporesSpreadProbabilityTest() {
         Carcass carrier = new Carcass(world, 100, CapableEnums.AnimalSize.ADULT);
         Location carrierLocation = new Location(3,3);
         world.setTile(carrierLocation, carrier);
@@ -49,6 +49,11 @@ public class FungiTests {
 
         float actualSpreadProbability = ((numberOfInfections * 1.0f) / (probability_TestSampleSize * 1.0f));
         assertEquals(spreadChance, actualSpreadProbability, 0.01f);
+    }
+
+    @RepeatedTest(1)
+    void cordycepSporeSpreadProbabilityTest() {
+
     }
 
     @AfterEach

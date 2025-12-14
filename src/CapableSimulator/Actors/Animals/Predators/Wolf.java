@@ -3,6 +3,7 @@ package CapableSimulator.Actors.Animals.Predators;
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Animals.AnimalFlock;
 import CapableSimulator.Actors.Animals.FlockAnimal;
+import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
@@ -131,7 +132,7 @@ public class Wolf extends Predator implements FlockAnimal {
                 kill(enemy);
             }
             else {
-                becomeCarcass();
+                die();
             }
         }
         // other enemy
@@ -192,11 +193,11 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     @Override
-    public void die(World world) {
-        System.out.println("Wolf Died");
+    public Carcass die() {
+        Carcass carcass = super.die();
         wolfGang.flockMemberDied(this); //wolfDied(this);
-        world.delete(this);
         isOnMap = false;
+        return carcass;
     }
 
 

@@ -5,7 +5,7 @@ Animal move test (maybe for each animal type):
     Done
 
 Input file parsing, and spawning of actors test:
-    Done (missing fungi, cordycept)
+    Done (missing: fungi, cordycept)
 
 Rabbit dig burrow, enter burrow and leave burrow test:
     Done
@@ -23,10 +23,10 @@ Animals eat test:
     Not done
 
 Animal die and become carcass test:
-    Not Done
+    Done
 
 Carcass decompose, and decompose to Fungus test:
-    Not Done
+    Done
 
 Fungi spreading, and spread chance test:
     Done

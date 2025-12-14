@@ -1,5 +1,6 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Fungis;
 
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -17,6 +18,10 @@ public class FungiSpore extends WorldActor {
 
     public FungiSpore(CapableWorld world) {
         super("fungi_spore", world);
+    }
+
+    public FungiSpore(String actorType, CapableWorld world) {
+        super(actorType, world);
     }
 
     @Override

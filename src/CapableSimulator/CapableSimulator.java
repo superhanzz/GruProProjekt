@@ -1,7 +1,7 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.Animals.Animal;
-import CapableSimulator.Actors.Fungi;
+import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;

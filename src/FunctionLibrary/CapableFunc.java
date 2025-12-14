@@ -90,6 +90,7 @@ public class CapableFunc {
         actorTypes.add("carcass");
         actorTypes.add("putin");
         actorTypes.add("carcass");
+        actorTypes.add("fungus");
         return actorTypes;
     }
 

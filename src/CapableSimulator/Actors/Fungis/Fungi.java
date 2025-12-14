@@ -1,4 +1,4 @@
-package CapableSimulator.Actors;
+package CapableSimulator.Actors.Fungis;
 
 import CapableSimulator.CapableWorld;
 

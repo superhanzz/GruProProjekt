@@ -1,8 +1,9 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.Actors.Fungi;
-import CapableSimulator.Actors.FungiSpore;
+import CapableSimulator.Actors.Fungis.CordycepSpore;
+import CapableSimulator.Actors.Fungis.Fungi;
+import CapableSimulator.Actors.Fungis.FungiSpore;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
@@ -58,7 +59,7 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     protected boolean isOnMap;
 
-    protected FungiSpore fungiSpore;
+    protected CordycepSpore fungiSpore;
 
     protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
     static {
@@ -142,7 +143,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         }
 
         energy--;
-        if(energy <= 0) die(world);
+        if(energy <= 0) die();
         age++;
 
         // Handles child becoming adult
@@ -154,10 +155,6 @@ public abstract class Animal extends WorldActor implements Fungi {
         matingCooldown--;
         matingCooldown = Math.clamp(matingCooldown, 0, MATING_COOLDOWN_DURATION);
     }
-
-
-
-
 
 
     public void lookForFood(int searchRadius){
@@ -244,13 +241,10 @@ public abstract class Animal extends WorldActor implements Fungi {
     /** Converts the dead animal to a carcass
      *  @return A reference to the newly created carcass
      */
-    public Carcass becomeCarcass() {
-        Location location = getLocation();
-        die(world);
+    public Carcass becomeCarcass(Location location) {
         Carcass carcass = new Carcass(world, Math.max(energy, 10), animalSize);
         world.setTile(location, carcass);
-        System.out.println("Carcass has been created");
-
+        //System.out.println("Carcass has been created");
         return carcass;
     }
 
@@ -275,9 +269,11 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     }
 
-    public void die(World world) {
+    public Carcass die() {
+        Location location = getLocation();
         world.delete(this);
         dead = true;
+        return becomeCarcass(location);
     }
 
     public Location getLocation() {
@@ -311,7 +307,7 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     @Override
     public void becomeInfected() {
-        fungiSpore = new FungiSpore(world);
+        fungiSpore = new CordycepSpore(world);
         fungiState = CapableEnums.FungiState.FUNGI;
     }
 

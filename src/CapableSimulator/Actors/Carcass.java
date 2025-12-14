@@ -1,13 +1,17 @@
 package CapableSimulator.Actors;
 
+import CapableSimulator.Actors.Fungis.Fungi;
+import CapableSimulator.Actors.Fungis.FungiSpore;
+import CapableSimulator.Actors.Fungis.Fungus;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
 
-public class Carcass extends WorldActor implements Fungi{
+public class Carcass extends WorldActor implements Fungi {
 
     private int energy;
     private final static int MAX_ENERGY_CONSUME_AMOUNT = 5;
@@ -45,8 +49,7 @@ public class Carcass extends WorldActor implements Fungi{
         }
         energy -= consumeAmount;
         if (energy <= 0) {
-            //System.out.println("\t\tCarcass has been consumed!");
-            world.delete(this);
+            decompose();
         }
         return consumeAmount;
     }
@@ -58,14 +61,25 @@ public class Carcass extends WorldActor implements Fungi{
         if (age >= 30) {world.delete(this);}
     }
 
-    protected void decompose(World world) {
+    /** Handles when the carcass has run out of energy and should be removed from the map.
+     *  If the carcass is infected by a fungi then it becomes a fungus, otherwise it disappears */
+    public void decompose() {
         switch(fungiState) {
             case NORMAL:
                 world.delete(this);
                 break;
             case FUNGI:
-
+                becomeFungus();
+                break;
         }
+    }
+
+    /** Removes this actor from the world map, and spawns a new fungus at the location where this actor was */
+    private void becomeFungus() {
+        Location decomposeLocation = getLocation();
+        world.delete(this);
+        Fungus fungus = new Fungus(world);
+        world.setTile(decomposeLocation, fungus);
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */

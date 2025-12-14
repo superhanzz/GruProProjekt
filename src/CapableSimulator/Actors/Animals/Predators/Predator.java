@@ -66,7 +66,7 @@ public abstract class Predator extends Animal {
 
     protected void kill(Animal animal) {
         Carcass carcass = null;
-        carcass = animal.becomeCarcass();
+        carcass = animal.die();
         if(carcass != null){
             eat(carcass);
         }
