@@ -141,7 +141,7 @@ public class Rabbit extends Animal {
     protected void reproduce(Rabbit mate) {
         // If the distance between this rabbit and the mate is over 1 tile
         if (pathFinder.distance(getLocation(), mate.getLocation()) > 1) {
-            Location moveTo = pathFinder.getClosestTile(mate.getLocation());
+            Location moveTo = pathFinder.getClosestTile(getLocation(), mate.getLocation());
             world.move(this,  moveTo);
         }
 
@@ -172,24 +172,28 @@ public class Rabbit extends Animal {
             world.delete(standingOn);
         }
 
-        burrow = new Burrow(world,this);
+        burrow = new Burrow(world);
+        burrow.addBurrowInhabitant(this);
+
         new SpawningAgent(world).spawnActorAtLocation(burrow, getLocation());   // spawns the burrow on the map
+        burrow.setShelterLocation();
+
         goIntoBurrow();
     }
 
     /** Handels entering the burrow */
     void goIntoBurrow() {
         updateOnMap(getLocation(), false);
-        isOnMap = false;
+        burrow.animalEnteredShelter(this);
     }
 
     /** Handles exiting the burrow */
     void exitBurrow() {
         if(burrow == null) System.out.println("Burrow is null");
         else {
-            Location burrowLocation = world.getLocation(burrow);
-            updateOnMap(burrowLocation, true);
-            isOnMap = true;
+            Location exitLocation = pathFinder.getEmptyTileAroundLocation(burrow.getLocation(), 1);
+            updateOnMap(exitLocation, true);
+            burrow.animalLeftShelter(this);
         }
     }
 
@@ -230,7 +234,9 @@ public class Rabbit extends Animal {
             }
             if (burrow == null) digBurrow();
         }
-        goIntoBurrow();
+        else {
+            goIntoBurrow();
+        }
     }
 
     /** The implementation of the animal method almostNight()
@@ -242,7 +248,7 @@ public class Rabbit extends Animal {
     public void onDusk() {
         if(burrow == null) return;  // If rabbit doesn't have a burrow, then do nothing
 
-        Location closestTile = pathFinder.getClosestTile(world.getLocation(burrow));
+        Location closestTile = pathFinder.getClosestTile(getLocation(), world.getLocation(burrow));
         if (closestTile == null) {
             System.out.println("Rabbit could not find a free tile around it's burrow.");    // error message if no empty tile was found around its burrow
             //TODO kill rabbit if no tile was found, burrow might be full

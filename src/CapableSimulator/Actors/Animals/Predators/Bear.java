@@ -98,7 +98,7 @@ public class Bear extends Predator {
         }
         Location searchLocation;
         if (validNeighbours.isEmpty()) {
-            Location nearestLocation = pathFinder.getClosestTile(territoryCenter);
+            Location nearestLocation = pathFinder.getClosestTile(getLocation(), territoryCenter);
             if (nearestLocation == null) return;
             searchLocation = nearestLocation;
         }

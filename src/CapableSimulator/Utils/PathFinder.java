@@ -5,9 +5,7 @@ import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PathFinder {
 
@@ -16,13 +14,46 @@ public class PathFinder {
     public PathFinder(CapableWorld world) {
         this.world = world;
     }
+
+    /** Gets a random empty tile around a location, within a certain radius.
+     * @param location is the location to search around.
+     * @param radius is the radius of the search area, must be positive.
+     * @return Returns a random empty tile within the searched area if one is found. if no empty tiles were found the returns null.
+     * @throws NullPointerException if location is null.
+     * @throws IllegalArgumentException if radius is negative.
+     */
+    public Location getEmptyTileAroundLocation(Location location, int radius) {
+        if (location == null)
+            throw new NullPointerException("Location is null");
+        if (radius < 0)
+            throw new IllegalArgumentException("Radius must be positive");
+        else if (radius == 0) return null;
+
+        Location emptyLocation = null;
+
+        List<Location> emptyTiles = new ArrayList<>();
+
+        Set<Location> tilesAroundLocations = world.getSurroundingTiles(location,  radius);
+        for (Location tile : tilesAroundLocations) {
+            if (world.isTileEmpty(tile))
+                emptyTiles.add(tile);
+        }
+
+        if (emptyTiles.isEmpty()) return null;
+
+        Random rand = new Random();
+        emptyLocation = emptyTiles.get(rand.nextInt(emptyTiles.size()));
+
+        return emptyLocation;
+    }
+
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
 
-    public Location getClosestTile(Location tileLocation) {
+    public Location getClosestTile(Location insigatorLocation, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
 
-        Location source = world.getLocation(this);
+        Location source = insigatorLocation;
         Location shortestTile = new Location(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         for (Location l : tiles) {

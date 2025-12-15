@@ -22,8 +22,8 @@ public class CapableProgram extends Program {
 
     @Override
     public void run() {
-        show();
         simulator.runSimulation();
+        show();
     }
 
 

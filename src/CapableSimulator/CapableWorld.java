@@ -1,6 +1,7 @@
 package CapableSimulator;
 
 import CapableSimulator.Actors.Animals.AnimalFlock;
+import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.CapableEnums;
 import FunctionLibrary.CapableFunc;

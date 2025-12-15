@@ -59,7 +59,7 @@ public abstract class AnimalFlock {
             }
             else {
                 System.out.println("A flock has gone extinct :(");
-                world.delete(this);
+                world.removeAnimalFlock(this);
             }
         }
         else {

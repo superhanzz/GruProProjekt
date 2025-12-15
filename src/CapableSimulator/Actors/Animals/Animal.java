@@ -292,11 +292,14 @@ public abstract class Animal extends WorldActor implements Fungi {
         return world.getLocation(this);
     }
 
+    /**
+     * @param location
+     * @param putOnMap
+     * @throws NullPointerException if location is null & putOnMap is true*/
     public void updateOnMap(Location location, boolean putOnMap) {
         if(location == null && putOnMap) {
             throw new NullPointerException("In updateOnMap(): Location is null");
         }
-
 
         if (putOnMap) {
             if (world.isTileEmpty(location)) {
@@ -305,6 +308,9 @@ public abstract class Animal extends WorldActor implements Fungi {
             }
         }
         else {
+            if (!world.isOnTile(this))
+                System.out.println(this + " isn't on map");
+
             world.remove(this);
             isOnMap = false;
         }

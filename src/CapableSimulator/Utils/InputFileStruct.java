@@ -13,6 +13,9 @@ public class InputFileStruct {
     // The actorType
     public String actorType;
 
+    // if the actor is infected by fungi
+    public CapableEnums.FungiState fungiState;
+
     // Amount to spawn
     public int minAmount;
     public int maxAmount;
@@ -75,6 +78,7 @@ public class InputFileStruct {
         }
         matcher = pattern.matcher(index2);
         if (matcher.matches()) {
+            System.out.println(matcher.group());
             actorType += " " + index2;
         }
     }

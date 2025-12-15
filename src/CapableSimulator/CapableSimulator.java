@@ -2,6 +2,7 @@ package CapableSimulator;
 
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Fungis.Fungi;
+import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;
@@ -56,7 +57,7 @@ public class CapableSimulator extends Simulator {
 
         spawningAgent.handleSpawnCycle(parser.getInputMap(), true); // spawn all initial actors into the world
 
-        spawningAgent.handleSpawnCycle(parser.getInputMap(), false);
+        //spawningAgent.handleSpawnCycle(parser.getInputMap(), false);
 
         dayNumber = 0;
 
@@ -77,7 +78,7 @@ public class CapableSimulator extends Simulator {
 
         switch (simulationType) {
             case NORMAL:
-                run();
+                //run();
                 break;
             case TEST:
                 System.out.println("Testing Simulator");
@@ -168,6 +169,15 @@ public class CapableSimulator extends Simulator {
         }
     }
 
+    private void burrowTesting() {
+        if (world.getCurrentTime() > 0 && world.getCurrentTime() < 10)
+        for (Object o : world.getEntities().keySet()) {
+            if  (o instanceof Burrow b) {
+                if (b.getNumOfAnimalsInShelter() > 0)
+                    System.out.println("rabbit in burrow during day");
+            }
+        }
+    }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
 
