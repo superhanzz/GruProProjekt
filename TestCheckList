@@ -19,7 +19,7 @@ Rabbit reproduce test
 Wolf reproduce, and reproduce chance test:
     Done
 
-Animals eat test:
+Animals eat test: rabbit eat gras, predator
     Not done
 
 Animal die and become carcass test:
@@ -30,5 +30,11 @@ Carcass decompose, and decompose to Fungus test:
 
 Fungi spreading, and spread chance test:
     Done
+
+Animal hunt test:
+
+Wolf flock tests:
+
+
 
 

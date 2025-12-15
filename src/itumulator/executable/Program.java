@@ -126,8 +126,4 @@ public class Program {
     public void setDisplayInformation(Class cl, DisplayInformation di){
         c.setDisplayInformation(cl, di);
     }
-
-    protected void setWorld(World world) { w = world; }
-    protected void setSimulator(Simulator simulator) { s = simulator; }
-
 }

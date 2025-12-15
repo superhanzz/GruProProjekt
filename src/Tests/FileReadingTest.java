@@ -1,13 +1,11 @@
 package Tests;
 
-import CapableSimulator.CapableSim;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.InputFileStruct;
 import CapableSimulator.Utils.Parser;
 import CapableSimulator.Utils.SpawningAgent;
 import CapableSimulator.Utils.WorldUtils;
 import FunctionLibrary.CapableFunc;
-import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;

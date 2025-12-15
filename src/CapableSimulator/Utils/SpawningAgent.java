@@ -10,7 +10,6 @@ import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.CapableWorld;
-import CapableSimulator.EventHandeling.Dispacher;
 import itumulator.world.Location;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ import java.util.regex.Pattern;
 public class SpawningAgent {
 
     CapableWorld world;
-
-    private final Dispacher<WorldActor> simulateDispacher =  new Dispacher<>();
 
     public SpawningAgent(CapableWorld world) {
         this.world = world;
@@ -164,10 +161,6 @@ public class SpawningAgent {
                         listOfActors.add(c);
                     }
                 }
-                break;
-
-            case "carcass fungi":
-                System.out.println("carcass fungi");
                 break;
 
             default:

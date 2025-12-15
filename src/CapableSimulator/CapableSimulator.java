@@ -20,7 +20,6 @@ public class CapableSimulator extends Simulator {
 
     private SpawningAgent spawningAgent;
     private WorldUtils worldUtils;
-    private EntityHandler entityHandler;
     private Parser parser;
 
     //private Map<String, InputFileStruct> inputMap;
@@ -50,14 +49,12 @@ public class CapableSimulator extends Simulator {
 
         spawningAgent = new SpawningAgent(world);
         worldUtils = new WorldUtils(world);
-        entityHandler = new EntityHandler(world);
-
 
         dayNightStatus = world.isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
 
         spawningAgent.handleSpawnCycle(parser.getInputMap(), true); // spawn all initial actors into the world
 
-        //spawningAgent.handleSpawnCycle(parser.getInputMap(), false);
+        spawningAgent.handleSpawnCycle(parser.getInputMap(), false);
 
         dayNumber = 0;
 

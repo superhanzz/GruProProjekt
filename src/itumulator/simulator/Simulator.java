@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CapableSimulator.EventHandeling.Dispacher;
 import itumulator.display.Canvas;
 import itumulator.display.Frame;
 import itumulator.world.Location;
@@ -21,9 +20,6 @@ public class Simulator {
     private ExecutorService executor;
     private int delay;
     private Frame frame;
-
-    private final Dispacher<Void> simulateDispacher =  new Dispacher<>();
-    //private final Dispacher<Actor> entityEventDispacher =  new Dispacher<>();
 
     /**
      * Initializes a new simulation based on an existing world, canvas, and initial delay.
@@ -167,10 +163,6 @@ public class Simulator {
         });
 
 
-    }
-
-    public Dispacher<Void> getStartDispacher(){
-        return simulateDispacher;
     }
 
 }

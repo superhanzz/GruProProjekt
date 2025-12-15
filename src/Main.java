@@ -15,12 +15,5 @@ public class Main {
         program.run();
 
 
-
-
-
-        /*
-        CapableSim sim = new CapableSim(200, 800, 200, "src/Data/week-2/t2-3a.txt");
-        sim.runSimulation();
-        */
     }
 }

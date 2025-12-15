@@ -16,6 +16,7 @@ import java.util.Map;
 public class CapableWorld extends World {
 
     private final Map<String, List<WorldActor>> sortedEntities = new HashMap<>();
+
     private final ArrayList<AnimalFlock> flocks = new ArrayList<>();
 
     /* ----- Time Specific Events ----- */

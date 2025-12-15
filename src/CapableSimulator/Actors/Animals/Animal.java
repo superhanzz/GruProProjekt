@@ -272,10 +272,6 @@ public abstract class Animal extends WorldActor implements Fungi {
         matingCooldown = MATING_COOLDOWN_DURATION;
     }
 
-    private void becomeFungi() {
-
-    }
-
     /** Handles when an animal dies. If the animal isn't infected by a fungi then it becomes a carcass, otherwise it just disappers.
      * @return Returns the animals carcass, if one is created.
      *

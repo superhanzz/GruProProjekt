@@ -80,7 +80,7 @@ public class InputFileStruct {
         }
         matcher = pattern.matcher(index2);
         if (matcher.matches()) {
-            if (matcher.group().equals("fungi")) {
+            if (matcher.group().equals("fungi") || matcher.group().equals("cordyceps") ) {
                 fungiState = CapableEnums.FungiState.FUNGI;
             }
         }
