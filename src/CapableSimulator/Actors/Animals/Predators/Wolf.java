@@ -52,7 +52,7 @@ public class Wolf extends Predator implements FlockAnimal {
 
     //Default constructor for wolf, used in the actorConstructorRegistry
     public Wolf(CapableWorld world) {
-        super("wolf",  world, 30, 0, 30);
+        super("wolf",  world, 25, 0, 30);
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
@@ -142,8 +142,11 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     /** Gets the win chance, dependent on the enemy */
+
     private double getWinChance(Wolf enemyWolf) {
         double winChance = 0.0;
+
+
 
         if (wolfType.equals(CapableEnums.WolfType.ALPHA)) {
             if (enemyWolf.isAlpha() && enemyWolf.isAnimalAdult()) winChance = 0.5;
@@ -426,6 +429,13 @@ public class Wolf extends Predator implements FlockAnimal {
         if(wolf == this) {
             promoteToAlpha();
         }
+
+
+    }
+    @Override
+    public String getCombatLookupKey() {
+        String key = animalSize.label + "-" + fungiState.label + "-" + wolfType.label;
+        return key;
     }
 
 }

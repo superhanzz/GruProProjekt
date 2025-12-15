@@ -5,7 +5,7 @@ Animal move test (maybe for each animal type):
     Done
 
 Input file parsing, and spawning of actors test:
-    Done (missing: fungi, cordycept)
+    Done
 
 Rabbit dig burrow, enter burrow and leave burrow test:
     Done
@@ -19,8 +19,16 @@ Rabbit reproduce test
 Wolf reproduce, and reproduce chance test:
     Done
 
-Animals eat test: rabbit eat gras, predator
-    Not done
+Animals eat test:
+    *rabbit eat gras:
+        Done
+    *predator eat from carcass:
+        Done
+    *bear eat berry
+        Done
+
+BerryBush spawn berrys test:
+    Done
 
 Animal die and become carcass test:
     Done
@@ -31,10 +39,11 @@ Carcass decompose, and decompose to Fungus test:
 Fungi spreading, and spread chance test:
     Done
 
-Animal hunt test:
+Animal hunt tests:
+    Not done
 
 Wolf flock tests:
-
+    Not done
 
 
 

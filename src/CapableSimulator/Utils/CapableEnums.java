@@ -57,7 +57,7 @@ public class CapableEnums {
     }
 
 
-    public enum DI_KeyField {
+    public enum Combat {
         SIZE,
         FUNGI_STATE,
         STATE;

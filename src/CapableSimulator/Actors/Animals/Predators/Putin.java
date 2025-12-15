@@ -40,7 +40,7 @@ public class Putin extends Animal {
 
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
-
+//TODO make beartin
     @Override
     public void act(World world){
         lookForFood(5);
@@ -70,6 +70,9 @@ public class Putin extends Animal {
 
     @Override
     public DisplayInformation getInformation() { return diPutin; }
+
+
+
 
 }
 

@@ -1,10 +1,9 @@
 package Tests;
 
+import CapableSimulator.Actors.Fungis.Fungi;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.InputFileStruct;
-import CapableSimulator.Utils.Parser;
-import CapableSimulator.Utils.SpawningAgent;
-import CapableSimulator.Utils.WorldUtils;
+import CapableSimulator.Utils.*;
 import FunctionLibrary.CapableFunc;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,6 +90,20 @@ public class FileReadingTest {
                     int postNum = worldUtils.getNumOfActors(actorType);
 
                     int spawnedNum = postNum - preNum;
+
+                    if (inputFile.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                        int numOfInfected = 0;
+                        List<String> filter = new ArrayList<>();
+                        filter.add(inputFile.actorType);
+                        for (WorldActor actor : worldUtils.getAllWorldActorsAsMap(filter).get(inputFile.actorType)) {
+                            if (actor instanceof Fungi fungi) {
+                                if (fungi.isInfected()) numOfInfected++;
+                            }
+                        }
+                        assertEquals(numOfInfected, spawnedNum);
+                    }
+
+
 
                     String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
                     //System.out.println(spawnedNum + ",\t ");

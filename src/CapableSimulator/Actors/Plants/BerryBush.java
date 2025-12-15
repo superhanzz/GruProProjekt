@@ -12,7 +12,7 @@ public class BerryBush extends WorldActor {
 
     private final int energyValue;
 
-    private final double berrySpawnChance;
+    private static final double BERRY_SPAWN_CHANCE = 0.1;
 
     private boolean hasBerrys;
 
@@ -23,7 +23,6 @@ public class BerryBush extends WorldActor {
         super("berry", world);
         this.energyValue = 5;
         this.hasBerrys = false;
-        this.berrySpawnChance = 0.10;
     }
 
     @Override
@@ -33,6 +32,7 @@ public class BerryBush extends WorldActor {
 
     @Override
     public void act(World world) {
+        trySpawnBerrys();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BerryBush extends WorldActor {
         if (hasBerrys) return;
 
         Random rand = new Random();
-        if (rand.nextDouble() < (1 - berrySpawnChance)) { // TODO test that the spawn chance is actually true
+        if (rand.nextDouble() < BERRY_SPAWN_CHANCE) { // TODO test that the spawn chance is actually true
             hasBerrys = true;
         }
     }
@@ -67,5 +67,9 @@ public class BerryBush extends WorldActor {
     @Override
     public DisplayInformation getInformation() {
         return (hasBerrys ? diBerry : diBush);
+    }
+
+    public static double getBerrySpawnChance(){
+        return BERRY_SPAWN_CHANCE;
     }
 }
