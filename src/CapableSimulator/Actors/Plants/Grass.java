@@ -28,11 +28,14 @@ public class Grass extends WorldActor implements NonBlocking{
     @Override
     public void act(World world) {
 
-        if ( world.isNight())
+        if (world.isNight())
             return;
 
         grow();
     }
+
+    @Override
+    protected void doEverySimulationStep() {}
 
     public void grow() {
         Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this));

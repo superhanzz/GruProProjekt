@@ -66,6 +66,9 @@ public class Fungus extends WorldActor {
 
     }
 
+    @Override
+    protected void doEverySimulationStep() {}
+
     private void spreadSpores() {
 
     }

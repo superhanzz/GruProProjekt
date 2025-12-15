@@ -1,8 +1,6 @@
 import java.util.*;
 
 import CapableSimulator.CapableProgram;
-import CapableSimulator.CapableSimulator;
-import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.Parser;
 
 public class Main {

@@ -29,6 +29,9 @@ public class FungiSpore extends WorldActor {
 
     }
 
+    @Override
+    protected void doEverySimulationStep() {}
+
     /** Tries to spread the fungi onto other actors within a certain radius: "SPREAD_RADIUS" = {@value SPREAD_RADIUS} of the sporeLocation.
      *  For each non-infected actor found, then it tries to infect that with a probability of: "SPREAD_CHANCE" = {@value SPREAD_CHANCE} out of 1
      * @param sporeLocation is the location from where to spread from */

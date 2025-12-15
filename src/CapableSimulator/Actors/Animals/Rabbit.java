@@ -96,12 +96,11 @@ public class Rabbit extends Animal {
             return;
         findMate(1);
 
-
-
         lookForFood(2);
-
     }
 
+    @Override
+    protected void doEverySimulationStep() {}
 
     /** Tries to find a mate to reproduce
      *  If more than one possible mate is found, then a random one is chosen.

@@ -20,10 +20,8 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
         fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    @Override
-    public void act(World world) {
-
-    }
+    /** Handles what should be done at each simulation step */
+    protected abstract void doEverySimulationStep();
 
     //public abstract void setActorType(String actorType);
     public String getActorType() {return actorType;}

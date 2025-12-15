@@ -33,8 +33,10 @@ public class BerryBush extends WorldActor {
 
     @Override
     public void act(World world) {
-
     }
+
+    @Override
+    protected void doEverySimulationStep() {}
 
     public void trySpawnBerrys() {
         if (hasBerrys) return;

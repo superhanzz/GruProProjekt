@@ -122,6 +122,9 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     @Override
+    protected void doEverySimulationStep() {}
+
+    @Override
     protected void attackEnemy(Predator enemyActor) {
         double winChance = 0.0;
         // Wolf
@@ -195,7 +198,7 @@ public class Wolf extends Predator implements FlockAnimal {
     @Override
     public Carcass die() {
         Carcass carcass = super.die();
-        wolfGang.flockMemberDied(this); //wolfDied(this);
+        wolfGang.flockMemberDied(this);
         isOnMap = false;
         return carcass;
     }

@@ -276,11 +276,18 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     }
 
+    /** Handles when an animal dies. If the animal isn't infected by a fungi then it becomes a carcass, otherwise it just disappers.
+     * @return Returns the animals carcass, if one is created.
+     *
+     */
     public Carcass die() {
         Location location = getLocation();
         world.delete(this);
         dead = true;
-        return becomeCarcass(location);
+        if (!isInfected())
+            return becomeCarcass(location);
+        else
+            return null;
     }
 
     public Location getLocation() {

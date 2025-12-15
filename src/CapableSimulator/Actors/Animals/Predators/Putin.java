@@ -46,7 +46,8 @@ public class Putin extends Animal {
         lookForFood(5);
     }
 
-
+    @Override
+    protected void doEverySimulationStep() {}
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 

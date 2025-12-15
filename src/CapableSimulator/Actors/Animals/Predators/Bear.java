@@ -80,6 +80,9 @@ public class Bear extends Predator {
     }
 
     @Override
+    protected void doEverySimulationStep() {}
+
+    @Override
     protected void attackEnemy(Predator enemy) {
 
     }
