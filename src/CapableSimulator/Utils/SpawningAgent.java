@@ -54,6 +54,10 @@ public class SpawningAgent {
                         gang.addNewFlockMember(wolf);
                         wolf.updateOnMap(location, true);
 
+                        if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                            wolf.becomeInfected();
+                        }
+
                         listOfActors.add(wolf);
                     }
                 }
@@ -66,6 +70,10 @@ public class SpawningAgent {
                         Rabbit r = new Rabbit(world);
                         r.updateOnMap(location, true);
 
+                        if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                            r.becomeInfected();
+                        }
+
                         listOfActors.add(r);
                     }
                 }
@@ -76,8 +84,12 @@ public class SpawningAgent {
                     Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Bear b = new Bear(world, fileStruct.staticSpawnLocation != null ? fileStruct.staticSpawnLocation : location);
-
                         b.updateOnMap(location, true);
+
+                        if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                            b.becomeInfected();
+                        }
+
                         listOfActors.add(b);
                     }
                     else
@@ -91,6 +103,10 @@ public class SpawningAgent {
                     if (location != null) {
                         Putin p = new Putin(world);
                         p.updateOnMap(location, true);
+
+                        if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                            p.becomeInfected();
+                        }
 
                         listOfActors.add(p);
                     }
@@ -140,6 +156,10 @@ public class SpawningAgent {
                     if (location != null) {
                         Carcass c = new Carcass(world);
                         world.setTile(location, c);
+
+                        if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
+                            c.becomeInfected();
+                        }
 
                         listOfActors.add(c);
                     }

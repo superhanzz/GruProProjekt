@@ -38,10 +38,12 @@ public class InputFileStruct {
     }
 
     public InputFileStruct(String inputLine){
-        this.actorType = "";
-        this.minAmount = 0;
-        this.maxAmount = 0;
-        this.staticSpawnLocation = null;
+        actorType = "";
+        minAmount = 0;
+        maxAmount = 0;
+        staticSpawnLocation = null;
+        fungiState = CapableEnums.FungiState.NORMAL;
+
         //this.isDelayedSpawn = false;
 
         buildInputFile(inputLine);
@@ -78,8 +80,9 @@ public class InputFileStruct {
         }
         matcher = pattern.matcher(index2);
         if (matcher.matches()) {
-            System.out.println(matcher.group());
-            actorType += " " + index2;
+            if (matcher.group().equals("fungi")) {
+                fungiState = CapableEnums.FungiState.FUNGI;
+            }
         }
     }
 

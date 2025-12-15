@@ -119,7 +119,9 @@ public class Carcass extends WorldActor implements Fungi {
     @Override
     public DisplayInformation getInformation(){
         //System.out.println("et eller andet");
-        if(size.equals(CapableEnums.AnimalSize.ADULT)) return diCarcass;
-        else return diCarcassSmall;
+        if(size.equals(CapableEnums.AnimalSize.ADULT))
+            return diCarcass;
+        else return
+                diCarcassSmall;
     }
 }
