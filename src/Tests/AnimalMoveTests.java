@@ -8,18 +8,14 @@ import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.TileFinder;
 import itumulator.world.Location;
-import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
-
-import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalMoveTests {
 
-    World world;
     int testSampleSize;
     int animalAmount;
     int worldSize;
@@ -72,7 +68,7 @@ public class AnimalMoveTests {
 
     /* Wolf follow Alpha test */
     @RepeatedTest(1)
-    public void WolfFollowAlphaTest() {
+    public void wolfFollowAlphaTest() {
         CapableWorld world = new CapableWorld(worldSize);
 
         PathFinder pathFinder = new PathFinder(world);
@@ -104,6 +100,44 @@ public class AnimalMoveTests {
         assertTrue(npcLocationPreMove.getX() != npcLocationPostMove.getX() || npcLocationPreMove.getY() != npcLocationPostMove.getY());
 
         assertTrue(npcDistanceFromAlphaPreMove >= npcDistanceFromAlphaPostMove);
+    }
+
+    @RepeatedTest(10)
+    public void wolfsMoveAsFlockTest() {
+        CapableWorld world = new CapableWorld(worldSize);
+        PathFinder pathFinder = new PathFinder(world);
+
+        Wolf alpha = new Wolf(world);
+        WolfGang gang = new WolfGang(world);
+        Location alphaInitLocation = new Location(3,3);
+        gang.addNewFlockMember(alpha);
+        alpha.updateOnMap(alphaInitLocation, true);
+
+        int numOfWolfsInGang = 6;
+        for (int i = 0; i < numOfWolfsInGang; i++) {
+            Wolf wolf = new Wolf(world);
+            Location npcSpawnLocation = pathFinder.getEmptyTileAroundLocation(alphaInitLocation, 3);
+            wolf.updateOnMap(npcSpawnLocation, true);
+            gang.addNewFlockMember(wolf);
+        }
+
+        double averageRadius = 0.0;
+        double radiusSum = 0.0;
+
+        int numOfMovesInTest = 500;
+        for (int i = 0; i < numOfMovesInTest; i++) {
+            alpha.lookForFood(1);
+            gang.alphaMoved(alpha.getLocation());
+            double radius = gang.getFlockRadius();
+            radiusSum += radius;
+            //System.out.println(radius);
+        }
+        averageRadius = radiusSum / (numOfMovesInTest * 1.0);
+
+        //System.out.println();
+        //System.out.println(averageRadius);
+
+        assertTrue(gang.getAllowedRadiusAroundAlpha() > averageRadius);
     }
 
     @AfterEach

@@ -375,4 +375,11 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     protected boolean getHasSpecialMovementBehaviour() {return false; }
 
+
+    /* ----- ----- ----- Testing Extras ----- ----- ----- */
+
+    public void disableEnergyLoss() {
+
+    }
+
 }

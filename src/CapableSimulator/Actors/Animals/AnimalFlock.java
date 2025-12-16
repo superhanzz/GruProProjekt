@@ -2,6 +2,7 @@ package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.CapableWorld;
+import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 
 import java.util.ArrayList;
@@ -23,6 +24,24 @@ public abstract class AnimalFlock {
 
         flockLeader = null;
         shelter = null;
+    }
+
+    /* ----- ----- ----- ----- Flock Things ----- ----- ----- -----*/
+
+    /**
+     * */
+    public double getFlockRadius(){
+       double radius = 0.0;
+       Location flockCenter = flockLeader.getLocation();
+        PathFinder pathFinder = new PathFinder(world);
+
+       double radiusSum = 0.0;
+       for (Animal animal : flockMembers){
+           radiusSum += pathFinder.distance(flockCenter, animal.getLocation());
+       }
+       radius = (radiusSum / ((getNumOfMembersInFlock() - 1) * 1.0));
+
+       return radius;
     }
 
     /* ----- ----- ----- ----- Shelter ----- ----- ----- -----*/
@@ -122,6 +141,10 @@ public abstract class AnimalFlock {
     }
 
     protected AnimalShelter getShelter() { return shelter; }
+
+    public int getNumOfMembersInFlock() {
+        return (flockMembers.size() + 1);
+    }
 
 
 

@@ -12,6 +12,7 @@ public class WolfGang extends AnimalFlock {
 
     //public Wolf Alpha;
     //public List<Wolf> NPCs;
+    private int optimalRadiusAroundAlpha;
     private int allowedRadiusAroundAlpha;
     //public WolfDen wolfDen;
     public Location denLocation;
@@ -20,8 +21,8 @@ public class WolfGang extends AnimalFlock {
     public WolfGang(CapableWorld world) {
         super(world);
 
-        allowedRadiusAroundAlpha = 2;
-        //wolfDen = null;
+        optimalRadiusAroundAlpha = 2;
+        allowedRadiusAroundAlpha = 3;
         denLocation = null;
     }
 
@@ -30,15 +31,6 @@ public class WolfGang extends AnimalFlock {
             if  (animal instanceof Wolf wolf) wolf.followAlpha(location);
         });
         clearDeadFlockMembers();
-        /*for (Animals animal : flockMembers) {
-            if (animal instanceof Wolf wolf) {
-                try {
-                    wolf.followAlpha(location);
-                } catch (Exception e) {
-                    System.out.println(wolf + " ERROR, message:\t" + e.getMessage());
-                }
-            }
-        }*/
     }
 
     public void getNearbyWolfsFromGang(Wolf askingWolf, List<Wolf> nearbyWolfs) {
@@ -55,20 +47,12 @@ public class WolfGang extends AnimalFlock {
         }
     }
 
-    protected int getAllowedRadiusAroundAlpha() { return allowedRadiusAroundAlpha; }
+    /* ----- ----- ----- ----- Getters and Setters ----- ----- ----- -----*/
+
+    public int getOptimalRadiusAroundAlpha() { return optimalRadiusAroundAlpha; }
+    public int getAllowedRadiusAroundAlpha() { return allowedRadiusAroundAlpha; }
 
     /* ----- ----- ----- ----- Flock Animal Related ----- ----- ----- ----- */
 
-
-    /*
-    @Override
-    protected void communicateNewFlockLeader() {
-        for (Animals animal : flockMembers) {
-            if (animal instanceof Wolf npc) {
-
-            }
-        }
-    }
-    */
 
 }

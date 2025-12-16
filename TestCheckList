@@ -51,7 +51,9 @@ Wolf flock tests:
     Wolf flock share den test:
         Not done
     Wolf move as pack test:
-        Not done
+        Done
 
-
+Animals attack tests:
+    Wolf attack wolf test:
+    Wolf attack
 

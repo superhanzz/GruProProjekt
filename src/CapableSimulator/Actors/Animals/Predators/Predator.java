@@ -11,8 +11,6 @@ import java.util.*;
 
 public abstract class Predator extends Animal {
 
-
-
     protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world,  energy, age, MAX_ENERGY);
     }
@@ -75,10 +73,16 @@ public abstract class Predator extends Animal {
 
     }
 
+    public abstract double getStrengthValue();
+
+
+    /* ----- ----- ----- ----- Getters ----- ----- ----- -----*/
+
     protected abstract boolean isAnimalEnemy(Predator possibleEnemy);
 
     public String getCombatLookupKey() {
         String key = animalSize.label + "-" + fungiState.label;
         return key;
     }
+
 }
