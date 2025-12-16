@@ -201,7 +201,10 @@ public class Wolf extends Predator implements FlockAnimal {
     @Override
     public Carcass die() {
         Carcass carcass = super.die();
-        wolfGang.flockMemberDied(this);
+
+        if (wolfGang != null)
+            wolfGang.flockMemberDied(this);
+
         isOnMap = false;
         return carcass;
     }

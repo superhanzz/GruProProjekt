@@ -20,11 +20,11 @@ Wolf reproduce, and reproduce chance test:
     Done
 
 Animals eat test:
-    *rabbit eat gras:
+    Rabbit eat gras:
         Done
-    *predator eat from carcass:
+    Predator eat from carcass:
         Done
-    *bear eat berry
+    Bear eat berry
         Done
 
 BerryBush spawn berrys test:
@@ -40,10 +40,18 @@ Fungi spreading, and spread chance test:
     Done
 
 Animal hunt tests:
-    Not done
+    Wolf hunt rabbit test:
+        Done
+    Bear hunt rabbit test:
+        Done
+    Bear hunt wolf test:
+        Done
 
 Wolf flock tests:
-    Not done
+    Wolf flock share den test:
+        Not done
+    Wolf move as pack test:
+        Not done
 
 
 

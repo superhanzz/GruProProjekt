@@ -11,7 +11,7 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GrassGrowthChanceTest {
+public class GrowthTests {
 
     CapableWorld world;
     int sampleSize;

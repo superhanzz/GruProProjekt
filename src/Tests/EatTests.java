@@ -5,12 +5,9 @@ import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.Actors.Fungis.FungiSpore;
-import CapableSimulator.Actors.Fungis.Fungus;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +16,7 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RabbitEatGrassTest {
+public class EatTests {
 
     CapableWorld world;
 
@@ -72,8 +69,8 @@ public class RabbitEatGrassTest {
         world.setTile(carcassLocation, carcass);
 
         Bear bear = new Bear(world);
-        Location wolfLocation = new Location(0,1);
-        bear.updateOnMap(wolfLocation, true);
+        Location bearLocation = new Location(0,1);
+        bear.updateOnMap(bearLocation, true);
 
         int carcassInitEnergy = carcass.getEnergyValue();
         bear.lookForFood(1);
@@ -93,12 +90,28 @@ public class RabbitEatGrassTest {
         }
 
         Bear bear = new Bear(world);
-        Location wolfLocation = new Location(0,1);
-        bear.updateOnMap(wolfLocation, true);
+        Location bearLocation = new Location(0,1);
+        bear.updateOnMap(bearLocation, true);
 
         assertTrue(bush.getBerryStatus());
         bear.lookForFood(1);
         assertFalse(bush.getBerryStatus());
+    }
+
+    @RepeatedTest(1)
+    void wolfHuntRabbitTest() {
+        Wolf wolf = new Wolf(world);
+        Location wolfLocation = new Location(0,1);
+        wolf.updateOnMap(wolfLocation, true);
+
+        Rabbit rabbit = new Rabbit(world);
+        Location rabbitLocation = new Location(1,1);
+        rabbit.updateOnMap(rabbitLocation, true);
+
+        wolf.lookForFood(1);
+
+        assertFalse(world.getEntities().containsKey(rabbit));
+        assertInstanceOf(Carcass.class, world.getTile(rabbitLocation));
     }
 
 
@@ -106,8 +119,35 @@ public class RabbitEatGrassTest {
      * Tests whether the rabbit dies if it does not eat grass before it runs out of energy.
      * */
     @RepeatedTest(1)
-    void notEatGrassTest() {
+    void bearHuntRabbitTest() {
+        Bear bear = new Bear(world);
+        Location bearLocation = new Location(0,1);
+        bear.updateOnMap(bearLocation, true);
 
+        Rabbit rabbit = new Rabbit(world);
+        Location rabbitLocation = new Location(1,1);
+        rabbit.updateOnMap(rabbitLocation, true);
+
+        bear.lookForFood(1);
+
+        assertFalse(world.getEntities().containsKey(rabbit));
+        assertInstanceOf(Carcass.class, world.getTile(rabbitLocation));
+    }
+
+    @RepeatedTest(1)
+    void bearHuntWolfTest() {
+        Bear bear = new Bear(world);
+        Location bearLocation = new Location(0,1);
+        bear.updateOnMap(bearLocation, true);
+
+        Wolf wolf = new Wolf(world);
+        Location wolfLocation = new Location(1,1);
+        wolf.updateOnMap(wolfLocation, true);
+
+        bear.lookForFood(1);
+
+        assertFalse(world.getEntities().containsKey(wolf));
+        assertInstanceOf(Carcass.class, world.getTile(wolfLocation));
     }
 
 
