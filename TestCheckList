@@ -1,8 +1,15 @@
 Grass growth, and growth chance test:
     done
 
-Animal move test (maybe for each animal type):
-    Done
+Animal move test:
+    Rabbit move test:
+        Done
+    Wolf normal move test:
+        Done
+    Single wolf follow alpha:
+        Done
+    Wolf flock move as flock test:
+        Done
 
 Input file parsing, and spawning of actors test:
     Done
@@ -49,11 +56,12 @@ Animal hunt tests:
 
 Wolf flock tests:
     Wolf flock share den test:
-        Not done
+        Done
     Wolf move as pack test:
         Done
 
 Animals attack tests:
     Wolf attack wolf test:
+        Not Done
     Wolf attack
 

@@ -9,4 +9,6 @@ public interface FlockAnimal {
     void newFlockLeader(Animal newLeader);
 
     void setFlockShelter(AnimalShelter shelter);
+
+    AnimalShelter getShelter();
 }

@@ -111,34 +111,68 @@ public class Wolf extends Predator implements FlockAnimal {
         super.act(world);
         if (dead) return;
 
-        if (world.isNight()) {
-            if (isOnMap) tryEnterDen();
-            else {
+        if (wolfGang != null) {
+            flockWolfBehavior();
+        }
+        else {
+            loneWolfBehavior();
+        }
+
+
+    }
+
+    private void loneWolfBehavior() {
+
+        if (world.isDay()) {    // It's day
+            if (isOnMap){   // It's day, and it is on the map
+                if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
+                    tryFight();
+                else
+                    lookForFood(1);
+            }
+            else {  // It's day, and it isn't on the map
+                exitDen();
+            }
+        }
+        else {  // It's night
+            if (isOnMap) {  // It's night, and it is on the map
+                tryEnterDen();
+            }
+            else {  // It's night, and it isn't on the map
 
             }
         }
-        else {
-            //if (alpha == null) System.out.println(wolfType.toString());
-            if (!isOnMap) {
-                exitDen();
-            }
-            else {
-                if (!alpha.isOnMap) {
+    }
+
+    private void flockWolfBehavior() {
+
+        if (world.isDay()) {
+            if (isOnMap){   // It's day and it is on the map
+                if (wolfType == CapableEnums.WolfType.ALPHA) {
+                    if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
+                        tryFight();
+                    else
+                        lookForFood(1);
+
+                    wolfGang.alphaMoved(world.getLocation(this));
+                }
+
+                if (!alpha.isOnMap) {   // It's day, and it is on the map, but the alpha wolf isn't on the map
                     move(world);
                 }
             }
+            else {  // It's day but it isn't on the map
+                exitDen();
+            }
         }
+        else {  // It's night
+            if (isOnMap) {  // It's night and it is on the map
+                tryEnterDen();
+            }
+            else {  // It's night and it isn't on the map
 
-        if (wolfType == CapableEnums.WolfType.ALPHA && world.isDay() && isOnMap) {
-
-            if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
-                tryFight();
-            else
-                lookForFood(1);
-
-            wolfGang.alphaMoved(world.getLocation(this));
+            }
         }
-
     }
 
     @Override
@@ -417,7 +451,12 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
+    public AnimalShelter getShelter() {
+        return wolfGang.getShelter();
+    }
+
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
+
 
     public WolfGang getWolfGang() {return wolfGang;}
 
@@ -426,7 +465,9 @@ public class Wolf extends Predator implements FlockAnimal {
     @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         if (possibleEnemy instanceof Wolf wolf) {
-            return (!wolfGang.isMemberOfFlock(wolf));
+            if (wolfGang == null) return true;
+            else
+                return (!wolfGang.isMemberOfFlock(wolf));
         }
         else if (possibleEnemy instanceof Bear){
             List<Wolf> nearbyWolfsFromGang = new ArrayList<>();

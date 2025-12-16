@@ -37,6 +37,12 @@ public abstract class AnimalShelter extends WorldActor {
         return animalsInShelter.size();
     }
 
+    /** Gets all the animmals in the shelter.
+     * @return Returns all the animals currently in the shelter. */
+    public List<Animal> getAnimalsInShelter(){
+        return animalsInShelter;
+    }
+
     /** Set's the world location of the shelter, should be called after shelter is placed in the world.
      * @throws IllegalArgumentException if the shelter hasn't been placed onto the world map.
      */

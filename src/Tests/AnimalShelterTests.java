@@ -1,11 +1,16 @@
 package Tests;
 
+import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Animals.FlockAnimal;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
+import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.Burrow;
+import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.PathFinder;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +18,7 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AnimalMakeShelterTest {
+public class AnimalShelterTests {
 
     CapableWorld world;
 
@@ -148,20 +153,90 @@ public class AnimalMakeShelterTest {
         WolfGang gang = new WolfGang(world);
         gang.addNewFlockMember(w);
 
-        Location wLoc = new Location(1, 1);
+        Location wLoc = new Location(0, 0);
         Location wLoc2 = new Location(9, 9);
 
         w.updateOnMap(wLoc, true);
+        w.onDusk(); // Digs WolfDen
 
-        w.onDusk();
+        world.move(w, wLoc2);   // moves to other side of the map
 
-        world.move(w, wLoc2);
-        double distanceBeforeMove = pathFinder.distance(w.getLocation(),  wLoc);
-        w.onDusk();
-        double distanceAfterMove = pathFinder.distance(w.getLocation(),  wLoc);
+        int steps = 0;
+        while (world.isOnTile(w)) {
+            //System.out.println(steps);
+            double distanceBeforeMove = pathFinder.distance(w.getLocation(),  wLoc);
+            w.onNightFall();
 
-        assertTrue(distanceBeforeMove > distanceAfterMove);
+            if (!world.isOnTile(w)) break;
+
+            double distanceAfterMove = pathFinder.distance(w.getLocation(),  wLoc);
+            assertTrue(distanceBeforeMove > distanceAfterMove);
+            steps++;
+        }
     }
+
+    @RepeatedTest(1)
+    void wolfFlockShareDenTest() {
+        world = new CapableWorld(10);
+        PathFinder pathFinder = new PathFinder(world);
+        WorldUtils worldUtils = new WorldUtils(world);
+
+        Wolf alpha = new Wolf(world);
+        WolfGang gang = new WolfGang(world);
+        Location alphaInitLocation = new Location(3,3);
+        gang.addNewFlockMember(alpha);
+        alpha.updateOnMap(alphaInitLocation, true);
+
+        int numOfWolfsInGang = 6;
+        for (int i = 0; i < numOfWolfsInGang; i++) {
+            Wolf wolf = new Wolf(world);
+            Location npcSpawnLocation = pathFinder.getEmptyTileAroundLocation(alphaInitLocation, 3);
+            wolf.updateOnMap(npcSpawnLocation, true);
+            gang.addNewFlockMember(wolf);
+        }
+
+        alpha.onDusk(); // alpha digs den
+
+        WolfDen den = null;
+        if (alpha.getShelter() instanceof WolfDen wolfDen) {
+            den = wolfDen;
+        }
+        assertNotNull(den);
+
+        // Check if all the members of the wolf gang actually has the same den
+        for (Animal animal : gang.getFlockMembers()) {
+            if (animal instanceof Wolf npc) {
+                assertEquals(den, npc.getShelter());
+            }
+        }
+
+        // Checks if all the member enters the same den
+        int num = 0;
+        while (anyWolfsOnMap(worldUtils)) {
+            System.out.println(num);
+            for (Animal animal : worldUtils.getAllAnimals()) {
+                animal.onNightFall();
+            }
+            num++;
+        }
+
+        for (Animal animal : den.getAnimalsInShelter()) {
+            assertTrue(gang.isMemberOfFlock(animal));
+        }
+    }
+
+    private boolean anyWolfsOnMap(WorldUtils worldUtils) {
+        int num = 0;
+        for (Animal animal : worldUtils.getAllAnimals()) {
+            if (animal instanceof Wolf wolf) {
+                if (world.isOnTile(wolf)) return true;
+                num++;
+            }
+        }
+
+        return num > 0;
+    }
+
 
 
     @AfterEach

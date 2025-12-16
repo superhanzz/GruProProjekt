@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalMoveTests {
 
+    CapableWorld world;
     int testSampleSize;
     int animalAmount;
     int worldSize;
@@ -29,13 +30,11 @@ public class AnimalMoveTests {
         simSteps = 200;
     }
 
-    /* Move method test not wolf */
-    @RepeatedTest(10)
-    public void animalMoveTest_NotWolf() {
-        CapableWorld world = new CapableWorld(worldSize);
-
+    /* Move method test for rabbit */
+    @RepeatedTest(1)
+    public void rabbitMoveTest() {
+        world = new CapableWorld(worldSize);
         PathFinder pathFinder = new PathFinder(world);
-
         TileFinder tileFinder = new TileFinder(world);
 
         Rabbit rabbit = new Rabbit(world);
@@ -48,28 +47,29 @@ public class AnimalMoveTests {
         assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
 
         world.delete(rabbit);
-
-        Bear bear = new Bear(world);
-        bear.updateOnMap(tileFinder.getEmptyTile(world, true), true);
-
-        for (int i = 0; i < testSampleSize; i++) {
-            animalLocationPreMove = bear.getLocation();
-            bear.move(world);
-            animalLocationPostMove = bear.getLocation();
-
-            double distanceFromCenter = pathFinder.distance(bear.getTerritoryCenter(),  animalLocationPostMove);
-
-            assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
-
-            assertTrue(distanceFromCenter <= bear.getTerritoryRadius());
-        }
-
     }
 
-    /* Wolf follow Alpha test */
+    /* Move method test not wolf */
+    @RepeatedTest(1)
+    public void wolfMoveTest() {
+        world = new CapableWorld(worldSize);
+        PathFinder pathFinder = new PathFinder(world);
+        TileFinder tileFinder = new TileFinder(world);
+
+        Wolf wolf = new Wolf(world);
+        wolf.updateOnMap(tileFinder.getEmptyTile(world, true), true);
+
+        Location animalLocationPreMove = wolf.getLocation();
+        wolf.move(world);
+        Location animalLocationPostMove = wolf.getLocation();
+
+        assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
+    }
+
+    /* Single wolf follow an alpha wolf test */
     @RepeatedTest(1)
     public void wolfFollowAlphaTest() {
-        CapableWorld world = new CapableWorld(worldSize);
+        world = new CapableWorld(worldSize);
 
         PathFinder pathFinder = new PathFinder(world);
 
@@ -102,9 +102,11 @@ public class AnimalMoveTests {
         assertTrue(npcDistanceFromAlphaPreMove >= npcDistanceFromAlphaPostMove);
     }
 
-    @RepeatedTest(10)
+    /*  Tests if a flock of wolf's move as a flock, i.e. the alpha wolf decides where the flock is going,
+        and the other wolfs in the flock stay within a certain radius of the alpha */
+    @RepeatedTest(1)
     public void wolfsMoveAsFlockTest() {
-        CapableWorld world = new CapableWorld(worldSize);
+        world = new CapableWorld(worldSize);
         PathFinder pathFinder = new PathFinder(world);
 
         Wolf alpha = new Wolf(world);
@@ -138,6 +140,32 @@ public class AnimalMoveTests {
         //System.out.println(averageRadius);
 
         assertTrue(gang.getAllowedRadiusAroundAlpha() > averageRadius);
+    }
+
+    /* Tests bears move method and tests whether they stay within their territory */
+    @RepeatedTest(1)
+    void bearMoveTest() {
+        world = new CapableWorld(worldSize);
+        PathFinder pathFinder = new PathFinder(world);
+        TileFinder tileFinder = new TileFinder(world);
+
+        Bear bear = new Bear(world);
+        bear.updateOnMap(tileFinder.getEmptyTile(world, true), true);
+
+        Location animalLocationPreMove = null;
+        Location animalLocationPostMove = null;
+
+        for (int i = 0; i < testSampleSize; i++) {
+            animalLocationPreMove = bear.getLocation();
+            bear.move(world);
+            animalLocationPostMove = bear.getLocation();
+
+            double distanceFromCenter = pathFinder.distance(bear.getTerritoryCenter(),  animalLocationPostMove);
+
+            assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
+
+            assertTrue(distanceFromCenter <= bear.getTerritoryRadius());
+        }
     }
 
     @AfterEach

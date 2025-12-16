@@ -140,7 +140,9 @@ public abstract class AnimalFlock {
         return world.getLocation(shelter);
     }
 
-    protected AnimalShelter getShelter() { return shelter; }
+    public AnimalShelter getShelter() { return shelter; }
+
+    public List<Animal> getFlockMembers() { return flockMembers; }
 
     public int getNumOfMembersInFlock() {
         return (flockMembers.size() + 1);
