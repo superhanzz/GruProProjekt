@@ -37,11 +37,13 @@ public class WolfGang extends AnimalFlock {
         PathFinder pathFinder = new PathFinder(world);
         for (Animal animal : flockMembers) {
             if(animal instanceof Wolf wolf) {
-                double distance = pathFinder.distance(askingWolf.getLocation(), wolf.getLocation());
-                if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(wolf);
+                if (wolf.isOnMap()) {
+                    double distance = pathFinder.distance(askingWolf.getLocation(), wolf.getLocation());
+                    if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(wolf);
+                }
             }
         }
-        if (flockLeader != askingWolf && flockLeader instanceof Wolf leader) {
+        if (flockLeader != askingWolf && flockLeader instanceof Wolf leader && leader.isOnMap()) {
             double distance = pathFinder.distance(askingWolf.getLocation(), leader.getLocation());
             if (distance <= 2 && !(distance < 1)) nearbyWolfs.add(leader);
         }

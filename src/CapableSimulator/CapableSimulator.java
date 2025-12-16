@@ -164,16 +164,6 @@ public class CapableSimulator extends Simulator {
         }
     }
 
-    private void burrowTesting() {
-        if (world.getCurrentTime() > 0 && world.getCurrentTime() < 10)
-        for (Object o : world.getEntities().keySet()) {
-            if  (o instanceof Burrow b) {
-                if (b.getNumOfAnimalsInShelter() > 0)
-                    System.out.println("rabbit in burrow during day");
-            }
-        }
-    }
-
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
 
     public SpawningAgent getSpawningAgent() {

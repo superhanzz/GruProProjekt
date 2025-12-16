@@ -122,10 +122,14 @@ public class Wolf extends Predator implements FlockAnimal {
 
         if (world.isDay()) {    // It's day
             if (isOnMap){   // It's day, and it is on the map
-                if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
-                    tryFight();
-                else
-                    lookForFood(1);
+                if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                    if (!(tryFight() || lookForFood(1)))
+                        move();
+                }
+                else {
+                    if (!lookForFood(2))
+                        move();
+                }
             }
             else {  // It's day, and it isn't on the map
                 exitDen();
@@ -146,10 +150,14 @@ public class Wolf extends Predator implements FlockAnimal {
         if (world.isDay()) {
             if (isOnMap){   // It's day and it is on the map
                 if (wolfType == CapableEnums.WolfType.ALPHA) {
-                    if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
-                        tryFight();
-                    else
-                        lookForFood(1);
+                    if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                        if (!(tryFight() || lookForFood(1)))
+                            move();
+                    }
+                    else {
+                        if (!lookForFood(2))
+                            move();
+                    }
 
                     wolfGang.alphaMoved(world.getLocation(this));
                 }
@@ -176,45 +184,17 @@ public class Wolf extends Predator implements FlockAnimal {
     protected void doEverySimulationStep() {}
 
     @Override
-    protected void attackEnemy(Predator enemyActor) {
-        double winChance = 0.0;
-        System.out.println("Wolf Attacking: " + enemyActor.actorType);
-        // Wolf
-        if (enemyActor instanceof Wolf enemy) {
-            winChance = getWinChance(enemy);
+    public Carcass die() {
+        Carcass carcass = super.die();
 
-            if (new Random().nextDouble() < winChance) {
-                kill(enemy);
-            }
-            else {
-                die();
-            }
-        }
-        // other enemy
+        if (wolfGang != null)
+            wolfGang.flockMemberDied(this);
+
+        isOnMap = false;
+        return carcass;
     }
 
-    /** Gets the win chance, dependent on the enemy */
-
-    private double getWinChance(Wolf enemyWolf) {
-        double winChance = 0.0;
-        winChance = (getStrengthValue()) / (getStrengthValue() + enemyWolf.getStrengthValue());
-
-        /*if (wolfType.equals(CapableEnums.WolfType.ALPHA)) {
-            if (enemyWolf.isAlpha() && enemyWolf.isAnimalAdult()) winChance = 0.5;
-            else if (enemyWolf.isAlpha() && !enemyWolf.isAnimalAdult()) winChance = 0.75;
-            else if (!enemyWolf.isAlpha() && enemyWolf.isAnimalAdult()) winChance = 0.75;
-            else winChance = 1;
-        }
-        else {
-            if (enemyWolf.isAlpha() && enemyWolf.isAnimalAdult()) winChance = 0.0;
-            else if (enemyWolf.isAlpha() && !enemyWolf.isAnimalAdult()) winChance = 0.5;
-            else if (!enemyWolf.isAlpha() && enemyWolf.isAnimalAdult()) winChance = 0.5;
-            else winChance = 0.75;
-        }*/
-
-        return winChance;
-    }
-
+    /* ----- ----- ----- ----- Wolf Den ----- ----- ----- ----- */
     /**
      * @throws NullPointerException If actor isn't on the world map*/
     private void tryEnterDen() {
@@ -249,15 +229,23 @@ public class Wolf extends Predator implements FlockAnimal {
         wolfDen.wolfLeftDen(this);
     }
 
+    /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
+
     @Override
-    public Carcass die() {
-        Carcass carcass = super.die();
+    protected boolean tryFight() {
+        List<Predator> enemies = new ArrayList<>();
+        if (!lookForEnemy(enemies, 1)) return false;
 
-        if (wolfGang != null)
-            wolfGang.flockMemberDied(this);
+        Wolf enemy = null;
+        for (Predator p : enemies) {
+            if (p instanceof Wolf w) {
+                enemy = w;
+            }
+        }
+        if (enemy == null) return false;
 
-        isOnMap = false;
-        return carcass;
+        attackEnemy(enemy);
+        return true;
     }
 
     @Override
@@ -284,30 +272,14 @@ public class Wolf extends Predator implements FlockAnimal {
             if (moveToLocation != null) world.move(this, moveToLocation);
         }
         if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
-            if (!tryFight())
-                lookForFood(1);
+            if (!(tryFight() || lookForFood(1)))
+                move();
         }
-        else
-            lookForFood(1);
-    }
-
-    @Override
-    protected boolean tryFight() {
-        List<Predator> enemies = new ArrayList<>();
-        if (!lookForEnemy(enemies, 1)) return false;
-
-        Wolf enemy = null;
-        for (Predator p : enemies) {
-            if (p instanceof Wolf w) {
-                enemy = w;
-            }
+        else {
+            if (!lookForFood(2))
+                move();
         }
-        if (enemy == null) return false;
-
-        attackEnemy(enemy);
-        return true;
     }
-
 
     /* ----- ----- ----- ----- Alpha Wolf Specific ----- ----- ----- ----- */
 

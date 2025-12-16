@@ -1,5 +1,5 @@
 10
-bear 1 (2,3)
-bear 1 (2,6)
+bear 1
+wolf 5
 
 

@@ -1,6 +1,7 @@
 package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Animals.Rabbit;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
@@ -36,8 +37,8 @@ public class Bear extends Predator {
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 4.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 7.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 8.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 5.0);
     }
     private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
     static {
@@ -77,7 +78,7 @@ public class Bear extends Predator {
     }
 
     public Bear(CapableWorld world, Location territoryCenter) {
-        super("bear", world, 20, 0, 35);
+        super("bear", world, 40, 0, 35);
 
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
@@ -88,7 +89,7 @@ public class Bear extends Predator {
     }
 
     public Bear(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
-        super("bear", world, 20, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
+        super("bear", world, 40, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
 
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
@@ -105,11 +106,13 @@ public class Bear extends Predator {
         super.act(world);
         if (isOnMap){
             if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
-                if (!(tryMate() || tryFight()))
-                    lookForFood(1);
+                if (!(tryMate() || tryFight() || lookForFood(1)))
+                    move();
             }
-            else
-                lookForFood(2);
+            else {
+                if (!lookForFood(2))
+                    move();
+            }
         }
 
     }
@@ -117,10 +120,7 @@ public class Bear extends Predator {
     @Override
     protected void doEverySimulationStep() {}
 
-    @Override
-    protected void attackEnemy(Predator enemy) {
 
-    }
 
     @Override
     public void move(){
@@ -164,7 +164,7 @@ public class Bear extends Predator {
         for (String key : CapableFunc.getAllPredatorTypes())
             enemiesMap.put(key, new ArrayList<>());
 
-        if (!lookForEnemy(enemies, 2)) return false;
+        if (!lookForEnemy(enemies, 3)) return false;
 
         Predator enemy = null;
         for (Predator possibleEnemy : enemies) {
@@ -174,16 +174,42 @@ public class Bear extends Predator {
         }
 
         for (String key : enemiesMap.keySet()) {
-            for (Predator predator : enemiesMap.get(key)) {
-                enemy  = predator;
-                break;
-            }
+            enemy = ((Predator) getNearestActor(enemiesMap.get(key)));
+            if (enemy != null) break;
         }
         if (enemy == null) return false;
+        Location enemyLocation = enemy.getLocation();
+
+        if (PathFinder.distance(getLocation(), enemyLocation) > 1) {
+            return moveTowards(enemyLocation);
+        }
 
         attackEnemy(enemy);
+        return true;
+    }
+
+    @Override
+    protected boolean isAnimalEnemy(Predator possibleEnemy) {
+        if (possibleEnemy instanceof Wolf wolf) {
+            List<Wolf> nearbyWolfs = new ArrayList<>();
+            wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
+            return nearbyWolfs.size() < 3;
+        }
+        else if (possibleEnemy instanceof Bear){
+            return !canMate();
+        }
         return false;
     }
+
+    @Override
+    public double getStrengthValue() {
+        double strength = 0;
+        strength += strengthBonus_AnimalSize.get(animalSize);
+        strength += strengthBonus_FungiState.get(fungiState);
+        return strength;
+    }
+
+    /* ----- ----- ----- ----- Reproduction ----- ----- ----- ----- */
 
     /** Tries to find a mate, and produce an offspring.
      * @return Returns true if a mate is found and a successful reproduction occurs or a mate is found and the bear goes towards it.
@@ -205,8 +231,6 @@ public class Bear extends Predator {
         mate(mate);
         return true;
     }
-
-
 
     /** Tries to find mates within a certain area.
      * @param mates is the list wherein the found mates are inserted into.
@@ -248,26 +272,6 @@ public class Bear extends Predator {
         bear.animalJustReproduce();
     }
 
-    @Override
-    protected boolean isAnimalEnemy(Predator possibleEnemy) {
-        if (possibleEnemy instanceof Wolf wolf) {
-            List<Wolf> nearbyWolfs = new ArrayList<>();
-            wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
-            return nearbyWolfs.size() < 3;
-        }
-        else if (possibleEnemy instanceof Bear){
-            return !canMate();
-        }
-        return false;
-    }
-
-    @Override
-    public double getStrengthValue() {
-        double strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
-        return strength;
-    }
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override

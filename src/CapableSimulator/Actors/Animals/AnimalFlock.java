@@ -72,10 +72,10 @@ public abstract class AnimalFlock {
     /* ----- ----- ----- ----- Flock Members ----- ----- ----- ----- */
 
     public void flockMemberDied(Animal animal) {
-        if (anyLivingFlockMembers() && animal == flockLeader) {
+        if (getFlockMembers().isEmpty() && animal == flockLeader) {
             killFlock();
         }
-        else if (anyLivingFlockMembers()) {
+        else if (getFlockMembers().isEmpty()) {
             // Do nothing
         }
         else if (animal == flockLeader) {
@@ -84,16 +84,6 @@ public abstract class AnimalFlock {
         else {
             deadFlockMembers.add(animal);
         }
-    }
-
-    private boolean anyLivingFlockMembers() {
-        if (flockMembers.isEmpty()) return false;
-
-        boolean anyLivingFlockMembers = true;
-        for (Animal animal : flockMembers) {
-            anyLivingFlockMembers &= deadFlockMembers.contains(animal);
-        }
-        return anyLivingFlockMembers;
     }
 
     private void killFlock() {
@@ -157,7 +147,13 @@ public abstract class AnimalFlock {
 
     public AnimalShelter getShelter() { return shelter; }
 
-    public List<Animal> getFlockMembers() { return flockMembers; }
+    public List<Animal> getFlockMembers() {
+        List<Animal> members = new ArrayList<>();
+        members.addAll(flockMembers);
+        members.removeAll(deadFlockMembers);
+
+        return members;
+    }
 
     public int getNumOfMembersInFlock() {
         return (flockMembers.size() + 1);

@@ -66,7 +66,6 @@ public abstract class Animal extends WorldActor implements Fungi {
     static {
         List<String> bearDiet = new ArrayList<>();
         bearDiet.add("rabbit");
-        bearDiet.add("wolf");
         bearDiet.add("berry");
         bearDiet.add("carcass");
 
@@ -141,7 +140,7 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     public void doEverySimStep() {
         age++;
-        if (world.isNight()) {
+        if (!isOnMap()) {
             return;
         }
 
@@ -158,7 +157,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         matingCooldown = Math.clamp(matingCooldown, 0, MATING_COOLDOWN_DURATION);
     }
 
-    public void lookForFood(int searchRadius){
+    public boolean lookForFood(int searchRadius){
         Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
 
         List<WorldActor> foodTiles = findFoodFromSource(neighbours);
@@ -167,12 +166,12 @@ public abstract class Animal extends WorldActor implements Fungi {
 
         if(eatableActor != null){
             prepareToEat(eatableActor);
-        }else {
-            if (!getHasSpecialMovementBehaviour()) move();
+            return true;
         }
+        return false;
     }
 
-    protected WorldActor getNearestActor(List<WorldActor> actors) {
+    protected WorldActor getNearestActor(List<? extends WorldActor> actors) {
         double shortestDistance = Double.MAX_VALUE;
         WorldActor nearestActor = null;
 
@@ -268,7 +267,6 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     /** Handles when an animal dies. If the animal isn't infected by a fungi then it becomes a carcass, otherwise it just disappers.
      * @return Returns the animals carcass, if one is created.
-     *
      */
     public Carcass die() {
         Location location = getLocation();
@@ -317,10 +315,13 @@ public abstract class Animal extends WorldActor implements Fungi {
     /** Moves the actor towards the given location.
      * @param location is the location to move towards.
      */
-    protected void moveTowards(Location location) {
+    protected boolean moveTowards(Location location) {
         Location moveTo = PathFinder.getClosestTile(world, getLocation(), location);
-        world.move(this,  moveTo);
+        if (moveTo == null)
+            return false;
 
+        world.move(this,  moveTo);
+        return true;
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
@@ -368,6 +369,10 @@ public abstract class Animal extends WorldActor implements Fungi {
     protected String getDisplayInformationsKey() {
         String key = animalSize.label + "-" + fungiState.label + "-" + animalState.label;
         return key;
+    }
+
+    public boolean isOnMap() {
+        return isOnMap;
     }
 
     @Override

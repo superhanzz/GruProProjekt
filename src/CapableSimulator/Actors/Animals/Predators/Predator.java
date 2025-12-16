@@ -46,7 +46,23 @@ public abstract class Predator extends Animal {
     }
 
     protected abstract boolean tryFight();
-    protected abstract void attackEnemy(Predator enemy);
+
+    protected void attackEnemy(Predator enemyActor) {
+        double winChance = getWinChance(enemyActor);
+        System.out.println(actorType + " Attacking: " + enemyActor.actorType + ", with a win chance of: " + (winChance * 100.0) + "%");
+        if (new Random().nextDouble() < winChance) {
+            kill(enemyActor);
+        }
+        else {
+            die();
+        }
+    }
+
+    protected double getWinChance(Predator enemy) {
+        double winChance = 0.0;
+        winChance = (getStrengthValue()) / (getStrengthValue() + enemy.getStrengthValue());
+        return winChance;
+    }
 
     @Override
     protected void prepareToEat(WorldActor eatableActor) {
