@@ -8,10 +8,7 @@ import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.CapableEnums;
-import CapableSimulator.Utils.SpawningAgent;
-import CapableSimulator.Utils.TileFinder;
-import CapableSimulator.Utils.WorldUtils;
+import CapableSimulator.Utils.*;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -158,7 +155,7 @@ public class Wolf extends Predator implements FlockAnimal {
                 }
 
                 if (!alpha.isOnMap) {   // It's day, and it is on the map, but the alpha wolf isn't on the map
-                    move(world);
+                    move();
                 }
             }
             else {  // It's day but it isn't on the map
@@ -223,7 +220,7 @@ public class Wolf extends Predator implements FlockAnimal {
     private void tryEnterDen() {
         if (wolfDen == null) return;
 
-        if (pathFinder.distance(getLocation(), wolfGang.getShelterLocation()) <= 2) {
+        if (PathFinder.distance(getLocation(), wolfGang.getShelterLocation()) <= 2) {
             enterDen();
         }
         else {
@@ -232,7 +229,7 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     private void goToDen() {
-        Location moveToTile = pathFinder.getMoveToTile(getLocation(), wolfGang.getShelterLocation());
+        Location moveToTile = PathFinder.getMoveToTile(world, getLocation(), wolfGang.getShelterLocation());
         if (moveToTile != null) world.move(this, moveToTile);
     }
 
@@ -279,33 +276,36 @@ public class Wolf extends Predator implements FlockAnimal {
         if (!isOnMap) return;
 
         Location wolfLocation = getLocation();
-        double distance = pathFinder.distance(wolfLocation, alphaLocation);
+        double distance = PathFinder.distance(wolfLocation, alphaLocation);
 
 
         if (distance >= wolfGang.getOptimalRadiusAroundAlpha()) { // if the wolf is within the allowed radius of the alpha
-            Location moveToLocation = pathFinder.getMoveToTile(wolfLocation, alphaLocation);
+            Location moveToLocation = PathFinder.getMoveToTile(world, wolfLocation, alphaLocation);
             if (moveToLocation != null) world.move(this, moveToLocation);
         }
-        if (animalSize.equals(CapableEnums.AnimalSize.ADULT))
-            tryFight();
+        if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+            if (!tryFight())
+                lookForFood(1);
+        }
         else
             lookForFood(1);
     }
 
-    private void tryFight() {
+    @Override
+    protected boolean tryFight() {
         List<Predator> enemies = new ArrayList<>();
-        if (lookForEnemy(enemies, 1)) {
-            Wolf enemy = null;
-            for (Predator p : enemies) {
-                if (p instanceof Wolf w) {
-                    enemy = w;
-                }
-            }
-            if (enemy == null) return;
+        if (!lookForEnemy(enemies, 1)) return false;
 
-            attackEnemy(enemy);
+        Wolf enemy = null;
+        for (Predator p : enemies) {
+            if (p instanceof Wolf w) {
+                enemy = w;
+            }
         }
-        else lookForFood(1);
+        if (enemy == null) return false;
+
+        attackEnemy(enemy);
+        return true;
     }
 
 
@@ -350,7 +350,7 @@ public class Wolf extends Predator implements FlockAnimal {
             // This is dumb because there is no priority in the food source
             for (String actorType : allPossibleFoodActors.keySet()) {
                 for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                    double distance = pathFinder.distance(getLocation(), world.getLocation(actor));
+                    double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
                     if (distance < shortestDistance) {
                         shortestDistance = distance;
                         nearestFoodActor = actor;
@@ -369,7 +369,7 @@ public class Wolf extends Predator implements FlockAnimal {
         for (String actorType : allPossibleFoodActors.keySet()) {
             distances.put(actorType, Double.MAX_VALUE);
             for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                double distance = pathFinder.distance(getLocation(), world.getLocation(actor));
+                double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
                 if (distance < distances.get(actorType)) {
                     distances.put(actorType, distance);
                     nearestPreyActors.put(actorType, new PreyDist(actor, distance));

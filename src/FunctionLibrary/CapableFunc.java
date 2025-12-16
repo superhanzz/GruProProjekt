@@ -17,41 +17,34 @@ import java.util.regex.Pattern;
 public class CapableFunc {
 
     public static List<String> getAllWorldActorTypes() {
-        List<String> actorTypes = new ArrayList<>();
+        List<String> actorTypes = getAllBlockingActorTypes();
         actorTypes.add("grass");
-        actorTypes.add("rabbit");
-        actorTypes.add("bear");
-        actorTypes.add("berry");
-        actorTypes.add("wolf");
         actorTypes.add("burrow");
         actorTypes.add("wolfDen");
-        actorTypes.add("carcass");
-        actorTypes.add("putin");
+        return actorTypes;
+    }
+
+    public static List<String> getAllBlockingActorTypes() {
+        List<String> actorTypes = getAllAnimalTypes();
+        actorTypes.add("berry");
         actorTypes.add("carcass");
         actorTypes.add("fungus");
         return actorTypes;
     }
 
-    public static List<String> getAllBlockingActorTypes() {
-        List<String> actorTypes = new ArrayList<>();
-        actorTypes.add("rabbit");
-        actorTypes.add("bear");
-        actorTypes.add("berry");
-        actorTypes.add("wolf");
-        actorTypes.add("carcass");
-        actorTypes.add("putin");
-        return actorTypes;
-    }
-
     public static List<String> getAllAnimalTypes() {
-        List<String> actorTypes = new ArrayList<>();
+        List<String> actorTypes = getAllPredatorTypes();
         actorTypes.add("rabbit");
+        return actorTypes;
+    }
+
+    public static List<String> getAllPredatorTypes() {
+        List<String> actorTypes = new ArrayList<>();
         actorTypes.add("bear");
         actorTypes.add("wolf");
         actorTypes.add("putin");
         return actorTypes;
     }
-
 
 
 }

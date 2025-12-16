@@ -1,7 +1,12 @@
 package CapableSimulator.Actors.Animals.Predators;
 
+import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import CapableSimulator.Utils.PathFinder;
+import CapableSimulator.Utils.SpawningAgent;
+import CapableSimulator.Utils.TileFinder;
+import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -21,6 +26,13 @@ public class Bear extends Predator {
      * */
     private int territoryRadius;
 
+    private static final List<String> fightPriority = new ArrayList<>();
+    static {
+        fightPriority.add("wolf");
+        fightPriority.add("bear");
+        fightPriority.add("putin");
+        //fightPriority.add("beartin");
+    }
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
@@ -53,10 +65,10 @@ public class Bear extends Predator {
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     public Bear(CapableWorld world) {
-        super("bear", world, 20, 0, 35);
+        super("bear", world, 40, 0, 35);
 
         this.territoryCenter = new Location(0, 0);
-        this.territoryRadius = 5;
+        this.territoryRadius = 2;
 
 
         animalSize = CapableEnums.AnimalSize.BABY;
@@ -68,7 +80,18 @@ public class Bear extends Predator {
         super("bear", world, 20, 0, 35);
 
         this.territoryCenter = territoryCenter;
-        this.territoryRadius = 5;
+        this.territoryRadius = 2;
+
+        animalSize = CapableEnums.AnimalSize.BABY;
+        animalState = CapableEnums.AnimalState.AWAKE;
+        fungiState = CapableEnums.FungiState.NORMAL;
+    }
+
+    public Bear(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
+        super("bear", world, 20, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
+
+        this.territoryCenter = territoryCenter;
+        this.territoryRadius = 2;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
@@ -80,12 +103,15 @@ public class Bear extends Predator {
     @Override
     public void act(World world) {
         super.act(world);
-        if (!dead){
-            lookForFood(2);
+        if (isOnMap){
+            if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                if (!(tryMate() || tryFight()))
+                    lookForFood(1);
+            }
+            else
+                lookForFood(2);
         }
-        else {
-            System.out.println("Dead, energy = " + energy);
-        }
+
     }
 
     @Override
@@ -97,20 +123,20 @@ public class Bear extends Predator {
     }
 
     @Override
-    public void move(World world){
+    public void move(){
         Set<Location> territory = world.getSurroundingTiles(territoryCenter, territoryRadius- 1);
         Set<Location> neighbours = world.getEmptySurroundingTiles(getLocation());
 
         List<Location> validNeighbours = new ArrayList<>();
         for (Location neighbour : neighbours) {
-            if (pathFinder.distance(getTerritoryCenter(), neighbour) <= territoryRadius) {
+            if (PathFinder.distance(getTerritoryCenter(), neighbour) <= territoryRadius) {
                 if (world.isTileEmpty(neighbour)) validNeighbours.add(neighbour);
             }
 
         }
         Location searchLocation;
         if (validNeighbours.isEmpty()) {
-            Location nearestLocation = pathFinder.getClosestTile(getLocation(), territoryCenter);
+            Location nearestLocation = PathFinder.getClosestTile(world, getLocation(), territoryCenter);
             if (nearestLocation == null) return;
             searchLocation = nearestLocation;
         }
@@ -131,6 +157,98 @@ public class Bear extends Predator {
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
 
     @Override
+    protected boolean tryFight() {
+        List<Predator> enemies = new ArrayList<>();
+
+        Map<String, List<Predator>> enemiesMap = new HashMap<>();
+        for (String key : CapableFunc.getAllPredatorTypes())
+            enemiesMap.put(key, new ArrayList<>());
+
+        if (!lookForEnemy(enemies, 2)) return false;
+
+        Predator enemy = null;
+        for (Predator possibleEnemy : enemies) {
+            List<Predator> list = enemiesMap.get(possibleEnemy.actorType);
+            list.add(possibleEnemy);
+            enemiesMap.put(possibleEnemy.actorType, list);
+        }
+
+        for (String key : enemiesMap.keySet()) {
+            for (Predator predator : enemiesMap.get(key)) {
+                enemy  = predator;
+                break;
+            }
+        }
+        if (enemy == null) return false;
+
+        attackEnemy(enemy);
+        return false;
+    }
+
+    /** Tries to find a mate, and produce an offspring.
+     * @return Returns true if a mate is found and a successful reproduction occurs or a mate is found and the bear goes towards it.
+     * Otherwise, returns false.
+     */
+    private boolean tryMate() {
+        List<Bear> mates = new ArrayList<>();
+
+        if (!lookForMate(mates, 4)) return false;
+
+        Bear mate = mates.get(new  Random().nextInt(mates.size()));
+        Location mateLocation = mate.getLocation();
+
+        if (PathFinder.distance(getLocation(), mateLocation) > 1) {
+            moveTowards(mateLocation);
+            return true;
+        }
+
+        mate(mate);
+        return true;
+    }
+
+
+
+    /** Tries to find mates within a certain area.
+     * @param mates is the list wherein the found mates are inserted into.
+     * @param radius The radius of the area to search for mates in.
+     * @return Returns true if any possible mates were found, otherwise returns false.
+     */
+    private boolean lookForMate(List<Bear> mates, int radius) {
+        Set<Location> neighbors = world.getSurroundingTiles(getLocation(), radius);
+        for (Location l : neighbors) {
+            Object o = world.getTile(l);
+            if (o instanceof Bear bear) {
+                if (bear.canMate())
+                    mates.add(bear);
+            }
+        }
+        return !mates.isEmpty();
+    }
+
+    /** Produces a bear offspring and adds it to the world.
+     * @param bear The actor to mate with.
+     */
+    private void mate(Bear bear) {
+        System.out.println("Bear mate");
+
+        TileFinder tileFinder = new TileFinder(world);
+        Location offspringLocation = tileFinder.getEmptyTileAroundActor(this, true);
+        Location offspringTerritoryLocation = tileFinder.getEmptyTile(world, true);
+        if (offspringLocation == null) return;
+
+        // makes new rabbit
+        Bear offspring = new Bear(world, offspringLocation);
+
+        // Spawn offspring at location
+        SpawningAgent spawningAgent = new SpawningAgent(world);
+        spawningAgent.spawnActorAtLocation(offspring,  offspringTerritoryLocation);
+
+        // Updates the relevant mating information.
+        animalJustReproduce();
+        bear.animalJustReproduce();
+    }
+
+    @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         if (possibleEnemy instanceof Wolf wolf) {
             List<Wolf> nearbyWolfs = new ArrayList<>();
@@ -138,7 +256,7 @@ public class Bear extends Predator {
             return nearbyWolfs.size() < 3;
         }
         else if (possibleEnemy instanceof Bear){
-            return canMate();
+            return !canMate();
         }
         return false;
     }

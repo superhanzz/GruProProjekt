@@ -41,7 +41,7 @@ public class AnimalMoveTests {
         rabbit.updateOnMap(tileFinder.getEmptyTile(world, true), true);
 
         Location animalLocationPreMove = rabbit.getLocation();
-        rabbit.move(world);
+        rabbit.move();
         Location animalLocationPostMove = rabbit.getLocation();
 
         assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
@@ -60,7 +60,7 @@ public class AnimalMoveTests {
         wolf.updateOnMap(tileFinder.getEmptyTile(world, true), true);
 
         Location animalLocationPreMove = wolf.getLocation();
-        wolf.move(world);
+        wolf.move();
         Location animalLocationPostMove = wolf.getLocation();
 
         assertTrue(animalLocationPreMove.getX() != animalLocationPostMove.getX() || animalLocationPreMove.getY() != animalLocationPostMove.getY());
@@ -107,7 +107,6 @@ public class AnimalMoveTests {
     @RepeatedTest(1)
     public void wolfsMoveAsFlockTest() {
         world = new CapableWorld(worldSize);
-        PathFinder pathFinder = new PathFinder(world);
 
         Wolf alpha = new Wolf(world);
         WolfGang gang = new WolfGang(world);
@@ -118,7 +117,7 @@ public class AnimalMoveTests {
         int numOfWolfsInGang = 6;
         for (int i = 0; i < numOfWolfsInGang; i++) {
             Wolf wolf = new Wolf(world);
-            Location npcSpawnLocation = pathFinder.getEmptyTileAroundLocation(alphaInitLocation, 3);
+            Location npcSpawnLocation = PathFinder.getEmptyTileAroundLocation(world, alphaInitLocation, 3);
             wolf.updateOnMap(npcSpawnLocation, true);
             gang.addNewFlockMember(wolf);
         }
@@ -149,15 +148,16 @@ public class AnimalMoveTests {
         PathFinder pathFinder = new PathFinder(world);
         TileFinder tileFinder = new TileFinder(world);
 
-        Bear bear = new Bear(world);
-        bear.updateOnMap(tileFinder.getEmptyTile(world, true), true);
+        Location bearSpawnLocation = tileFinder.getEmptyTile(world, true);
+        Bear bear = new Bear(world, bearSpawnLocation);
+        bear.updateOnMap(bearSpawnLocation, true);
 
         Location animalLocationPreMove = null;
         Location animalLocationPostMove = null;
 
         for (int i = 0; i < testSampleSize; i++) {
             animalLocationPreMove = bear.getLocation();
-            bear.move(world);
+            bear.move();
             animalLocationPostMove = bear.getLocation();
 
             double distanceFromCenter = pathFinder.distance(bear.getTerritoryCenter(),  animalLocationPostMove);

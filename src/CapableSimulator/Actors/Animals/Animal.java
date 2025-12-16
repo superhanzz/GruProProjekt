@@ -62,8 +62,6 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     protected CordycepSpore fungiSpore;
 
-    protected PathFinder pathFinder;
-
     protected static final Map<String, List<String>> eatableFoodTypes = new HashMap<>();
     static {
         List<String> bearDiet = new ArrayList<>();
@@ -101,8 +99,6 @@ public abstract class Animal extends WorldActor implements Fungi {
         this.MAX_ENERGY = MAX_ENERGY;
         this.MATING_AGE = 20;
         this.MATING_COOLDOWN_DURATION = 20;
-
-        pathFinder = new PathFinder(world);
     }
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
@@ -118,8 +114,6 @@ public abstract class Animal extends WorldActor implements Fungi {
         this.MAX_ENERGY = MAX_ENERGY;
         this.MATING_AGE = MATING_AGE;
         this.MATING_COOLDOWN_DURATION = MATING_COOLDOWN_DURATION;
-
-        pathFinder = new PathFinder(world);
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -129,7 +123,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         doEverySimStep();
     }
 
-    public void move(World world) {
+    public void move() {
         Set<Location> neighbours = world.getEmptySurroundingTiles(getLocation());
         List<Location> emptyNeighbours = new ArrayList<>();
         for (Location neighbour : neighbours) {
@@ -146,13 +140,13 @@ public abstract class Animal extends WorldActor implements Fungi {
     }
 
     public void doEverySimStep() {
+        age++;
         if (world.isNight()) {
             return;
         }
 
         energy--;
         if(energy <= 0) die();
-        age++;
 
         // Handles child becoming adult
         if (animalSize.equals(CapableEnums.AnimalSize.BABY)) {
@@ -174,7 +168,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         if(eatableActor != null){
             prepareToEat(eatableActor);
         }else {
-            if (!getHasSpecialMovementBehaviour()) move(world);
+            if (!getHasSpecialMovementBehaviour()) move();
         }
     }
 
@@ -183,7 +177,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         WorldActor nearestActor = null;
 
         for (WorldActor actor : actors) {
-            double distance = pathFinder.distance(getLocation(), world.getLocation(actor));
+            double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
             if (distance < shortestDistance) {
                 shortestDistance = distance;
                 nearestActor = actor;
@@ -279,6 +273,7 @@ public abstract class Animal extends WorldActor implements Fungi {
     public Carcass die() {
         Location location = getLocation();
         world.delete(this);
+        isOnMap = false;
         dead = true;
         if (!isInfected())
             return becomeCarcass(location);
@@ -317,6 +312,15 @@ public abstract class Animal extends WorldActor implements Fungi {
             world.remove(this);
             isOnMap = false;
         }
+    }
+
+    /** Moves the actor towards the given location.
+     * @param location is the location to move towards.
+     */
+    protected void moveTowards(Location location) {
+        Location moveTo = PathFinder.getClosestTile(world, getLocation(), location);
+        world.move(this,  moveTo);
+
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
@@ -366,8 +370,6 @@ public abstract class Animal extends WorldActor implements Fungi {
         return key;
     }
 
-    public boolean isAnimalAdult() {return (animalSize.equals(CapableEnums.AnimalSize.ADULT));}
-
     @Override
     public int getEnergyValue() {
         return energy;
@@ -378,8 +380,5 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     /* ----- ----- ----- Testing Extras ----- ----- ----- */
 
-    public void disableEnergyLoss() {
-
-    }
 
 }

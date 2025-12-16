@@ -72,18 +72,33 @@ public abstract class AnimalFlock {
     /* ----- ----- ----- ----- Flock Members ----- ----- ----- ----- */
 
     public void flockMemberDied(Animal animal) {
-        if (animal == flockLeader) {
-            if (!flockMembers.isEmpty()) {
-                findNewFlockLeader();
-            }
-            else {
-                System.out.println("A flock has gone extinct :(");
-                world.removeAnimalFlock(this);
-            }
+        if (anyLivingFlockMembers() && animal == flockLeader) {
+            killFlock();
+        }
+        else if (anyLivingFlockMembers()) {
+            // Do nothing
+        }
+        else if (animal == flockLeader) {
+            findNewFlockLeader();
         }
         else {
             deadFlockMembers.add(animal);
         }
+    }
+
+    private boolean anyLivingFlockMembers() {
+        if (flockMembers.isEmpty()) return false;
+
+        boolean anyLivingFlockMembers = true;
+        for (Animal animal : flockMembers) {
+            anyLivingFlockMembers &= deadFlockMembers.contains(animal);
+        }
+        return anyLivingFlockMembers;
+    }
+
+    private void killFlock() {
+        System.out.println("A flock has gone extinct :(");
+        world.removeAnimalFlock(this);
     }
 
     private void findNewFlockLeader() {

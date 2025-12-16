@@ -34,8 +34,7 @@ public class EatTests {
         Location location = new Location(1,1);
         rabbit.updateOnMap(location, true);
 
-        PathFinder pathFinder = new PathFinder(world);
-        Location grassLocation = pathFinder.getEmptyTileAroundLocation(rabbit.getLocation(), 1);
+        Location grassLocation = PathFinder.getEmptyTileAroundLocation(world, rabbit.getLocation(), 1);
 
         Grass grass = new Grass(world);
         world.setTile(grassLocation, grass);
@@ -68,8 +67,8 @@ public class EatTests {
         Location carcassLocation = new Location(1,1);
         world.setTile(carcassLocation, carcass);
 
-        Bear bear = new Bear(world);
         Location bearLocation = new Location(0,1);
+        Bear bear = new Bear(world, bearLocation);
         bear.updateOnMap(bearLocation, true);
 
         int carcassInitEnergy = carcass.getEnergyValue();
@@ -89,8 +88,8 @@ public class EatTests {
             bush.trySpawnBerrys();
         }
 
-        Bear bear = new Bear(world);
         Location bearLocation = new Location(0,1);
+        Bear bear = new Bear(world, bearLocation);
         bear.updateOnMap(bearLocation, true);
 
         assertTrue(bush.getBerryStatus());
@@ -120,8 +119,8 @@ public class EatTests {
      * */
     @RepeatedTest(1)
     void bearHuntRabbitTest() {
-        Bear bear = new Bear(world);
         Location bearLocation = new Location(0,1);
+        Bear bear = new Bear(world, bearLocation);
         bear.updateOnMap(bearLocation, true);
 
         Rabbit rabbit = new Rabbit(world);
@@ -136,8 +135,8 @@ public class EatTests {
 
     @RepeatedTest(1)
     void bearHuntWolfTest() {
-        Bear bear = new Bear(world);
         Location bearLocation = new Location(0,1);
+        Bear bear = new Bear(world, bearLocation);
         bear.updateOnMap(bearLocation, true);
 
         Wolf wolf = new Wolf(world);

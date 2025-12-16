@@ -9,10 +9,10 @@ import java.util.*;
 
 public class PathFinder {
 
-    CapableWorld world;
+    //CapableWorld world;
 
     public PathFinder(CapableWorld world) {
-        this.world = world;
+        //this.world = world;
     }
 
     /** Gets a random empty tile around a location, within a certain radius.
@@ -22,7 +22,7 @@ public class PathFinder {
      * @throws NullPointerException if location is null.
      * @throws IllegalArgumentException if radius is negative.
      */
-    public Location getEmptyTileAroundLocation(Location location, int radius) {
+    public static Location getEmptyTileAroundLocation(CapableWorld world, Location location, int radius) {
         if (location == null)
             throw new NullPointerException("Location is null");
         if (radius < 0)
@@ -49,7 +49,7 @@ public class PathFinder {
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
 
-    public Location getClosestTile(Location insigatorLocation, Location tileLocation) {
+    public static Location getClosestTile(CapableWorld world, Location insigatorLocation, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
 
@@ -64,13 +64,13 @@ public class PathFinder {
         return shortestTile;
     }
 
-    public double distance(Location A, Location B) {
+    public static double distance(Location A, Location B) {
         Location distanceVector = new Location((A.getX() - B.getX()),(A.getY() - B.getY()));
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
         return (Math.ceil(distance));
     }
 
-    public void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
+    public static void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
         if (axis == 0) {       // no movement on the given axis
             possibleMovesList.add(0);
             possibleMovesList.add(1);
@@ -86,7 +86,7 @@ public class PathFinder {
         }
     }
 
-    public Location getMoveToTile(Location fromLocation, Location goalLocation) {
+    public static Location getMoveToTile(CapableWorld world, Location fromLocation, Location goalLocation) {
         // DEBUG COLORS FOR printf
         final String RED = "\u001B[31m";
         final String RESET = "\u001B[0m";
@@ -150,7 +150,7 @@ public class PathFinder {
         return moveToLocation;
     }
 
-    public Location getMovementVector(Location start, Location end) {
+    public static Location getMovementVector(Location start, Location end) {
         int x = end.getX() - start.getX();
         int y = end.getY() - start.getY();
         return new Location(x, y);

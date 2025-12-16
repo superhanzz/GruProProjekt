@@ -178,7 +178,6 @@ public class AnimalShelterTests {
     @RepeatedTest(1)
     void wolfFlockShareDenTest() {
         world = new CapableWorld(10);
-        PathFinder pathFinder = new PathFinder(world);
         WorldUtils worldUtils = new WorldUtils(world);
 
         Wolf alpha = new Wolf(world);
@@ -190,7 +189,7 @@ public class AnimalShelterTests {
         int numOfWolfsInGang = 6;
         for (int i = 0; i < numOfWolfsInGang; i++) {
             Wolf wolf = new Wolf(world);
-            Location npcSpawnLocation = pathFinder.getEmptyTileAroundLocation(alphaInitLocation, 3);
+            Location npcSpawnLocation = PathFinder.getEmptyTileAroundLocation(world, alphaInitLocation, 3);
             wolf.updateOnMap(npcSpawnLocation, true);
             gang.addNewFlockMember(wolf);
         }

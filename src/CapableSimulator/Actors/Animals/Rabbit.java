@@ -3,6 +3,7 @@ package CapableSimulator.Actors.Animals;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.SpawningAgent;
 import CapableSimulator.Utils.TileFinder;
 import itumulator.executable.DisplayInformation;
@@ -139,8 +140,8 @@ public class Rabbit extends Animal {
 
     protected void reproduce(Rabbit mate) {
         // If the distance between this rabbit and the mate is over 1 tile
-        if (pathFinder.distance(getLocation(), mate.getLocation()) > 1) {
-            Location moveTo = pathFinder.getClosestTile(getLocation(), mate.getLocation());
+        if (PathFinder.distance(getLocation(), mate.getLocation()) > 1) {
+            Location moveTo = PathFinder.getClosestTile(world, getLocation(), mate.getLocation());
             world.move(this,  moveTo);
         }
 
@@ -190,7 +191,7 @@ public class Rabbit extends Animal {
     void exitBurrow() {
         if(burrow == null) System.out.println("Burrow is null");
         else {
-            Location exitLocation = pathFinder.getEmptyTileAroundLocation(burrow.getLocation(), 1);
+            Location exitLocation = PathFinder.getEmptyTileAroundLocation(world, burrow.getLocation(), 1);
             updateOnMap(exitLocation, true);
             burrow.animalLeftShelter(this);
         }
@@ -247,7 +248,7 @@ public class Rabbit extends Animal {
     public void onDusk() {
         if(burrow == null) return;  // If rabbit doesn't have a burrow, then do nothing
 
-        Location closestTile = pathFinder.getClosestTile(getLocation(), world.getLocation(burrow));
+        Location closestTile = PathFinder.getClosestTile(world, getLocation(), world.getLocation(burrow));
         if (closestTile == null) {
             System.out.println("Rabbit could not find a free tile around it's burrow.");    // error message if no empty tile was found around its burrow
             //TODO kill rabbit if no tile was found, burrow might be full

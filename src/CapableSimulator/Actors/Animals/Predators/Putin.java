@@ -65,6 +65,11 @@ public class Putin extends Predator {
     }
 
     @Override
+    protected boolean tryFight() {
+        return false;
+    }
+
+    @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         return false;
     }

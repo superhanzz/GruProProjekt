@@ -4,6 +4,7 @@ import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
+import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -44,6 +45,7 @@ public abstract class Predator extends Animal {
         return !enemies.isEmpty();
     }
 
+    protected abstract boolean tryFight();
     protected abstract void attackEnemy(Predator enemy);
 
     @Override
@@ -53,8 +55,8 @@ public abstract class Predator extends Animal {
             return;
         }
 
-        if (pathFinder.distance(getLocation(), world.getLocation(eatableActor)) != 1) {
-            Location goTo = pathFinder.getClosestTile(getLocation(), eatableActor.getLocation());
+        if (PathFinder.distance(getLocation(), world.getLocation(eatableActor)) != 1) {
+            Location goTo = PathFinder.getClosestTile(world, getLocation(), eatableActor.getLocation());
             world.move(this, goTo);
         }
 

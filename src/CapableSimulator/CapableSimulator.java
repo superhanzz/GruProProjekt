@@ -140,14 +140,12 @@ public class CapableSimulator extends Simulator {
 
     /** Handels the events related to midnight */
     private void onMidnight() {
-        //initiateWolfMating();
+        initiateWolfMating();
     }
 
     /** Initiates the mating of wolf's */
     private void initiateWolfMating() {
         Map<String, List<WorldActor>> map = world.getSortedEntities();
-
-
 
         List<WorldActor> wolfDens = map.get("wolfDen");
         for (WorldActor actor : wolfDens) {

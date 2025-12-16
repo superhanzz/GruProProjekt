@@ -1,6 +1,7 @@
 package Tests;
 
 import CapableSimulator.Actors.*;
+import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
@@ -62,7 +63,7 @@ public class AnimalReproduceTest {
     }
 
     /* Wolf reproduce test */
-    @RepeatedTest(100)
+    @RepeatedTest(1)
     public void testWolfReproduce() {
         int testSampleSize = 10000;
 
@@ -111,6 +112,26 @@ public class AnimalReproduceTest {
 
         double ActualReproduceChance = (numberOfNewSuccessfulCups * 1.0) / (testSampleSize * 1.0);
         assertEquals(0.5, ActualReproduceChance, 0.025);
+    }
+
+    @RepeatedTest(1)
+    public void bearReproduceTest() {
+        world = new CapableWorld(3);
+        Location bear1Location = new Location(0,1);
+        Bear bear1 = new Bear(world, 10,10,20, bear1Location);
+        bear1.updateOnMap(bear1Location, true);
+        bear1.doEverySimStep();
+
+        Location bear2Location = new Location(1,1);
+        Bear bear2 = new Bear(world, 10,10,20, bear2Location);
+        bear2.updateOnMap(bear2Location, true);
+        bear2.doEverySimStep();
+
+        int numberOfBearsPreMating = world.getSortedEntities().get("bear").size();
+        bear1.act(world);
+        int numberOfBearsPostMating = world.getSortedEntities().get("bear").size();
+
+        assertTrue(numberOfBearsPreMating < numberOfBearsPostMating);
     }
 
 

@@ -20,8 +20,13 @@ Rabbit dig burrow, enter burrow and leave burrow test:
 Wolf dig den, enter enter and leave den test:
     Done
 
-Rabbit reproduce test
-    Done
+Animal reproduce tests
+    Rabbit reproduce test:
+        Done
+    Wolf reproduce test:
+        Done
+    Bear reproduce test:
+        Done
 
 Wolf reproduce, and reproduce chance test:
     Done
@@ -62,6 +67,16 @@ Wolf flock tests:
 
 Animals attack tests:
     Wolf attack wolf test:
+        Done
+    Wolfs attack bear test:
         Not Done
-    Wolf attack
+    Bear attack wolf test:
+        Not Done
+    Bear attack bear test:
+        Not Done
+    Putin attack wolf test:
+        Not Done
+
+Putin become beartin test:
+    Not Done
 
