@@ -1,6 +1,7 @@
 package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Animals.Animal;
+import CapableSimulator.Actors.Carcass;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
@@ -18,8 +19,8 @@ public class Putin extends Predator {
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 6.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 10.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 1.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 1.0);
     }
     private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
     static {
@@ -156,6 +157,22 @@ public class Putin extends Predator {
         world.delete(this);
 
         new SpawningAgent(world).spawnActorAtLocation(beartin,  beartinLocation);
+    }
+
+    @Override
+    public Carcass die() {
+        Location location = getLocation();
+        PutinEgg egg = new PutinEgg(world);
+
+        if (isInfected()) {
+            spreadSpores(world);
+            world.delete(this);
+        }
+        updateOnMap(null, false);
+        new SpawningAgent(world).spawnActorAtLocation(egg, location);
+        setDead(true);
+
+        return null;
     }
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */

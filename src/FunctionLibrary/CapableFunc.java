@@ -21,6 +21,7 @@ public class CapableFunc {
         actorTypes.add("grass");
         actorTypes.add("burrow");
         actorTypes.add("wolfDen");
+        actorTypes.add("putinEgg");
         return actorTypes;
     }
 

@@ -1,8 +1,11 @@
 package CapableSimulator.Actors.Animals.Predators;
 
+import CapableSimulator.Actors.Carcass;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
@@ -24,8 +27,9 @@ public class Beartin extends Predator {
         strengthBonus_FungiState.put(CapableEnums.FungiState.FUNGI, 5.0);
     }
 
-    DisplayInformation diPutin = new DisplayInformation(Color.blue, "bertin");
-    //DisplayInformation diPutinSleeping = new DisplayInformation(Color.blue, "putin-sleeping");
+    DisplayInformation diBertin = new DisplayInformation(Color.blue, "bertin");
+    DisplayInformation diBertinFungi = new DisplayInformation(Color.blue, "bertin-fungi");
+
 
 
 
@@ -57,7 +61,21 @@ public class Beartin extends Predator {
     @Override
     protected void doEverySimulationStep() {}
 
+    @Override
+    public Carcass die() {
+        Location location = getLocation();
+        PutinEgg egg = new PutinEgg(world);
 
+        if (isInfected()) {
+            spreadSpores(world);
+            world.delete(this);
+        }
+        updateOnMap(null, false);
+        new SpawningAgent(world).spawnActorAtLocation(egg, location);
+        setDead(true);
+
+        return null;
+    }
 
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
@@ -106,17 +124,16 @@ public class Beartin extends Predator {
     @Override
     public void onDusk() {
 
-
-
-
-
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
 
     @Override
     public DisplayInformation getInformation() {
-        return diPutin;
+        if (isInfected())
+            return diBertinFungi;
+        else
+            return diBertin;
     }
 
 

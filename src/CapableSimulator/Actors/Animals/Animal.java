@@ -394,6 +394,10 @@ public abstract class Animal extends WorldActor implements Fungi {
         return isOnMap;
     }
 
+    protected void setDead(boolean dead) {
+        isDead = dead;
+    }
+
     public boolean isDead() {
         return isDead;
     }
