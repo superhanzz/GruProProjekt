@@ -53,12 +53,11 @@ public abstract class Animal extends WorldActor implements Fungi {
      * */
     private final int MATING_COOLDOWN_DURATION;
 
-    public boolean dead = false;
-
     protected CapableEnums.AnimalState animalState;
     protected CapableEnums.AnimalSize animalSize;
 
-    protected boolean isOnMap;
+    private boolean isOnMap;
+    private boolean isDead = false;
 
     protected CordycepSpore fungiSpore;
 
@@ -270,13 +269,19 @@ public abstract class Animal extends WorldActor implements Fungi {
      */
     public Carcass die() {
         Location location = getLocation();
-        world.delete(this);
+        Carcass carcass = null;
+
+        if (!isInfected()) {
+            world.delete(this);
+            carcass = becomeCarcass(location);
+        }
+        else {
+            spreadSpores(world);
+            world.delete(this);
+        }
         isOnMap = false;
-        dead = true;
-        if (!isInfected())
-            return becomeCarcass(location);
-        else
-            return null;
+        isDead = true;
+        return carcass;
     }
 
     public Location getLocation() {
@@ -328,7 +333,8 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     @Override
     public void becomeInfected() {
-        fungiSpore = new CordycepSpore(world);
+        System.out.println("Animal becomes infected");
+        fungiSpore = new CordycepSpore(world, this);
         fungiState = CapableEnums.FungiState.FUNGI;
     }
 
@@ -344,9 +350,15 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     @Override
     public void spreadSpores(CapableWorld world) {
+        //System.out.println("Spreading spore in animal");
         if (!isInfected()) return;
 
-        fungiSpore.spread(getLocation());
+        fungiSpore.spread(getLocation(), 1.0);
+    }
+
+    @Override
+    public boolean isCarrierOfType(CapableEnums.FungiType fungiType){
+        return FungiSpore.getCanCarryType((Animal.class)).equals(fungiType);
     }
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
@@ -373,6 +385,10 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     public boolean isOnMap() {
         return isOnMap;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 
     @Override

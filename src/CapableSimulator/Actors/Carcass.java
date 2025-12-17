@@ -122,10 +122,16 @@ public class Carcass extends WorldActor implements Fungi {
         return fungiSpore;
     }
 
+    @Override
+    public boolean isCarrierOfType(CapableEnums.FungiType fungiType){
+        return FungiSpore.getCanCarryType(this.getClass()).equals(fungiType);
+    }
+
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
     public void spreadSpores(CapableWorld world) {
+        //System.out.println("Spreading spore in carcass");
         if (!isInfected()) return;
 
         fungiSpore.spread(world.getLocation(this));

@@ -1,6 +1,7 @@
 package CapableSimulator.Actors.Fungis;
 
 import CapableSimulator.CapableWorld;
+import CapableSimulator.Utils.CapableEnums;
 
 public interface Fungi {
 
@@ -9,6 +10,8 @@ public interface Fungi {
     void becomeInfected();
 
     boolean isInfected();
+
+    boolean isCarrierOfType(CapableEnums.FungiType fungiType);
 
     FungiSpore getFungiSpore();
 

@@ -2,7 +2,6 @@ package CapableSimulator;
 
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Fungis.Fungi;
-import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;
@@ -111,8 +110,10 @@ public class CapableSimulator extends Simulator {
                 break;
         }
 
-        if (world.getCurrentTime() % 5 == 0)
-            fungiSpreadSpores();
+        if (world.getCurrentTime() % 5 == 0) {
+            fungiSpreadSporesOfType(CapableEnums.FungiType.FUNGUS);
+            //fungiSpreadSporesOfType(CapableEnums.FungiType.CORDYCEP);
+        }
     }
 
     /* ----- ----- ----- ----- Event Handling ----- ----- ----- ----- */
@@ -156,9 +157,9 @@ public class CapableSimulator extends Simulator {
         }
     }
 
-    private void fungiSpreadSpores() {
+    private void fungiSpreadSporesOfType(CapableEnums.FungiType fungiType) {
         for (Object o : world.getEntities().keySet()) {
-            if  (o instanceof Fungi fungi) {
+            if  (o instanceof Fungi fungi && fungi.isCarrierOfType(fungiType)) {
                 fungi.spreadSpores(world);
             }
         }

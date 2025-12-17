@@ -74,16 +74,27 @@ public class InputFileStruct {
         Pattern pattern = Pattern.compile("[a-z]+");
         String index1 = input.get(0);
         String index2 = input.get(1);
-        Matcher matcher = pattern.matcher(index1);
-        if (matcher.matches()) {
-            actorType = index1;
-        }
-        matcher = pattern.matcher(index2);
-        if (matcher.matches()) {
-            if (matcher.group().equals("fungi") || matcher.group().equals("cordyceps") ) {
+
+        Matcher matcher1 = pattern.matcher(index1);
+        Matcher matcher2 = pattern.matcher(index2);
+
+        if (matcher1.matches() &&  matcher2.matches()) {
+            if (matcher1.group(0).equals("cordyceps")) {
+                fungiState = CapableEnums.FungiState.FUNGI;
+                actorType = matcher2.group(0);
+            }
+            else if (matcher2.group().equals("fungi")) {
+                actorType = matcher1.group(0);
                 fungiState = CapableEnums.FungiState.FUNGI;
             }
+            else
+                System.out.println("Fuckery in parseActorType()");
         }
+        else if (matcher1.matches()) {
+            actorType = matcher1.group(0);
+        }
+        else
+            System.out.println("Fuckery in parseActorType()");
     }
 
     /** Parses the spawn amount from the input file line

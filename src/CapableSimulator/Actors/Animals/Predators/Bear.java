@@ -104,7 +104,7 @@ public class Bear extends Predator {
     @Override
     public void act(World world) {
         super.act(world);
-        if (isOnMap){
+        if (isOnMap()){
             if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
                 if (!(tryMate() || tryFight() || lookForFood(1)))
                     move();

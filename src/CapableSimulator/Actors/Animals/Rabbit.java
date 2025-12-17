@@ -50,7 +50,6 @@ public class Rabbit extends Animal {
         super("rabbit", world, 15, 0, 25);
 
         burrow = null;
-        isOnMap = false;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
@@ -64,7 +63,6 @@ public class Rabbit extends Animal {
         super("rabbit", world, energy, 0, 25);
 
         burrow = null;
-        isOnMap = false;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
@@ -78,7 +76,6 @@ public class Rabbit extends Animal {
         super("rabbit", world, 15, 25, age,  MATING_AGE, MATING_COOLDOWN_DURATION);
 
         burrow = null;
-        isOnMap = false;
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
@@ -93,7 +90,7 @@ public class Rabbit extends Animal {
      * */
     @Override
     public void act(World world) {
-        if(world.isNight() || !isOnMap)
+        if(world.isNight() || !isOnMap())
             return;
         findMate(1);
 
@@ -212,7 +209,7 @@ public class Rabbit extends Animal {
             return;
         }
 
-        if (!isOnMap)
+        if (!isOnMap())
             exitBurrow();
     }
 

@@ -20,7 +20,7 @@ public class Fungus extends WorldActor implements Fungi {
 
     /** The default energy the fungi will spawn with, the value is for a big fungi, if a fungi i specified to be small, the value is halvfed.
      * */
-    private static final int DEFAULT_ENERGY_VALUE = 2;
+    private static final int DEFAULT_ENERGY_VALUE = 20;
 
     /** The default size of a fungi when spawned.
      * */
@@ -111,6 +111,7 @@ public class Fungus extends WorldActor implements Fungi {
 
     @Override
     public void spreadSpores(CapableWorld world) {
+        //System.out.println("Spreading spore in fungus");
         fungiSpore.spread(world.getLocation(this));
     }
 
@@ -125,6 +126,11 @@ public class Fungus extends WorldActor implements Fungi {
     @Override
     public FungiSpore getFungiSpore() {
         return fungiSpore;
+    }
+
+    @Override
+    public boolean isCarrierOfType(CapableEnums.FungiType fungiType){
+        return FungiSpore.getCanCarryType(this.getClass()).equals(fungiType);
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */

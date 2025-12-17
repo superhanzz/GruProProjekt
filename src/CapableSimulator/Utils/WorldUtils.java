@@ -10,6 +10,7 @@ import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.CapableWorld;
+import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 
 import java.util.*;
@@ -63,16 +64,11 @@ public class WorldUtils {
     }
 
 
-
     public List<Animal> getAllAnimals(){
         List<Animal> animals = new ArrayList<>();
-        Map<String , Set<WorldActor>> worldActors = getAllWorldActorsAsMap(getAllAnimalTypes(),true);
-        for (String actorType : worldActors.keySet()) {
-            for (WorldActor actor : worldActors.get(actorType)) {
-                if (actor instanceof Animal) {
-                    animals.add((Animal) actor);
-                }
-            }
+        Map<Object, Location> entities = world.getEntities();
+        for (Object actor : entities.keySet()) {
+            if (actor instanceof Animal animal) animals.add(animal);
         }
         return animals;
     }

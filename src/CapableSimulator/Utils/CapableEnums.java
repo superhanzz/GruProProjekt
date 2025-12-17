@@ -57,10 +57,9 @@ public class CapableEnums {
     }
 
 
-    public enum Combat {
-        SIZE,
-        FUNGI_STATE,
-        STATE;
+    public enum FungiType {
+        FUNGUS,
+        CORDYCEP;
     }
 
     public enum SimulationType {

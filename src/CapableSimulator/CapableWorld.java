@@ -71,7 +71,9 @@ public class CapableWorld extends World {
             System.out.println(actor.getActorType());
             return;
         }
-        sortedEntities.get(actor.getActorType()).add(actor);
+        if (!sortedEntities.get(actor.getActorType()).contains(actor)) {
+            sortedEntities.get(actor.getActorType()).add(actor);
+        }
     }
 
     /** Removes the actor from the array associated with the actorType */
@@ -111,10 +113,6 @@ public class CapableWorld extends World {
     @Override
     public void remove(Object object) {
         super.remove(object);
-
-        if (object instanceof WorldActor actor) {
-            removeFromSortedEntities(actor);
-        }
     }
 
     @Override

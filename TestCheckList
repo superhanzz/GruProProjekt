@@ -48,8 +48,11 @@ Animal die and become carcass test:
 Carcass decompose, and decompose to Fungus test:
     Done
 
-Fungi spreading, and spread chance test:
-    Done
+Fungi spreading test:
+    Spread chance test:
+        Done
+    Spread radius test;
+        Not Done
 
 Fungus tests:
     Fungus spread to carcass':
