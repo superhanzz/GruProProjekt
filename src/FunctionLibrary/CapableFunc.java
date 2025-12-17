@@ -29,6 +29,7 @@ public class CapableFunc {
         actorTypes.add("berry");
         actorTypes.add("carcass");
         actorTypes.add("fungus");
+        actorTypes.add("fertilTile");
         return actorTypes;
     }
 

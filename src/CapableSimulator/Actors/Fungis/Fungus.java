@@ -1,21 +1,26 @@
 package CapableSimulator.Actors.Fungis;
 
+import CapableSimulator.Actors.FertilTile;
+import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
 
-public class Fungus extends WorldActor {
+public class Fungus extends WorldActor implements Fungi {
 
     int energy;
     CapableEnums.AnimalSize size;
+    private final FungiSpore fungiSpore;
 
     /** The default energy the fungi will spawn with, the value is for a big fungi, if a fungi i specified to be small, the value is halvfed.
      * */
-    private static final int DEFAULT_ENERGY_VALUE = 20;
+    private static final int DEFAULT_ENERGY_VALUE = 2;
 
     /** The default size of a fungi when spawned.
      * */
@@ -34,17 +39,21 @@ public class Fungus extends WorldActor {
      *  Both 'energy' and 'size' is set to default value
      * */
     public Fungus(CapableWorld world) {
-        super("fungi", world );
+        super("fungus", world );
         this.energy = DEFAULT_ENERGY_VALUE;
         this.size = DEFAULT_SIZE;
+
+        fungiSpore = new FungiSpore(world);
     }
 
     /** This constructor should be used when converting a 'Carcass' to a fungi.
      *  The fungi's size decides the 'energy' value.
      * */
     public Fungus(CapableWorld world, CapableEnums.AnimalSize size) {
-        super("fungi", world);
+        super("fungus", world);
         this.size = size;
+
+        fungiSpore = new FungiSpore(world);
 
         this.energy = switch (size) {
             case BABY ->  (DEFAULT_ENERGY_VALUE / 2);
@@ -54,25 +63,69 @@ public class Fungus extends WorldActor {
     /** No actual use at the moment.
      * */
     public Fungus(CapableWorld world, CapableEnums.AnimalSize size, int energy) {
-        super("fungi", world);
+        super("fungus", world);
         this.energy = energy;
         this.size = size;
+
+        fungiSpore = new FungiSpore(world);
     }
 
+    public Fungus(CapableWorld world, int energy) {
+        super("fungus", world);
+        this.energy = energy;
+        this.size = DEFAULT_SIZE;
+
+        fungiSpore = new FungiSpore(world);
+    }
     /* ----- ----- ----- Behavior ----- ----- ----- */
 
     @Override
     public void act(World world) {
-
+        doEverySimulationStep();
     }
 
     @Override
-    protected void doEverySimulationStep() {}
+    protected void doEverySimulationStep() {
+        if (world.isNight()) return;
 
-    private void spreadSpores() {
-
+        energy--;
+        if (energy <=0 ) {
+            decompose();
+        }
     }
 
+    public void decompose() {
+        Location location = world.getLocation(this);
+        world.delete(this);
+        if (world.getNonBlocking(location) == null) {
+            becomeFertilTile(location);
+        }
+    }
+
+    public void becomeFertilTile(Location location) {
+        FertilTile ft = new FertilTile(world);
+        new SpawningAgent(world).spawnActorAtLocation(ft, location);
+    }
+
+    /* ----- ----- ----- Getters and Setters ----- ----- ----- */
+
+    @Override
+    public void spreadSpores(CapableWorld world) {
+        fungiSpore.spread(world.getLocation(this));
+    }
+
+    @Override
+    public void becomeInfected() {}
+
+    @Override
+    public boolean isInfected() {
+        return true;
+    }
+
+    @Override
+    public FungiSpore getFungiSpore() {
+        return fungiSpore;
+    }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
 

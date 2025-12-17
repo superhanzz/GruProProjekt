@@ -67,7 +67,10 @@ public class CapableWorld extends World {
 
     /** Adds the worldActor to the sortedEntities map, under the actors actorType */
     private void addToSortedEntities(WorldActor actor) {
-        if (!sortedEntities.containsKey(actor.getActorType())) return;
+        if (!sortedEntities.containsKey(actor.getActorType())) {
+            System.out.println(actor.getActorType());
+            return;
+        }
         sortedEntities.get(actor.getActorType()).add(actor);
     }
 

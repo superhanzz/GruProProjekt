@@ -51,6 +51,12 @@ Carcass decompose, and decompose to Fungus test:
 Fungi spreading, and spread chance test:
     Done
 
+Fungus tests:
+    Fungus spread to carcass':
+        Done
+    Fungus decompose to grass test:
+        Done
+
 Animal hunt tests:
     Wolf hunt rabbit test:
         Done

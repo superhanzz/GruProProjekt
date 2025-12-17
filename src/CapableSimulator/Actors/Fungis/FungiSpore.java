@@ -14,7 +14,7 @@ public class FungiSpore extends WorldActor {
 
     private final static int SPREAD_RADIUS = 3;
     /** */
-    private final static float SPREAD_CHANCE = 0.1f;
+    private final static double SPREAD_CHANCE = 0.1f;
 
     public FungiSpore(CapableWorld world) {
         super("fungi_spore", world);
@@ -79,7 +79,7 @@ public class FungiSpore extends WorldActor {
 
     /* ----- ----- Getters ----- ----- */
 
-    public static float getSpreadChance() {
+    public static double getSpreadChance() {
         return SPREAD_CHANCE;
     }
 
