@@ -104,7 +104,12 @@ public class Bear extends Predator {
     @Override
     public void act(World world) {
         super.act(world);
-        if (isOnMap()){
+        if (isDead()) return;
+
+        if(isInfected()) {
+
+        }
+        else if (isOnMap()){
             if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
                 if (!(tryMate() || tryFight() || lookForFood(1)))
                     move();
@@ -155,38 +160,6 @@ public class Bear extends Predator {
     }
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
-
-    @Override
-    protected boolean tryFight() {
-        List<Predator> enemies = new ArrayList<>();
-
-        Map<String, List<Predator>> enemiesMap = new HashMap<>();
-        for (String key : CapableFunc.getAllPredatorTypes())
-            enemiesMap.put(key, new ArrayList<>());
-
-        if (!lookForEnemy(enemies, 3)) return false;
-
-        Predator enemy = null;
-        for (Predator possibleEnemy : enemies) {
-            List<Predator> list = enemiesMap.get(possibleEnemy.actorType);
-            list.add(possibleEnemy);
-            enemiesMap.put(possibleEnemy.actorType, list);
-        }
-
-        for (String key : enemiesMap.keySet()) {
-            enemy = ((Predator) getNearestActor(enemiesMap.get(key)));
-            if (enemy != null) break;
-        }
-        if (enemy == null) return false;
-        Location enemyLocation = enemy.getLocation();
-
-        if (PathFinder.distance(getLocation(), enemyLocation) > 1) {
-            return moveTowards(enemyLocation);
-        }
-
-        attackEnemy(enemy);
-        return true;
-    }
 
     @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {

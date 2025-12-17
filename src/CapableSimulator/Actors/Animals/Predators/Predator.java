@@ -5,6 +5,7 @@ import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.PathFinder;
+import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -47,7 +48,36 @@ public abstract class Predator extends Animal {
         return !enemies.isEmpty();
     }
 
-    protected abstract boolean tryFight();
+    protected boolean tryFight() {
+        List<Predator> enemies = new ArrayList<>();
+
+        Map<String, List<Predator>> enemiesMap = new HashMap<>();
+        for (String key : CapableFunc.getAllPredatorTypes())
+            enemiesMap.put(key, new ArrayList<>());
+
+        if (!lookForEnemy(enemies, 3)) return false;
+
+        Predator enemy = null;
+        for (Predator possibleEnemy : enemies) {
+            List<Predator> list = enemiesMap.get(possibleEnemy.actorType);
+            list.add(possibleEnemy);
+            enemiesMap.put(possibleEnemy.actorType, list);
+        }
+
+        for (String key : enemiesMap.keySet()) {
+            enemy = ((Predator) getNearestActor(enemiesMap.get(key)));
+            if (enemy != null) break;
+        }
+        if (enemy == null) return false;
+        Location enemyLocation = enemy.getLocation();
+
+        if (PathFinder.distance(getLocation(), enemyLocation) > 1) {
+            return moveTowards(enemyLocation);
+        }
+
+        attackEnemy(enemy);
+        return true;
+    }
 
     protected void attackEnemy(Predator enemyActor) {
         double winChance = getWinChance(enemyActor);

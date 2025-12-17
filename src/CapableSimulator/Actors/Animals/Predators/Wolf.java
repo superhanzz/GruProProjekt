@@ -249,23 +249,6 @@ public class Wolf extends Predator implements FlockAnimal {
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
 
     @Override
-    protected boolean tryFight() {
-        List<Predator> enemies = new ArrayList<>();
-        if (!lookForEnemy(enemies, 1)) return false;
-
-        Wolf enemy = null;
-        for (Predator p : enemies) {
-            if (p instanceof Wolf w) {
-                enemy = w;
-            }
-        }
-        if (enemy == null) return false;
-
-        attackEnemy(enemy);
-        return true;
-    }
-
-    @Override
     public double getStrengthValue() {
         int strength = 0;
         strength += strengthBonus_AnimalSize.get(animalSize);

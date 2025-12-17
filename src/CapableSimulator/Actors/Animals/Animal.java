@@ -75,11 +75,18 @@ public abstract class Animal extends WorldActor implements Fungi {
         List<String> rabbitDiet = new ArrayList<>();
         rabbitDiet.add("grass");
 
+        List<String> putinDiet = new ArrayList<>();
+        putinDiet.add("rabbit");
+        putinDiet.add("carcass");
+        putinDiet.add("fungus");
+
         eatableFoodTypes.put("bear", bearDiet);
 
         eatableFoodTypes.put("wolf", wolfDiet);
 
         eatableFoodTypes.put("rabbit", rabbitDiet);
+
+        eatableFoodTypes.put("putin", putinDiet);
     }
 
     /* ----- ----- ----- Constructors ----- ----- ----- */
