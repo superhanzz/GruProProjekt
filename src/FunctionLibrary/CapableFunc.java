@@ -44,6 +44,7 @@ public class CapableFunc {
         actorTypes.add("bear");
         actorTypes.add("wolf");
         actorTypes.add("putin");
+        actorTypes.add("beartin");
         return actorTypes;
     }
 

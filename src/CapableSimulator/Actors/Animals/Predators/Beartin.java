@@ -15,8 +15,8 @@ public class Beartin extends Predator {
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 6.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 10.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 50.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 70.0);
     }
     private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
     static {
@@ -24,38 +24,20 @@ public class Beartin extends Predator {
         strengthBonus_FungiState.put(CapableEnums.FungiState.FUNGI, 5.0);
     }
 
-    DisplayInformation diPutin = new DisplayInformation(Color.blue, "bearin");
+    DisplayInformation diPutin = new DisplayInformation(Color.blue, "bertin");
     //DisplayInformation diPutinSleeping = new DisplayInformation(Color.blue, "putin-sleeping");
+
+
 
     public Beartin(CapableWorld world, int energy, int age, int MAX_ENERGY) {
         super("beartin", world, energy, age, MAX_ENERGY);
+
+        animalSize = CapableEnums.AnimalSize.ADULT;
+        animalState = world.isDay() ? CapableEnums.AnimalState.AWAKE : CapableEnums.AnimalState.SLEEPING;
     }
 
 
-    @Override
-    public double getStrengthValue() {
-        double strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
-        return strength;
-    }
 
-    @Override
-    protected boolean isAnimalEnemy(Predator possibleEnemy) {
-        switch (possibleEnemy) {
-            case Wolf wolf -> {
-                List<Wolf> nearbyWolfs = new ArrayList<>();
-                wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
-                return nearbyWolfs.size() < 4;
-            }
-            case Bear bear -> { return true; }
-            case Putin putin -> { return true; }
-            default -> {
-                return false;
-            }
-        }
-
-    }
     @Override
     public void act(World world){
         super.act(world);
@@ -86,30 +68,29 @@ public class Beartin extends Predator {
     }
 
     @Override
-    protected void attackEnemy(Predator enemyActor) {
-        if (enemyActor instanceof Bear bear) {
-            tryMountBear(bear);
-        }
-        else {
-            super.attackEnemy(enemyActor);
-        }
+    public double getStrengthValue() {
+        double strength = 0;
+        strength += strengthBonus_AnimalSize.get(animalSize);
+        strength += strengthBonus_FungiState.get(fungiState);
+        return strength;
     }
 
-    private void tryMountBear(Bear bear) {
-        System.out.println("Putin trying to mount bear");
-        double winChance = getWinChance(bear);
-        if (new Random().nextDouble() < winChance) {
-            mountBear(bear);
+    @Override
+    protected boolean isAnimalEnemy(Predator possibleEnemy) {
+        switch (possibleEnemy) {
+            case Wolf wolf -> {
+                List<Wolf> nearbyWolfs = new ArrayList<>();
+                wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
+                return nearbyWolfs.size() < 4;
+            }
+            case Bear bear -> { return true; }
+            case Putin putin -> { return true; }
+            default -> {
+                return false;
+            }
         }
-        else {
-            die();
-        }
-    }
-
-    private void mountBear(Bear bear) {
 
     }
-
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override

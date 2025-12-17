@@ -3,7 +3,10 @@ package CapableSimulator.Actors.Animals.Predators;
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import CapableSimulator.Utils.PathFinder;
+import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
@@ -87,8 +90,7 @@ public class Putin extends Predator {
 //TODO make beartin
     @Override
     public void act(World world){
-        return;
-        /*super.act(world);
+        super.act(world);
         if (isDead()) return;
 
         if(isInfected()) {
@@ -105,7 +107,7 @@ public class Putin extends Predator {
                     move();
                 }
             }
-        }*/
+        }
 
     }
 
@@ -133,8 +135,8 @@ public class Putin extends Predator {
     }
 
     private void tryMountBear(Bear bear) {
-        System.out.println("Putin trying to mount bear");
         double winChance = getWinChance(bear);
+        System.out.println("Putin trying to mount bear, with a win chance of: " + (winChance * 100.0) + "%");
         if (new Random().nextDouble() < winChance) {
             mountBear(bear);
         }
@@ -144,7 +146,16 @@ public class Putin extends Predator {
     }
 
     private void mountBear(Bear bear) {
+        Location beartinLocation = PathFinder.getEmptyTileAroundLocation(world, getLocation(), 1);
+        Beartin beartin = new Beartin(world, 100, getAge(), 100);
 
+        if (bear.isInfected() || isInfected())
+            beartin.becomeInfected();
+
+        world.delete(bear);
+        world.delete(this);
+
+        new SpawningAgent(world).spawnActorAtLocation(beartin,  beartinLocation);
     }
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
@@ -172,12 +183,12 @@ public class Putin extends Predator {
 
     @Override
     public DisplayInformation getInformation() {
-        return sleepingAnimations.get(world.getCurrentTime() % 2);
-        /*if (world.isDay())
+
+        if (world.isDay())
             return diPutin;
         else {
-
-        }*/
+            return sleepingAnimations.get(world.getCurrentTime() % 2);
+        }
     }
 
 

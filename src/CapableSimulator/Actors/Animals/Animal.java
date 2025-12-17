@@ -403,6 +403,10 @@ public abstract class Animal extends WorldActor implements Fungi {
         return energy;
     }
 
+    public int getAge() {
+        return age;
+    }
+
     protected boolean getHasSpecialMovementBehaviour() {return false; }
 
 
