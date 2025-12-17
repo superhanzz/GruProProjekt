@@ -20,6 +20,8 @@ public abstract class Predator extends Animal {
         super(actorType, world,  energy, age, MAX_ENERGY,  MATING_AGE, MATING_COOLDOWN_DURATION);
     }
 
+
+
     @Override
     public void act(World world) {
         super.act(world);

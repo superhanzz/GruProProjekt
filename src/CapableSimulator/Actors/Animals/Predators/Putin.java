@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 
 public class Putin extends Predator {
@@ -85,6 +86,84 @@ public class Putin extends Predator {
     @Override
     protected void doEverySimulationStep() {}
 
+
+
+    /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
+
+
+    @Override
+    protected double getWinChance(Predator predator){
+    double winChance = 0.0;
+
+    switch(predator.actorType) {
+        case "putin":
+            if(predator instanceof Putin putin){
+                winChance = winChancePutin(putin);
+            }
+            break;
+        case "wolf":
+            if(predator instanceof Wolf wolf){
+                winChance = winChanceWolf(wolf);
+            }
+            break;
+        default:
+            return 0.0;
+
+        }
+    }
+
+    private double winChancePutin(Putin putin) {
+        double winChance = 0.0;
+
+        if (isInfected()) {
+            if (isAnimalAdult()) {
+                if (putin.isAnimalAdult()) {
+                    if (putin.isInfected()) winChance = 0.50;
+                    else winChance = 0.75;
+                } else {
+                    if (putin.isInfected()) winChance = 0.50;
+                    else winChance = 0.99;
+                }
+            } else {
+                if (putin.isAnimalAdult()) {
+                    if (putin.isInfected()) winChance = 0.20;
+                    else winChance = 0.75;
+                } else {
+                    if (putin.isInfected()) winChance = 0.50;
+                    else winChance = 0.99;
+
+                }
+            }
+        }else{
+            if (isAnimalAdult()) {
+                if (putin.isAnimalAdult()) {
+                    if (putin.isInfected()) winChance = 0.25;
+                    else winChance = 0.50;
+                } else {
+                    if (putin.isInfected()) winChance = 0.50;
+                    else winChance = 0.80;
+                }
+            } else {
+                if (putin.isAnimalAdult()) {
+                    if (putin.isInfected()) winChance = 0.0;
+                    else winChance = 0.20;
+                } else {
+                    if (putin.isInfected()) winChance = 0.20;
+                    else winChance = 0.50;
+
+                }
+            }
+        }
+
+    }
+
+
+    private double winChanceWolf(Wolf wolf){
+
+
+    }
+
+
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
@@ -99,6 +178,10 @@ public class Putin extends Predator {
 
     @Override
     public void onDusk() {
+
+
+
+
 
     }
 
