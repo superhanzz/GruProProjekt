@@ -1,6 +1,5 @@
 import java.util.*;
 
-import CapableSimulator.CapableProgram;
 import CapableSimulator.CapableSimulator;
 import CapableSimulator.Utils.Parser;
 import itumulator.executable.Program;
