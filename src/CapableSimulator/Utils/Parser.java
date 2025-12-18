@@ -20,6 +20,7 @@ public class Parser {
 
     public void parseInputsFromFile() {
         if (inputFilePath == null || inputFilePath.isEmpty()) return;
+
         parseInputsFromFile(inputFilePath);
     }
 
@@ -159,5 +160,14 @@ public class Parser {
         return worldSize;
     }
 
-
+    public static int parseWorldSizeFromFile(String filePath) {
+        File file = new File(filePath);
+        int worldSize = 0;
+        try (Scanner sc = new Scanner(file)){
+            worldSize = Integer.parseInt(sc.nextLine());
+        } catch (Exception e) {
+            System.out.println("Error in parseWorldSizeFromFile(), message: " + e.getMessage());
+        }
+        return worldSize;
+    }
 }

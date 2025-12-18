@@ -18,13 +18,12 @@ public class CapableSimulator extends Simulator {
 
     private SpawningAgent spawningAgent;
     private WorldUtils worldUtils;
-    private Parser parser;
+    private String inputFilePath;
 
     //private Map<String, InputFileStruct> inputMap;
     private CapableEnums.DayNightStatus dayNightStatus;
 
     private boolean preSetupComplete = false;
-    private int dayNumber;
 
     /* ----- Time Specific Events ----- */
     private static final int time_Dusk = 9;
@@ -40,20 +39,16 @@ public class CapableSimulator extends Simulator {
     /* ----- ----- ----- ----- Pre-Simulation ----- ----- ----- ----- */
 
     /** Prepares everything needed for the simulation, and spawns all the initial WorldActors into the world.
-     * */
+     * @throws IllegalArgumentException If the input file path has not been set correctly.
+     */
     public void prepareSimulation() {
-        if (parser == null) throw new NullPointerException("Parser has not been set");
+        if (inputFilePath == null || inputFilePath.isEmpty()) throw new IllegalArgumentException("inputFilePath is not valid");
 
         spawningAgent = new SpawningAgent(getWorld());
         worldUtils = new WorldUtils(getWorld());
 
         dayNightStatus = getWorld().isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
-
-        spawningAgent.handleSpawnCycle(parser.getInputMap(), true); // spawn all initial actors into the world
-
-        spawningAgent.handleSpawnCycle(parser.getInputMap(), false);
-
-        dayNumber = 0;
+        spawningAgent.spawnActorsFromInputFile(inputFilePath);
 
         preSetupComplete = true;
     }
@@ -182,13 +177,7 @@ public class CapableSimulator extends Simulator {
         return status;
     }
 
-    /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
-
-    public SpawningAgent getSpawningAgent() {
-        return spawningAgent;
-    }
-
     /* ----- ----- ----- ----- Setters ----- ----- ----- ----- */
 
-    public void setParser(Parser parser) {this.parser = parser;}
+    public void setInputFilePath(String inputFilePath) {this.inputFilePath = inputFilePath;}
 }

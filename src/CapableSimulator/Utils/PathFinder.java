@@ -49,6 +49,11 @@ public class PathFinder {
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
 
+    /**
+     * @param world
+     * @param insigatorLocation
+     * @param tileLocation
+     * @return */
     public static Location getClosestTile(World world, Location insigatorLocation, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
@@ -85,6 +90,7 @@ public class PathFinder {
             possibleMovesList.add(0);
         }
     }
+
 
     public static Location getMoveToTile(World world, Location fromLocation, Location goalLocation) {
         // DEBUG COLORS FOR printf
@@ -150,6 +156,11 @@ public class PathFinder {
         return moveToLocation;
     }
 
+    /**
+     * @param start The start location.
+     * @param end The end location.
+     * @return Returns the movement vector.
+     */
     public static Location getMovementVector(Location start, Location end) {
         int x = end.getX() - start.getX();
         int y = end.getY() - start.getY();

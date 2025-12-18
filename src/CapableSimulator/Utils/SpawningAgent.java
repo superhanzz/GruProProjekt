@@ -12,6 +12,7 @@ import CapableSimulator.Actors.Shelter.Burrow;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,16 +28,10 @@ public class SpawningAgent {
         this.world = world;
     }
 
-    public void generateActors(InputFileStruct fileStruct) {
-        List<WorldActor> actors = new ArrayList<>();
-        generateActors(fileStruct, actors);
-    }
+    /**
+     * @param fileStruct*/
+    public void generateActors(InputFileStruct fileStruct){
 
-    public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
-        //System.out.println(fileStruct.actorType);
-        //System.out.print(fileStruct.actorType);
-
-        // TODO eval if list should be used for all types of actors
         switch (fileStruct.actorType){
             case "wolf":
                 WolfGang gang = new WolfGang(world);
@@ -52,8 +47,6 @@ public class SpawningAgent {
                         if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                             wolf.becomeInfected();
                         }
-
-                        listOfActors.add(wolf);
                     }
                 }
                 break;
@@ -68,8 +61,6 @@ public class SpawningAgent {
                         if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                             r.becomeInfected();
                         }
-
-                        listOfActors.add(r);
                     }
                 }
                 break;
@@ -84,11 +75,7 @@ public class SpawningAgent {
                         if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                             b.becomeInfected();
                         }
-
-                        listOfActors.add(b);
                     }
-                    else
-                        System.out.println("Failed to create an actor of type " + fileStruct.actorType);
                 }
                 break;
 
@@ -102,8 +89,6 @@ public class SpawningAgent {
                         if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                             p.becomeInfected();
                         }
-
-                        listOfActors.add(p);
                     }
                 }
                 break;
@@ -114,8 +99,6 @@ public class SpawningAgent {
                     if (location != null) {
                         Grass g = new Grass(world);
                         world.setTile(location, g);
-
-                        listOfActors.add(g);
                     }
                 }
                 break;
@@ -126,10 +109,7 @@ public class SpawningAgent {
                     if (location != null) {
                         BerryBush b = new BerryBush(world);
                         world.setTile(location, b);
-                        listOfActors.add(b);
                     }
-                    else
-                        System.out.println("Failed to create an actor of type " + fileStruct.actorType);
                 }
                 break;
 
@@ -139,8 +119,6 @@ public class SpawningAgent {
                     if (location != null) {
                         Burrow b = new Burrow(world);
                         world.setTile(location, b);
-
-                        listOfActors.add(b);
                     }
                 }
                 break;
@@ -155,8 +133,6 @@ public class SpawningAgent {
                         if (fileStruct.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                             c.becomeInfected();
                         }
-
-                        listOfActors.add(c);
                     }
                 }
                 break;
@@ -165,50 +141,25 @@ public class SpawningAgent {
                 System.out.println("Unknown Spawn Type: " + fileStruct.actorType);
                 break;
         }
-
-        //System.out.println(": " + listOfActors.size());
     }
 
-    public Map<String, List<WorldActor>> handleSpawnCycle(Map<String, InputFileStruct> inputMap, boolean isInitSpawns) {
-        if (inputMap == null) {
-            throw new NullPointerException("In handleSpawnCycle(): inputMap is null");
-        }
+    /**
+     * @param filePath The path of the file to spawn from.
+     */
+    public void spawnActorsFromInputFile(String filePath) {
+        Parser parser = new Parser(filePath);
+        parser.parseInputsFromFile();
+        parser.getWorldSize();
 
-        // TODO maybe the list could be something like 'Class<? extends Actor>' if at all possible
-        Map<String, List<WorldActor>> worldActorsSpawned = new HashMap<>();
 
-        // Sets the pattern filter to filter the entries by
-        Pattern pattern;
-        if (isInitSpawns) {
-            System.out.println("Init Spawns:");
-            pattern = Pattern.compile("([A-Za-z\\s]+)");
+        for (InputFileStruct inputStruct : parser.getInputMap().values()) {
+            generateActors(inputStruct);
         }
-        else {
-            System.out.println("Delayed Spawns:");
-            pattern = Pattern.compile("([A-Za-z\\s]+\\d)");
-        }
-
-        // Iterates though all the entries of the input map and spawns all the actors of the specified type, and adding the list of actors to the return map
-        List<String> keysToRemove = new ArrayList<>();
-        for (String key :  inputMap.keySet()) {
-            Matcher matcher = pattern.matcher(key); // filters the entries
-            if (matcher.matches()) {
-                InputFileStruct input = inputMap.get(key);
-                List<WorldActor> spawnedActors = new ArrayList<>();
-
-                generateActors(input, spawnedActors);   // spawns the actors
-                worldActorsSpawned.put(input.actorType, spawnedActors); // adds the list of spawned actors to the return map
-                keysToRemove.add(key);
-            }
-        }
-        for (String key : keysToRemove) {
-            inputMap.remove(key);
-        }
-
-        return worldActorsSpawned;
     }
 
-
+    /**
+     * @param actor
+     * @param location */
     public void spawnActorAtLocation(WorldActor actor, Location location) {
         if (location == null || actor == null) {
             if (location == null) throw new NullPointerException("In spawnActorAtLocation(): location is null");

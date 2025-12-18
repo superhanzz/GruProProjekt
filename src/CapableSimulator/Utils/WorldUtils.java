@@ -2,7 +2,6 @@ package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.*;
 import CapableSimulator.Actors.Animals.*;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
