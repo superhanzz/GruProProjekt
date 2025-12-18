@@ -233,8 +233,7 @@ public class Bear extends Predator {
         Bear offspring = new Bear(world, offspringLocation);
 
         // Spawn offspring at location
-        SpawningAgent spawningAgent = new SpawningAgent(world);
-        spawningAgent.spawnActorAtLocation(offspring,  offspringTerritoryLocation);
+        SpawningAgent.spawnActorAtLocation(world, offspring,  offspringTerritoryLocation);
 
         // Updates the relevant mating information.
         animalJustReproduce();

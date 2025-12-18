@@ -12,25 +12,14 @@ import CapableSimulator.Actors.Shelter.Burrow;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class SpawningAgent {
 
-    World world;
-
-    public SpawningAgent(World world) {
-        this.world = world;
-    }
-
     /**
-     * @param fileStruct*/
-    public void generateActors(InputFileStruct fileStruct){
+     * @param world The world to spawn the actors in.
+     * @param fileStruct
+     * @throws NullPointerException if the file struct is null.*/
+    public static void generateActors(World world, InputFileStruct fileStruct){
+        if (fileStruct == null) throw new NullPointerException("fileStruct is null");
 
         switch (fileStruct.actorType){
             case "wolf":
@@ -144,23 +133,25 @@ public class SpawningAgent {
     }
 
     /**
+     * @param world The world to spawn the actors in.
      * @param filePath The path of the file to spawn from.
      */
-    public void spawnActorsFromInputFile(String filePath) {
+    public static void spawnActorsFromInputFile(World world, String filePath) {
         Parser parser = new Parser(filePath);
         parser.parseInputsFromFile();
         parser.getWorldSize();
 
 
         for (InputFileStruct inputStruct : parser.getInputMap().values()) {
-            generateActors(inputStruct);
+            generateActors(world, inputStruct);
         }
     }
 
     /**
+     * @param world The world to spawn the actor in.
      * @param actor
      * @param location */
-    public void spawnActorAtLocation(WorldActor actor, Location location) {
+    public static void spawnActorAtLocation(World world, WorldActor actor, Location location) {
         if (location == null || actor == null) {
             if (location == null) throw new NullPointerException("In spawnActorAtLocation(): location is null");
             else throw new NullPointerException("In spawnActorAtLocation(): actor is null");

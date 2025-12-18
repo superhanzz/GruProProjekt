@@ -70,7 +70,7 @@ public class Beartin extends Predator {
             world.delete(this);
         }
         updateOnMap(null, false);
-        new SpawningAgent(world).spawnActorAtLocation(egg, location);
+        SpawningAgent.spawnActorAtLocation(world, egg, location);
         setDead(true);
 
         return null;

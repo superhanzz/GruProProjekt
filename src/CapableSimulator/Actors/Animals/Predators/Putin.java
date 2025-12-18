@@ -155,7 +155,7 @@ public class Putin extends Predator {
         world.delete(bear);
         world.delete(this);
 
-        new SpawningAgent(world).spawnActorAtLocation(beartin,  beartinLocation);
+        SpawningAgent.spawnActorAtLocation(world, beartin,  beartinLocation);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class Putin extends Predator {
             world.delete(this);
         }
         updateOnMap(null, false);
-        new SpawningAgent(world).spawnActorAtLocation(egg, location);
+        SpawningAgent.spawnActorAtLocation(world, egg, location);
         setDead(true);
 
         return null;

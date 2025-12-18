@@ -16,12 +16,7 @@ import java.util.Map;
 
 public class CapableSimulator extends Simulator {
 
-    private SpawningAgent spawningAgent;
-    private WorldUtils worldUtils;
     private String inputFilePath;
-
-    //private Map<String, InputFileStruct> inputMap;
-    private CapableEnums.DayNightStatus dayNightStatus;
 
     private boolean preSetupComplete = false;
 
@@ -44,11 +39,7 @@ public class CapableSimulator extends Simulator {
     public void prepareSimulation() {
         if (inputFilePath == null || inputFilePath.isEmpty()) throw new IllegalArgumentException("inputFilePath is not valid");
 
-        spawningAgent = new SpawningAgent(getWorld());
-        worldUtils = new WorldUtils(getWorld());
-
-        dayNightStatus = getWorld().isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
-        spawningAgent.spawnActorsFromInputFile(inputFilePath);
+        SpawningAgent.spawnActorsFromInputFile(getWorld(), inputFilePath);
 
         preSetupComplete = true;
     }
@@ -113,21 +104,21 @@ public class CapableSimulator extends Simulator {
 
     /** Handels the events related to dawn */
     private void onDawn() {
-        for (Animal animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onDawn();
         }
     }
 
     /** Handels the events related to dusk */
     private void onDusk() {
-        for (Animal animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onDusk();
         }
     }
 
     /** Handels the events related to nightfall */
     private void onNightFall() {
-        for (Animal animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onNightFall();
         }
     }

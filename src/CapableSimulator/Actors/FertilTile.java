@@ -27,7 +27,7 @@ public class FertilTile extends WorldActor implements NonBlocking {
         Location location = world.getLocation(this);
         world.delete(this);
         Grass grass = new Grass(world);
-        new SpawningAgent(world).spawnActorAtLocation(grass, location);
+        SpawningAgent.spawnActorAtLocation(world, grass, location);
     }
 
     @Override

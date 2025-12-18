@@ -104,7 +104,7 @@ public class Fungus extends WorldActor implements Fungi {
 
     public void becomeFertilTile(Location location) {
         FertilTile ft = new FertilTile(world);
-        new SpawningAgent(world).spawnActorAtLocation(ft, location);
+        SpawningAgent.spawnActorAtLocation(world, ft, location);
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */

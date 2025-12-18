@@ -1,6 +1,5 @@
 package Tests;
 
-import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.FertilTile;
 import CapableSimulator.Actors.Fungis.Fungi;
@@ -61,8 +60,6 @@ public class FungiTests {
 
     @RepeatedTest(1)
     void fungusSpreadToCarcassProbabilityTest() {
-        SpawningAgent spawningAgent = new SpawningAgent(world);
-
         double spreadChance = FungiSpore.getSpreadChance();
 
         int numberOfInfections = 0;
@@ -74,8 +71,8 @@ public class FungiTests {
             Carcass carcass = new Carcass(world);
             Location carcassLocation = new Location(1,2);
 
-            spawningAgent.spawnActorAtLocation(fungus, fungusLocation);
-            spawningAgent.spawnActorAtLocation(carcass, carcassLocation);
+            SpawningAgent.spawnActorAtLocation(world, fungus, fungusLocation);
+            SpawningAgent.spawnActorAtLocation(world, carcass, carcassLocation);
 
             assertFalse(carcass.isInfected());
 
@@ -96,12 +93,10 @@ public class FungiTests {
     /* Test whether a fungus can decompose (disappers from the world) and the tile (occupied by the fungus) becomes fertil and then a grass spawns at the location*/
     @RepeatedTest(1)
     void fungusDecomposeToFertilTileTest() {
-        SpawningAgent spawningAgent = new SpawningAgent(world);
-
         Fungus fungus = new Fungus(world, 1);
         Location fungusLocation = new Location(2,2);
 
-        spawningAgent.spawnActorAtLocation(fungus, fungusLocation);
+        SpawningAgent.spawnActorAtLocation(world, fungus, fungusLocation);
 
         int numberOfFertileTiles = 0;
         for (Object o : world.getEntities().keySet())

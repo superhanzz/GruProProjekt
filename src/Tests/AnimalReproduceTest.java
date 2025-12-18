@@ -19,12 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnimalReproduceTest {
 
     World world;
-    WorldUtils worldUtils;
 
     @BeforeEach
     public void setup() {
         world = new World(3);
-        worldUtils = new WorldUtils(world);
     }
 
 
@@ -92,7 +90,7 @@ public class AnimalReproduceTest {
             npc.onNightFall();
 
 
-            int amountBefore = worldUtils.getNumOfActors("wolf", false); //worldUtils.getAllWorldActorsAsMap().get("wolf").size();
+            int amountBefore = WorldUtils.getNumOfActors(world,"wolf", false); //worldUtils.getAllWorldActorsAsMap().get("wolf").size();
 
             WolfDen den = null;
             if(alpha.getShelter() instanceof WolfDen wolfDen)
@@ -102,7 +100,7 @@ public class AnimalReproduceTest {
                 den.makeCup();
             }
 
-            int amountAfter = worldUtils.getNumOfActors("wolf", false);
+            int amountAfter = WorldUtils.getNumOfActors(world,"wolf", false);
             if (amountBefore != amountAfter) numberOfNewSuccessfulCups++;
 
             for (Object o : world.getEntities().keySet())
@@ -125,11 +123,11 @@ public class AnimalReproduceTest {
         bear2.updateOnMap(bear2Location, true);
         bear2.doEverySimStep();
 
-        int numberOfBearsPreMating = worldUtils.getNumOfActors("bear", false);
+        int numberOfBearsPreMating = WorldUtils.getNumOfActors(world,"bear", false);
 
         bear1.act(world);
 
-        int numberOfBearsPostMating = worldUtils.getNumOfActors("bear", false);
+        int numberOfBearsPostMating = WorldUtils.getNumOfActors(world,"bear", false);
 
         assertTrue(numberOfBearsPreMating < numberOfBearsPostMating);
     }

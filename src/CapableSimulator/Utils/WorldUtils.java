@@ -9,22 +9,16 @@ import java.util.*;
 
 public class WorldUtils {
 
-    World world;
-
-    public WorldUtils(World world) {
-        this.world = world;
-    }
-
     /**
      * @param actorType Is the type of actor to search for.
      * @param onMap Determines whether to only search for objects currently on the map, or all objects in the world entity list.
      */
-    public int getNumOfActors(String actorType, boolean onMap) {
+    public static int getNumOfActors(World world, String actorType, boolean onMap) {
         int numOfActors = 0;
         List<Object> actors;
 
         if (onMap)
-            actors = getAllObjectOnWorldMap();
+            actors = getAllObjectOnWorldMap(world);
         else
             actors = new ArrayList<>(world.getEntities().keySet());
 
@@ -39,7 +33,7 @@ public class WorldUtils {
     /**
      * @return Returns a list of all the objects currently on the world map.
      */
-    public List<Object> getAllObjectOnWorldMap() {
+    public static List<Object> getAllObjectOnWorldMap(World world) {
         List<Object> actors = new ArrayList<>();
         Map<Object, Location> entities = world.getEntities();
 
@@ -52,7 +46,7 @@ public class WorldUtils {
 
     /**
      * @return Returns a list of all the animals in the world*/
-    public List<Animal> getAllAnimals(){
+    public static List<Animal> getAllAnimals(World world) {
         List<Animal> animals = new ArrayList<>();
         Map<Object, Location> entities = world.getEntities();
         for (Object actor : entities.keySet()) {

@@ -290,7 +290,7 @@ public class Wolf extends Predator implements FlockAnimal {
         }
 
         wolfDen = new WolfDen(world, wolfGang);
-        new SpawningAgent(world).spawnActorAtLocation(wolfDen, getLocation());
+        SpawningAgent.spawnActorAtLocation(world, wolfDen, getLocation());
 
         wolfGang.flockShelterCreated(wolfDen);
     }

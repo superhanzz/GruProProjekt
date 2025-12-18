@@ -38,7 +38,7 @@ public class PutinEgg extends WorldActor {
         Location hatchLocation = world.getLocation(this);
         Putin putin = new Putin(world);
         world.delete(this);
-        new SpawningAgent(world).spawnActorAtLocation(putin, hatchLocation);
+        SpawningAgent.spawnActorAtLocation(world, putin, hatchLocation);
     }
 
     @Override

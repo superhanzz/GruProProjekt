@@ -177,7 +177,6 @@ public class AnimalShelterTests {
     @RepeatedTest(1)
     void wolfFlockShareDenTest() {
         world = new World(10);
-        WorldUtils worldUtils = new WorldUtils(world);
 
         Wolf alpha = new Wolf(world);
         WolfGang gang = new WolfGang(world);
@@ -210,9 +209,9 @@ public class AnimalShelterTests {
 
         // Checks if all the member enters the same den
         int num = 0;
-        while (anyWolfsOnMap(worldUtils)) {
+        while (anyWolfsOnMap()) {
             System.out.println(num);
-            for (Animal animal : worldUtils.getAllAnimals()) {
+            for (Animal animal : WorldUtils.getAllAnimals(world)) {
                 animal.onNightFall();
             }
             num++;
@@ -223,9 +222,9 @@ public class AnimalShelterTests {
         }
     }
 
-    private boolean anyWolfsOnMap(WorldUtils worldUtils) {
+    private boolean anyWolfsOnMap() {
         int num = 0;
-        for (Animal animal : worldUtils.getAllAnimals()) {
+        for (Animal animal : WorldUtils.getAllAnimals(world)) {
             if (animal instanceof Wolf wolf) {
                 if (world.isOnTile(wolf)) return true;
                 num++;

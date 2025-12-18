@@ -77,9 +77,6 @@ public class FileReadingTest {
                 // Creates the simulation environment
                 World world = new World(worldSize);
 
-                SpawningAgent  spawningAgent = new SpawningAgent(world);
-                WorldUtils worldUtils = new WorldUtils(world);
-
                 // Creates all the actors of the specified type
                 for (String key : input.keySet()) {
                     if (input.get(key) == null) continue;
@@ -87,9 +84,10 @@ public class FileReadingTest {
                     InputFileStruct inputFile = input.get(key);
                     if (!inputFile.actorType.equals(actorType)) continue;
 
-                    int preNum = worldUtils.getNumOfActors(actorType, false);
-                    spawningAgent.generateActors(inputFile);
-                    int postNum = worldUtils.getNumOfActors(actorType, false);
+                    int preNum = WorldUtils.getNumOfActors(world, actorType, false);
+
+                    SpawningAgent.generateActors(world, inputFile);
+                    int postNum = WorldUtils.getNumOfActors(world, actorType, false);
 
                     int spawnedNum = postNum - preNum;
 

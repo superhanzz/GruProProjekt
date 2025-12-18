@@ -150,8 +150,7 @@ public class Rabbit extends Animal {
         Rabbit offspring = new Rabbit(world);
 
         // Spawn offspring at location
-        SpawningAgent spawningAgent = new SpawningAgent(world);
-        spawningAgent.spawnActorAtLocation(offspring,  offspringLocation);
+        SpawningAgent.spawnActorAtLocation(world, offspring,  offspringLocation);
 
         // Updates the relevant mating information.
         animalJustReproduce();
@@ -171,7 +170,7 @@ public class Rabbit extends Animal {
         burrow = new Burrow(world);
         burrow.addBurrowInhabitant(this);
 
-        new SpawningAgent(world).spawnActorAtLocation(burrow, getLocation());   // spawns the burrow on the map
+        SpawningAgent.spawnActorAtLocation(world, burrow, getLocation());   // spawns the burrow on the map
         burrow.setShelterLocation();
 
         goIntoBurrow();
