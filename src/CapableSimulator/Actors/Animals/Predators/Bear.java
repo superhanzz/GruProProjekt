@@ -1,13 +1,10 @@
 package CapableSimulator.Actors.Animals.Predators;
 
-import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.SpawningAgent;
 import CapableSimulator.Utils.TileFinder;
-import FunctionLibrary.CapableFunc;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -65,7 +62,7 @@ public class Bear extends Predator {
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
-    public Bear(CapableWorld world) {
+    public Bear(World world) {
         super("bear", world, 40, 0, 35);
 
         this.territoryCenter = new Location(0, 0);
@@ -77,7 +74,7 @@ public class Bear extends Predator {
         fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    public Bear(CapableWorld world, Location territoryCenter) {
+    public Bear(World world, Location territoryCenter) {
         super("bear", world, 40, 0, 35);
 
         this.territoryCenter = territoryCenter;
@@ -88,7 +85,7 @@ public class Bear extends Predator {
         fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    public Bear(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
+    public Bear(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
         super("bear", world, 40, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
 
         this.territoryCenter = territoryCenter;
@@ -107,7 +104,7 @@ public class Bear extends Predator {
         if (isDead()) return;
 
         if(isInfected()) {
-
+            fungiSpore.act(world);
         }
         else if (isOnMap()){
             if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {

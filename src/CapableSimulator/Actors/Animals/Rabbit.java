@@ -1,7 +1,7 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Shelter.Burrow;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.SpawningAgent;
@@ -46,7 +46,7 @@ public class Rabbit extends Animal {
      * The default constructor for the rabbit class.
      * This is the constructor to use when making the simulation.
      * */
-    public Rabbit(CapableWorld world) {
+    public Rabbit(World world) {
         super("rabbit", world, 15, 0, 25);
 
         burrow = null;
@@ -59,7 +59,7 @@ public class Rabbit extends Animal {
     /**
      * A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
      * */
-    public Rabbit(CapableWorld world, int energy) {
+    public Rabbit(World world, int energy) {
         super("rabbit", world, energy, 0, 25);
 
         burrow = null;
@@ -72,7 +72,7 @@ public class Rabbit extends Animal {
     /**
      * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
      * */
-    public Rabbit(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+    public Rabbit(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("rabbit", world, 15, 25, age,  MATING_AGE, MATING_COOLDOWN_DURATION);
 
         burrow = null;

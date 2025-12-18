@@ -2,9 +2,9 @@ package Tests;
 
 import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.*;
-import FunctionLibrary.CapableFunc;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -40,7 +40,7 @@ public class FileReadingTest {
 
 
 
-        for (String actorType : CapableFunc.getAllWorldActorTypes()) {
+        for (String actorType : WorldActor.getAllWorldActorTypes()) {
             if (actorType.equals("carcass") || actorType.equals("putin")) continue;
 
             System.out.printf("Testing for actorType: %5s%s%s.", RED, actorType.toUpperCase(), RESET);
@@ -73,7 +73,7 @@ public class FileReadingTest {
                 if (worldSize == 0) continue;   // If there was no world size then skip this file
 
                 // Creates the simulation environment
-                CapableWorld world = new CapableWorld(worldSize);
+                World world = new World(worldSize);
 
                 SpawningAgent  spawningAgent = new SpawningAgent(world);
                 WorldUtils worldUtils = new WorldUtils(world);

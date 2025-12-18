@@ -1,7 +1,7 @@
 package CapableSimulator.Actors.Plants;
 
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
@@ -19,7 +19,7 @@ public class Grass extends WorldActor implements NonBlocking{
     DisplayInformation diGrass = new DisplayInformation(Color.green, "grass");
 
 
-    public Grass(CapableWorld world){
+    public Grass(World world){
         super("grass", world);
         growthChance = 0.15;
         energyValue = 2;

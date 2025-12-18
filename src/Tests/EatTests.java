@@ -7,9 +7,10 @@ import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -18,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EatTests {
 
-    CapableWorld world;
+    World world;
 
     @BeforeEach
     public void setup() {
-        world = new CapableWorld(3);
+        world = new World(3);
     }
 
     /**

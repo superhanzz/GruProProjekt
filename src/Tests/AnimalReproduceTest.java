@@ -6,9 +6,10 @@ import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Shelter.WolfDen;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -17,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalReproduceTest {
 
-    CapableWorld world;
+    World world;
 
     @BeforeEach
     public void setup() {
-        world = new CapableWorld(3);
+        world = new World(3);
     }
 
 
@@ -69,7 +70,7 @@ public class AnimalReproduceTest {
 
         int numberOfNewSuccessfulCups = 0;
         for (int i = 0; i < testSampleSize; i++) {
-            world = new CapableWorld(3);
+            world = new World(3);
 
             Wolf alpha = new Wolf(world, 10, 0, 20);
             Wolf npc = new Wolf(world, 10, 0, 20);
@@ -116,7 +117,7 @@ public class AnimalReproduceTest {
 
     @RepeatedTest(1)
     public void bearReproduceTest() {
-        world = new CapableWorld(3);
+        world = new World(3);
         Location bear1Location = new Location(0,1);
         Bear bear1 = new Bear(world, 10,10,20, bear1Location);
         bear1.updateOnMap(bear1Location, true);
@@ -127,9 +128,15 @@ public class AnimalReproduceTest {
         bear2.updateOnMap(bear2Location, true);
         bear2.doEverySimStep();
 
-        int numberOfBearsPreMating = world.getSortedEntities().get("bear").size();
+        int numberOfBearsPreMating = 0;
+        for (Object o : world.getEntities().keySet())
+            if (o instanceof Bear) numberOfBearsPreMating++;
+
+
         bear1.act(world);
-        int numberOfBearsPostMating = world.getSortedEntities().get("bear").size();
+        int numberOfBearsPostMating = 0;
+        for (Object o : world.getEntities().keySet())
+            if (o instanceof Bear) numberOfBearsPreMating++;
 
         assertTrue(numberOfBearsPreMating < numberOfBearsPostMating);
     }

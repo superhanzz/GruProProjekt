@@ -9,17 +9,16 @@ import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Actors.Shelter.WolfDen;
-import CapableSimulator.CapableWorld;
-import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.*;
 
 public class WorldUtils {
 
-    CapableWorld world;
+    World world;
 
-    public WorldUtils(CapableWorld world) {
+    public WorldUtils(World world) {
         this.world = world;
     }
 

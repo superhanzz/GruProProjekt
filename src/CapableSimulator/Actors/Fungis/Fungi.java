@@ -1,11 +1,11 @@
 package CapableSimulator.Actors.Fungis;
 
-import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
+import itumulator.world.World;
 
 public interface Fungi {
 
-    void spreadSpores(CapableWorld world);
+    void spreadSpores(World world);
 
     void becomeInfected();
 

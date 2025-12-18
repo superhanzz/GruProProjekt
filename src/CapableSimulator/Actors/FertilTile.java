@@ -1,7 +1,6 @@
 package CapableSimulator.Actors;
 
 import CapableSimulator.Actors.Plants.Grass;
-import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -14,7 +13,7 @@ public class FertilTile extends WorldActor implements NonBlocking {
 
     private static final DisplayInformation di = new DisplayInformation(Color.cyan);
 
-    public FertilTile(CapableWorld world) {
+    public FertilTile(World world) {
         super("fertilTile", world);
     }
 

@@ -2,8 +2,9 @@ package Tests;
 
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
-import CapableSimulator.CapableWorld;
+
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GrowthTests {
 
-    CapableWorld world;
+    World world;
     int sampleSize;
     int grassGrowths;
     double expectedGrowthChance;
@@ -21,7 +22,7 @@ public class GrowthTests {
 
     @BeforeEach
     void setUp() {
-        world = new CapableWorld(3);
+        world = new World(3);
         sampleSize = 10000;
         grassGrowths = 0;
 

@@ -9,8 +9,8 @@ import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.Plants.Grass;
 import CapableSimulator.Actors.Shelter.Burrow;
-import CapableSimulator.CapableWorld;
 import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ import java.util.regex.Pattern;
 
 public class SpawningAgent {
 
-    CapableWorld world;
+    World world;
 
-    public SpawningAgent(CapableWorld world) {
+    public SpawningAgent(World world) {
         this.world = world;
     }
 
@@ -41,7 +41,6 @@ public class SpawningAgent {
         switch (fileStruct.actorType){
             case "wolf":
                 WolfGang gang = new WolfGang(world);
-                world.addAnimalFlock(gang);
 
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
                     Location location = tileFinder.getEmptyTile(world, true);

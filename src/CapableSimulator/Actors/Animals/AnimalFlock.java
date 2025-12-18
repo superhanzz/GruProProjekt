@@ -1,9 +1,10 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Shelter.AnimalShelter;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public abstract class AnimalFlock {
 
     protected Animal flockLeader;
-    protected CapableWorld world;
+    protected World world;
     private AnimalShelter shelter;
 
     //DisplayInformation displayInfo = new DisplayInformation(Color.cyan);
@@ -19,7 +20,7 @@ public abstract class AnimalFlock {
     protected final List<Animal> flockMembers = new ArrayList<>();
     protected final List<Animal> deadFlockMembers = new ArrayList<>();
 
-    public AnimalFlock(CapableWorld world){
+    public AnimalFlock(World world){
         this.world = world;
 
         flockLeader = null;

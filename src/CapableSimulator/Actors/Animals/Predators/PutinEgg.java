@@ -1,8 +1,7 @@
 package CapableSimulator.Actors.Animals.Predators;
 
-import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -17,7 +16,7 @@ public class PutinEgg extends WorldActor {
 
     private static final DisplayInformation di = new DisplayInformation(Color.cyan, "putin-egg");
 
-    public PutinEgg(CapableWorld world) {
+    public PutinEgg(World world) {
         super("putinEgg", world);
         timeToHatch = INIT_HATCH_TIME;
     }

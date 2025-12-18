@@ -3,7 +3,6 @@ package CapableSimulator.Actors;
 import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.Fungis.FungiSpore;
 import CapableSimulator.Actors.Fungis.Fungus;
-import CapableSimulator.CapableWorld;
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -31,14 +30,14 @@ public class Carcass extends WorldActor implements Fungi {
      *  The actor type is set as "carcass".
      * @param world is the world wherein the carcass exists.
      */
-    public Carcass(CapableWorld world) {
+    public Carcass(World world) {
         super("carcass",  world);
 
         energy = DEFAULT_START_ENERGY;
         size = CapableEnums.AnimalSize.ADULT;
     }
 
-    public Carcass(CapableWorld world, int energy, CapableEnums.AnimalSize size) {
+    public Carcass(World world, int energy, CapableEnums.AnimalSize size) {
         super("carcass", world);
 
         this.energy = energy;
@@ -130,7 +129,7 @@ public class Carcass extends WorldActor implements Fungi {
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     @Override
-    public void spreadSpores(CapableWorld world) {
+    public void spreadSpores(World world) {
         //System.out.println("Spreading spore in carcass");
         if (!isInfected()) return;
 

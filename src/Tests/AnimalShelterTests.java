@@ -1,17 +1,16 @@
 package Tests;
 
 import CapableSimulator.Actors.Animals.Animal;
-import CapableSimulator.Actors.Animals.FlockAnimal;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
-import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.Burrow;
 import CapableSimulator.Actors.Shelter.WolfDen;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -20,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalShelterTests {
 
-    CapableWorld world;
+    World world;
 
     @BeforeEach
     public void setup() {
-        world = new CapableWorld(3);
+        world = new World(3);
     }
 
     // test whether the rabbit can dig a burrow, and also if it is possible for a rabbit to stand on a burrow
@@ -147,7 +146,7 @@ public class AnimalShelterTests {
     public void wolfGoTowardsDenTest() {
         PathFinder pathFinder = new PathFinder(world);
 
-        world =  new CapableWorld(10);
+        world =  new World(10);
 
         Wolf w = new Wolf(world);
         WolfGang gang = new WolfGang(world);
@@ -177,7 +176,7 @@ public class AnimalShelterTests {
 
     @RepeatedTest(1)
     void wolfFlockShareDenTest() {
-        world = new CapableWorld(10);
+        world = new World(10);
         WorldUtils worldUtils = new WorldUtils(world);
 
         Wolf alpha = new Wolf(world);

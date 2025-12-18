@@ -6,16 +6,15 @@ import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.*;
 import itumulator.display.Canvas;
+import itumulator.executable.Program;
 import itumulator.simulator.Simulator;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.List;
 import java.util.Map;
 
 public class CapableSimulator extends Simulator {
-
-    private CapableWorld world;
-    private CapableProgram program;
 
     private SpawningAgent spawningAgent;
     private WorldUtils worldUtils;
@@ -28,15 +27,14 @@ public class CapableSimulator extends Simulator {
     private int dayNumber;
 
     /* ----- Time Specific Events ----- */
-    private static final int time_JustBeforeNight = 9;
-    private static final int time_WolfMatingTime = 14;
+    private static final int time_Dusk = 9;
+    private static final int time_Midnight = 14;
     private static final int time_NightFall = 10;
-    private static final int time_DayBreak = 0;
+    private static final int time_Dawn = 0;
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
     public  CapableSimulator(World world, Canvas canvas, int delay) {
         super(world, canvas, delay);
-        this.world = (CapableWorld) world;
     }
 
     /* ----- ----- ----- ----- Pre-Simulation ----- ----- ----- ----- */
@@ -46,10 +44,10 @@ public class CapableSimulator extends Simulator {
     public void prepareSimulation() {
         if (parser == null) throw new NullPointerException("Parser has not been set");
 
-        spawningAgent = new SpawningAgent(world);
-        worldUtils = new WorldUtils(world);
+        spawningAgent = new SpawningAgent(getWorld());
+        worldUtils = new WorldUtils(getWorld());
 
-        dayNightStatus = world.isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
+        dayNightStatus = getWorld().isDay() ? CapableEnums.DayNightStatus.DAY : CapableEnums.DayNightStatus.NIGHT;
 
         spawningAgent.handleSpawnCycle(parser.getInputMap(), true); // spawn all initial actors into the world
 
@@ -89,7 +87,7 @@ public class CapableSimulator extends Simulator {
         //System.out.println(getSteps());
 
         // Initiates time based events
-        switch (world.getDayNightStatus()) {
+        switch (getDayNightStatus()) {
             case DAWN:
                 onDawn();
                 break;
@@ -110,7 +108,7 @@ public class CapableSimulator extends Simulator {
                 break;
         }
 
-        if (world.getCurrentTime() % 5 == 0) {
+        if (getWorld().getCurrentTime() % 5 == 0) {
             fungiSpreadSporesOfType(CapableEnums.FungiType.FUNGUS);
             //fungiSpreadSporesOfType(CapableEnums.FungiType.CORDYCEP);
         }
@@ -146,23 +144,42 @@ public class CapableSimulator extends Simulator {
 
     /** Initiates the mating of wolf's */
     private void initiateWolfMating() {
-        Map<String, List<WorldActor>> map = world.getSortedEntities();
-
-        List<WorldActor> wolfDens = map.get("wolfDen");
-        for (WorldActor actor : wolfDens) {
-            if (actor instanceof WolfDen wolfDen) {
-                //System.out.println("Trying to mate in WolfDen: " + wolfDen);
+        Map<Object, Location> entities = getWorld().getEntities();
+        for (Object o : entities.keySet()) {
+            if (o instanceof WolfDen wolfDen) {
                 wolfDen.makeCup();
             }
         }
     }
 
     private void fungiSpreadSporesOfType(CapableEnums.FungiType fungiType) {
-        for (Object o : world.getEntities().keySet()) {
+        for (Object o : getWorld().getEntities().keySet()) {
             if  (o instanceof Fungi fungi && fungi.isCarrierOfType(fungiType)) {
-                fungi.spreadSpores(world);
+                fungi.spreadSpores(getWorld());
             }
         }
+    }
+
+    public CapableEnums.DayNightStatus getDayNightStatus() {
+        CapableEnums.DayNightStatus status;
+
+        switch (getWorld().getCurrentTime()) {
+            case time_Dawn:
+                status = CapableEnums.DayNightStatus.DAWN;
+                break;
+            case time_Dusk:
+                status = CapableEnums.DayNightStatus.DUSK;
+                break;
+            case time_NightFall:
+                status = CapableEnums.DayNightStatus.NIGHT;
+                break;
+            case time_Midnight:
+                status = CapableEnums.DayNightStatus.MIDNIGHT;
+                break;
+            default:
+                status = CapableEnums.DayNightStatus.DAY;
+        }
+        return status;
     }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */
@@ -174,6 +191,4 @@ public class CapableSimulator extends Simulator {
     /* ----- ----- ----- ----- Setters ----- ----- ----- ----- */
 
     public void setParser(Parser parser) {this.parser = parser;}
-
-    public void setProgram(CapableProgram program) {this.program = program;}
 }

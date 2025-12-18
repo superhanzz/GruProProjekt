@@ -2,7 +2,7 @@ package CapableSimulator.Actors.Shelter;
 
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
-import CapableSimulator.CapableWorld;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -21,7 +21,7 @@ public class WolfDen extends AnimalShelter implements NonBlocking {
     DisplayInformation di = new DisplayInformation(Color.ORANGE, "hole");
 
 
-    public WolfDen(CapableWorld world, WolfGang owners) {
+    public WolfDen(World world, WolfGang owners) {
         super("wolfDen", world);
         this.owners = owners;
         wolfsInDen = new HashSet<>();

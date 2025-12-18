@@ -2,9 +2,10 @@ package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Animals.AnimalFlock;
 import CapableSimulator.Actors.Animals.Animal;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class WolfGang extends AnimalFlock {
     public Location denLocation;
 
 
-    public WolfGang(CapableWorld world) {
+    public WolfGang(World world) {
         super(world);
 
         optimalRadiusAroundAlpha = 2;

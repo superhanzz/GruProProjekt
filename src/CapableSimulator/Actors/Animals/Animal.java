@@ -1,12 +1,12 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.Fungis.Cordycep;
 import CapableSimulator.Actors.Fungis.CordycepSpore;
-import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.Fungis.FungiSpore;
 import CapableSimulator.Actors.Plants.BerryBush;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
@@ -15,7 +15,7 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Animal extends WorldActor implements Fungi {
+public abstract class Animal extends WorldActor implements Cordycep {
 
     /* ----- ----- ----- Energy variables ----- ----- ----- */
 
@@ -93,7 +93,7 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     /** Default constructor
      * */
-    public Animal(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
+    public Animal(String actorType, World world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world);
 
         // Non-statics
@@ -108,7 +108,7 @@ public abstract class Animal extends WorldActor implements Fungi {
 
     /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
      * */
-    public Animal(String actorType, CapableWorld world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+    public Animal(String actorType, World world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super(actorType, world);
 
         // Non-statics
@@ -177,7 +177,7 @@ public abstract class Animal extends WorldActor implements Fungi {
         return false;
     }
 
-    protected WorldActor getNearestActor(List<? extends WorldActor> actors) {
+    public WorldActor getNearestActor(List<? extends WorldActor> actors) {
         double shortestDistance = Double.MAX_VALUE;
         WorldActor nearestActor = null;
 
@@ -328,7 +328,9 @@ public abstract class Animal extends WorldActor implements Fungi {
      * @param location is the location to move towards.
      */
     protected boolean moveTowards(Location location) {
-        Location moveTo = PathFinder.getClosestTile(world, getLocation(), location);
+        //Location moveTo = PathFinder.getClosestTile(world, getLocation(), location);
+        if (PathFinder.distance(getLocation(), location) <= 1) return true;
+        Location moveTo = PathFinder.getMoveToTile(world, getLocation(), location);
         if (moveTo == null)
             return false;
 
@@ -356,17 +358,24 @@ public abstract class Animal extends WorldActor implements Fungi {
     }
 
     @Override
-    public void spreadSpores(CapableWorld world) {
+    public void spreadSpores(World world) {
         //System.out.println("Spreading spore in animal");
         if (!isInfected()) return;
 
-        fungiSpore.spread(getLocation(), 1.0);
+        //fungiSpore.spread(getLocation(), 1.0);
     }
 
     @Override
     public boolean isCarrierOfType(CapableEnums.FungiType fungiType){
         return FungiSpore.getCanCarryType((Animal.class)).equals(fungiType);
     }
+    /* ----- ----- ----- ----- Cordycep ----- ----- ----- ----- */
+
+    @Override
+    public void moveTowardsNonInfected(Animal animal) {
+        moveTowards(animal.getLocation());
+    }
+
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     /** onDay() is an event that is executed when the world's current time is 0.
@@ -410,9 +419,6 @@ public abstract class Animal extends WorldActor implements Fungi {
     public int getAge() {
         return age;
     }
-
-    protected boolean getHasSpecialMovementBehaviour() {return false; }
-
 
     /* ----- ----- ----- Testing Extras ----- ----- ----- */
 

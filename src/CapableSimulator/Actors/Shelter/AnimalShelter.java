@@ -2,8 +2,9 @@ package CapableSimulator.Actors.Shelter;
 
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public abstract class AnimalShelter extends WorldActor {
 
     private final List<Animal> animalsInShelter = new ArrayList<>();
 
-    public AnimalShelter(String actorType, CapableWorld world) {
+    public AnimalShelter(String actorType, World world) {
         super(actorType, world);
     }
 

@@ -1,7 +1,9 @@
 import java.util.*;
 
 import CapableSimulator.CapableProgram;
+import CapableSimulator.CapableSimulator;
 import CapableSimulator.Utils.Parser;
+import itumulator.executable.Program;
 
 public class Main {
 
@@ -11,7 +13,10 @@ public class Main {
         Parser parser = new Parser(inputDataFilePath);
         parser.parseInputsFromFile();
 
-        CapableProgram program = new CapableProgram(parser.getWorldSize(), 800, 50, parser);
+        Program program = new Program(parser.getWorldSize(), 800, 50);
+        CapableSimulator sim = (CapableSimulator) program.getSimulator();
+        sim.setParser(parser);
+        program.show();
         program.run();
 
 

@@ -1,13 +1,8 @@
 package Tests;
 
-import CapableSimulator.Actors.Animals.Predators.Bear;
-import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
-import CapableSimulator.Actors.Animals.Predators.WolfGang;
-import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.PathFinder;
-import CapableSimulator.Utils.TileFinder;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -15,11 +10,11 @@ import org.junit.jupiter.api.RepeatedTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CombatTests {
-    CapableWorld world;
+    World world;
 
     @BeforeEach
     void setup() {
-        world = new CapableWorld(5);
+        world = new World(5);
     }
 
     /* Test if 2 wolf's can attack each other, and one gets killed */

@@ -1,3 +1,4 @@
-3
+10
 putin 1
 cordyceps bear 1
+bear 1

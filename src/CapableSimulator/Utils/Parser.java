@@ -1,7 +1,5 @@
 package CapableSimulator.Utils;
 
-import FunctionLibrary.CapableFunc;
-
 import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;

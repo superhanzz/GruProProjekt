@@ -1,7 +1,7 @@
 package CapableSimulator.Utils;
 
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -9,9 +9,9 @@ import java.util.*;
 
 public class TileFinder {
 
-    CapableWorld world;
+    World world;
 
-    public TileFinder(CapableWorld world) {
+    public TileFinder(World world) {
         this.world = world;
     }
 

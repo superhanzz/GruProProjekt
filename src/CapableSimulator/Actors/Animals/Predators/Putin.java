@@ -1,8 +1,7 @@
 package CapableSimulator.Actors.Animals.Predators;
 
-import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.SpawningAgent;
@@ -54,7 +53,7 @@ public class Putin extends Predator {
         sleepingAnimations.add(diPutinSleeping1);
     }
 
-    public Putin(CapableWorld world){
+    public Putin(World world){
         super("putin", world, 50, 0,100);
 
         animalSize = CapableEnums.AnimalSize.BABY;

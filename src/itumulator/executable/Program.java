@@ -6,7 +6,7 @@ import itumulator.display.Frame;
 import itumulator.display.utility.IsomorphicCoordinateFactory;
 import itumulator.simulator.Simulator;
 import itumulator.world.World;
-import CapableSimulator.CapableWorld;
+
 
 /**
  * Sets up the program to run simulations. The Program will handle creation of {@link World}, {@link Simulator}, {@link Canvas}, {@link Frame} and correctly
@@ -30,7 +30,7 @@ public class Program {
     public Program(int size, int display_size, int delay){
         this.size = size;
         IsomorphicCoordinateFactory.setupFactory(display_size, size);
-        w = new CapableWorld(size);    //TODO changed to CapableWorld
+        w = new World(size);
         boolean startIso = size <= MAX_2D_SIZE_DEFAULT;
 
         c = new Canvas(w, display_size, startIso);

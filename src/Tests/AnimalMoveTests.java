@@ -4,10 +4,11 @@ import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Animals.Predators.WolfGang;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.TileFinder;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalMoveTests {
 
-    CapableWorld world;
+    World world;
     int testSampleSize;
     int animalAmount;
     int worldSize;
@@ -33,7 +34,7 @@ public class AnimalMoveTests {
     /* Move method test for rabbit */
     @RepeatedTest(1)
     public void rabbitMoveTest() {
-        world = new CapableWorld(worldSize);
+        world = new World(worldSize);
         PathFinder pathFinder = new PathFinder(world);
         TileFinder tileFinder = new TileFinder(world);
 
@@ -52,7 +53,7 @@ public class AnimalMoveTests {
     /* Move method test not wolf */
     @RepeatedTest(1)
     public void wolfMoveTest() {
-        world = new CapableWorld(worldSize);
+        world = new World(worldSize);
         PathFinder pathFinder = new PathFinder(world);
         TileFinder tileFinder = new TileFinder(world);
 
@@ -69,7 +70,7 @@ public class AnimalMoveTests {
     /* Single wolf follow an alpha wolf test */
     @RepeatedTest(1)
     public void wolfFollowAlphaTest() {
-        world = new CapableWorld(worldSize);
+        world = new World(worldSize);
 
         PathFinder pathFinder = new PathFinder(world);
 
@@ -106,7 +107,7 @@ public class AnimalMoveTests {
         and the other wolfs in the flock stay within a certain radius of the alpha */
     @RepeatedTest(1)
     public void wolfsMoveAsFlockTest() {
-        world = new CapableWorld(worldSize);
+        world = new World(worldSize);
 
         Wolf alpha = new Wolf(world);
         WolfGang gang = new WolfGang(world);
@@ -144,7 +145,7 @@ public class AnimalMoveTests {
     /* Tests bears move method and tests whether they stay within their territory */
     @RepeatedTest(1)
     void bearMoveTest() {
-        world = new CapableWorld(worldSize);
+        world = new World(worldSize);
         PathFinder pathFinder = new PathFinder(world);
         TileFinder tileFinder = new TileFinder(world);
 

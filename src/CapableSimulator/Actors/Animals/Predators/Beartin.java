@@ -1,7 +1,7 @@
 package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
@@ -12,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Random;
 
 public class Beartin extends Predator {
 
@@ -33,7 +32,7 @@ public class Beartin extends Predator {
 
 
 
-    public Beartin(CapableWorld world, int energy, int age, int MAX_ENERGY) {
+    public Beartin(World world, int energy, int age, int MAX_ENERGY) {
         super("beartin", world, energy, age, MAX_ENERGY);
 
         animalSize = CapableEnums.AnimalSize.ADULT;

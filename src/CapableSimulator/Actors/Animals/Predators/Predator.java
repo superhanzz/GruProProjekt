@@ -3,9 +3,8 @@ package CapableSimulator.Actors.Animals.Predators;
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.PathFinder;
-import FunctionLibrary.CapableFunc;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -13,11 +12,11 @@ import java.util.*;
 
 public abstract class Predator extends Animal {
 
-    protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY) {
+    protected Predator(String actorType, World world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world,  energy, age, MAX_ENERGY);
     }
 
-    protected Predator(String actorType, CapableWorld world, int energy, int age, int MAX_ENERGY, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+    protected Predator(String actorType, World world, int energy, int age, int MAX_ENERGY, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super(actorType, world,  energy, age, MAX_ENERGY,  MATING_AGE, MATING_COOLDOWN_DURATION);
     }
 
@@ -52,7 +51,7 @@ public abstract class Predator extends Animal {
         List<Predator> enemies = new ArrayList<>();
 
         Map<String, List<Predator>> enemiesMap = new HashMap<>();
-        for (String key : CapableFunc.getAllPredatorTypes())
+        for (String key : WorldActor.getAllPredatorTypes())
             enemiesMap.put(key, new ArrayList<>());
 
         if (!lookForEnemy(enemies, 3)) return false;

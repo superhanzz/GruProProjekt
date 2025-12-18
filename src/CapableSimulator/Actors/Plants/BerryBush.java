@@ -1,7 +1,7 @@
 package CapableSimulator.Actors.Plants;
 
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
 
@@ -19,7 +19,7 @@ public class BerryBush extends WorldActor {
     private DisplayInformation diBush = new DisplayInformation(Color.cyan, "bush");
     private DisplayInformation diBerry = new DisplayInformation(Color.cyan, "bush-berries");
 
-    public BerryBush(CapableWorld world) {
+    public BerryBush(World world) {
         super("berry", world);
         this.energyValue = 5;
         this.hasBerrys = false;

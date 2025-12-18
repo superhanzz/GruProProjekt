@@ -2,11 +2,12 @@ package Tests;
 
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Carcass;
-import CapableSimulator.Actors.Fungis.FungiSpore;
+
 import CapableSimulator.Actors.Fungis.Fungus;
-import CapableSimulator.CapableWorld;
-import CapableSimulator.Utils.CapableEnums;
+
+
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -15,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CarcassTests {
 
-    CapableWorld world;
+    World world;
 
     @BeforeEach
     void setup() {
-        world = new CapableWorld(5);
+        world = new World(5);
     }
 
     @RepeatedTest(1)

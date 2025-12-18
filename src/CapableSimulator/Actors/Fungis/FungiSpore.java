@@ -3,7 +3,7 @@ package CapableSimulator.Actors.Fungis;
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -12,6 +12,8 @@ import itumulator.world.World;
 import java.util.*;
 
 public class FungiSpore extends WorldActor {
+
+    protected World world;
 
     private final static int SPREAD_RADIUS = 3;
     /** */
@@ -26,14 +28,16 @@ public class FungiSpore extends WorldActor {
         carrierMap.put(Animal.class, CapableEnums.FungiType.CORDYCEP);
     }
 
-    public FungiSpore(CapableWorld world) {
+    public FungiSpore(World world) {
         super("fungi_spore", world);
+        this.world = world;
 
         fungiType = CapableEnums.FungiType.FUNGUS;
     }
 
-    public FungiSpore(String actorType, CapableWorld world) {
+    public FungiSpore(String actorType, World world) {
         super(actorType, world);
+        this.world = world;
         if (actorType.equals("cordycep")) {
             fungiType = CapableEnums.FungiType.CORDYCEP;
         }

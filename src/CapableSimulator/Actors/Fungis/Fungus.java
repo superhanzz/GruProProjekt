@@ -1,9 +1,9 @@
 package CapableSimulator.Actors.Fungis;
 
 import CapableSimulator.Actors.FertilTile;
-import CapableSimulator.Actors.Plants.Grass;
+
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
 import itumulator.executable.DisplayInformation;
@@ -38,7 +38,7 @@ public class Fungus extends WorldActor implements Fungi {
     /** The default constructor where the only param is the actorType.
      *  Both 'energy' and 'size' is set to default value
      * */
-    public Fungus(CapableWorld world) {
+    public Fungus(World world) {
         super("fungus", world );
         this.energy = DEFAULT_ENERGY_VALUE;
         this.size = DEFAULT_SIZE;
@@ -49,7 +49,7 @@ public class Fungus extends WorldActor implements Fungi {
     /** This constructor should be used when converting a 'Carcass' to a fungi.
      *  The fungi's size decides the 'energy' value.
      * */
-    public Fungus(CapableWorld world, CapableEnums.AnimalSize size) {
+    public Fungus(World world, CapableEnums.AnimalSize size) {
         super("fungus", world);
         this.size = size;
 
@@ -62,7 +62,7 @@ public class Fungus extends WorldActor implements Fungi {
     }
     /** No actual use at the moment.
      * */
-    public Fungus(CapableWorld world, CapableEnums.AnimalSize size, int energy) {
+    public Fungus(World world, CapableEnums.AnimalSize size, int energy) {
         super("fungus", world);
         this.energy = energy;
         this.size = size;
@@ -70,7 +70,7 @@ public class Fungus extends WorldActor implements Fungi {
         fungiSpore = new FungiSpore(world);
     }
 
-    public Fungus(CapableWorld world, int energy) {
+    public Fungus(World world, int energy) {
         super("fungus", world);
         this.energy = energy;
         this.size = DEFAULT_SIZE;
@@ -110,7 +110,7 @@ public class Fungus extends WorldActor implements Fungi {
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
 
     @Override
-    public void spreadSpores(CapableWorld world) {
+    public void spreadSpores(World world) {
         //System.out.println("Spreading spore in fungus");
         fungiSpore.spread(world.getLocation(this));
     }

@@ -1,16 +1,18 @@
 package Tests;
 
+import CapableSimulator.Actors.Animals.Predators.Bear;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.FertilTile;
 import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.Fungis.FungiSpore;
 import CapableSimulator.Actors.Fungis.Fungus;
 import CapableSimulator.Actors.Plants.Grass;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -19,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FungiTests {
 
-    CapableWorld world;
+    World world;
     int probability_TestSampleSize = 10000;
 
     @BeforeEach
     void setup() {
-        world = new CapableWorld(5);
+        world = new World(5);
     }
 
     @RepeatedTest(1)
@@ -101,7 +103,10 @@ public class FungiTests {
 
         spawningAgent.spawnActorAtLocation(fungus, fungusLocation);
 
-        assertTrue(world.getSortedEntities().get("fertilTile").isEmpty());
+        int numberOfFertileTiles = 0;
+        for (Object o : world.getEntities().keySet())
+            if (o instanceof FertilTile) numberOfFertileTiles++;
+        assertEquals(0, numberOfFertileTiles);
 
         fungus.act(world);
 

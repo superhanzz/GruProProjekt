@@ -7,7 +7,7 @@ import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.WolfDen;
 import CapableSimulator.Actors.WorldActor;
-import CapableSimulator.CapableWorld;
+
 import CapableSimulator.Utils.*;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -76,7 +76,7 @@ public class Wolf extends Predator implements FlockAnimal {
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     //Default constructor for wolf, used in the actorConstructorRegistry
-    public Wolf(CapableWorld world) {
+    public Wolf(World world) {
         super("wolf",  world, 25, 0, 30);
 
         animalSize = CapableEnums.AnimalSize.BABY;
@@ -88,7 +88,7 @@ public class Wolf extends Predator implements FlockAnimal {
         wolfGang = null;
     }
 
-    public Wolf(CapableWorld world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
+    public Wolf(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("wolf", world, 30, age, 30, MATING_AGE, MATING_COOLDOWN_DURATION);
 
         animalSize = CapableEnums.AnimalSize.BABY;
@@ -98,7 +98,7 @@ public class Wolf extends Predator implements FlockAnimal {
         wolfType = CapableEnums.WolfType.NPC;
     }
 
-    public Wolf(CapableWorld world, WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState, CapableEnums.FungiState fungiState) {
+    public Wolf(World world, WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState, CapableEnums.FungiState fungiState) {
         super("wolf", world, 30, 0, 30);
 
         this.wolfGang = wolfgang;
@@ -462,8 +462,8 @@ public class Wolf extends Predator implements FlockAnimal {
         return returnValue;
     }
 
-    @Override
-    protected boolean getHasSpecialMovementBehaviour()  {return wolfType.equals(CapableEnums.WolfType.NPC);}
+    //@Override
+    //protected boolean getHasSpecialMovementBehaviour()  {return wolfType.equals(CapableEnums.WolfType.NPC);}
 
 
     /* ----- ----- ----- ----- Setters ----- ----- ----- ----- */

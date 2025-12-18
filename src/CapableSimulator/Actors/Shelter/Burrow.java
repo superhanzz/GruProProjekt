@@ -2,7 +2,7 @@ package CapableSimulator.Actors.Shelter;
 
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.CapableWorld;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
@@ -20,7 +20,7 @@ public class Burrow extends AnimalShelter implements NonBlocking {
 
     DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
 
-    public Burrow(CapableWorld world){
+    public Burrow(World world){
         super("burrow", world);
     }
 

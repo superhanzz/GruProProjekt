@@ -1,6 +1,6 @@
 package CapableSimulator.Utils;
 
-import CapableSimulator.CapableWorld;
+
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -11,7 +11,7 @@ public class PathFinder {
 
     //CapableWorld world;
 
-    public PathFinder(CapableWorld world) {
+    public PathFinder(World world) {
         //this.world = world;
     }
 
@@ -22,7 +22,7 @@ public class PathFinder {
      * @throws NullPointerException if location is null.
      * @throws IllegalArgumentException if radius is negative.
      */
-    public static Location getEmptyTileAroundLocation(CapableWorld world, Location location, int radius) {
+    public static Location getEmptyTileAroundLocation(World world, Location location, int radius) {
         if (location == null)
             throw new NullPointerException("Location is null");
         if (radius < 0)
@@ -49,7 +49,7 @@ public class PathFinder {
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
 
-    public static Location getClosestTile(CapableWorld world, Location insigatorLocation, Location tileLocation) {
+    public static Location getClosestTile(World world, Location insigatorLocation, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
 
@@ -86,7 +86,7 @@ public class PathFinder {
         }
     }
 
-    public static Location getMoveToTile(CapableWorld world, Location fromLocation, Location goalLocation) {
+    public static Location getMoveToTile(World world, Location fromLocation, Location goalLocation) {
         // DEBUG COLORS FOR printf
         final String RED = "\u001B[31m";
         final String RESET = "\u001B[0m";
