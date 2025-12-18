@@ -12,24 +12,21 @@ import java.util.List;
 
 public abstract class WorldActor implements Actor, DynamicDisplayInformationProvider {
 
-    public final String actorType;
+    private final String actorType;
+
     protected World world;
-    protected CapableEnums.FungiState fungiState;
+
 
 
     protected WorldActor(String actorType, World world) {
         this.actorType = actorType;
         this.world = world;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    //public abstract void setActorType(String actorType);
+    /** Gets the actors actorType.
+     * @return Returns the actors actorType.
+     */
     public String getActorType() {return actorType;}
-
-
-    public CapableEnums.FungiState getFungiState() {
-        return fungiState;
-    }
 
     public abstract int getEnergyValue();
 

@@ -27,12 +27,11 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     /** The energy variable is the variable that keeps track of the animal energy.
      *  If energy = 0, the animal dies at the end of the simulation step.
-     *  When the animal eats , the energy is increased by the amount of energy stored in the eaten actor. //TODO
+     *  When the animal eats , the energy is increased by the amount of energy stored in the eaten actor.
      *  */
     protected int energy;
 
     /** The animals age.
-     *  The age controls the maximal energy the animal can have    //TODO
      * */
     protected int age;
 
@@ -56,8 +55,9 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     private static final double MAX_INTERACT_DISTANCE = 1.0;
 
-    protected CapableEnums.AnimalState animalState;
-    protected CapableEnums.AnimalSize animalSize;
+    private CapableEnums.AnimalSize animalSize;
+    private CapableEnums.AnimalState animalState;
+    private CapableEnums.FungiState fungiState;
 
     private static final int NORMAL_DECAY_RATE = 1;
     private static final int INFECTED_DECAY_RATE = 2;
@@ -97,12 +97,19 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     /* ----- ----- ----- Constructors ----- ----- ----- */
 
-    /** Default constructor
-     * */
+    /** Default constructor.
+     * @param actorType The actor type.
+     * @param world The world wherein the actor exists.
+     * @param energy The starting energy of the animal
+     * @param age The animals starting age.
+     * @param MAX_ENERGY The maximum amount of energy the animal can have.
+     */
     public Animal(String actorType, World world, int energy, int age, int MAX_ENERGY) {
         super(actorType, world);
-
         // Non-statics
+        animalSize = CapableEnums.AnimalSize.BABY;
+        animalState = CapableEnums.AnimalState.AWAKE;
+        fungiState = CapableEnums.FungiState.NORMAL;
         this.energy = energy;
         this.age = age;
 
@@ -112,12 +119,21 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         this.MATING_COOLDOWN_DURATION = 20;
     }
 
-    /** A constructor where matingAge and MATING_COOLDOWN_DURATION can be specified
-     * */
+    /** Constructor for testing.
+     * @param actorType The actor type.
+     * @param world The world wherein the actor exists.
+     * @param energy The starting energy of the animal
+     * @param age The animals starting age.
+     * @param MAX_ENERGY The maximum amount of energy the animal can have.
+     * @param MATING_AGE The required age for mating.
+     * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
+     */
     public Animal(String actorType, World world, int energy, int MAX_ENERGY, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super(actorType, world);
-
         // Non-statics
+        animalSize = CapableEnums.AnimalSize.BABY;
+        animalState = CapableEnums.AnimalState.AWAKE;
+        fungiState = CapableEnums.FungiState.NORMAL;
         this.energy = energy;
         this.age = age;
 
@@ -188,7 +204,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
             }
         }
         else if (eatableActor instanceof BerryBush) {
-            System.out.println(actorType + " trying to eat a BerryBush");
+            System.out.println(getActorType() + " trying to eat a BerryBush");
         }
         else {
             eat(eatableActor);
@@ -216,7 +232,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         for (Location location : neighbours) {
             Object o =  world.getTile(location);
             if (o instanceof WorldActor actor){
-                if (eatableFoodTypes.get(actorType).contains(actor.actorType)) {
+                if (eatableFoodTypes.get(getActorType()).contains(actor.getActorType())) {
                     if (actor instanceof BerryBush berryBush) {
                         if (berryBush.getBerryStatus())
                             foodSources.add(actor);
@@ -440,6 +456,40 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
      */
     public double getMaxInteractDistance() {
         return MAX_INTERACT_DISTANCE;
+    }
+
+    /**
+     * @return Returns the actor fungi state*/
+    public CapableEnums.FungiState getFungiState() {
+        return fungiState;
+    }
+
+    /** Retrieves the actors animal size.
+     * @return Returns the actors animal size.
+     */
+    public CapableEnums.AnimalSize getAnimalSize() {
+        return animalSize;
+    }
+
+    /** Updates the actors animal size.
+     * @param animalSize The actors new animal size.
+     */
+    protected void setAnimalSize(CapableEnums.AnimalSize animalSize) {
+        this.animalSize = animalSize;
+    }
+
+    /** Retrieves the actors animal state.
+     * @return Returns the actors animal size.
+     */
+    public CapableEnums.AnimalState getAnimalState() {
+        return animalState;
+    }
+
+    /** Updates the actors animal state.
+     * @param animalState The actors new animal state.
+     */
+    protected void setAnimalState(CapableEnums.AnimalState animalState) {
+        this.animalState = animalState;
     }
 
     /* ----- ----- ----- Boolean methods ----- ----- ----- */

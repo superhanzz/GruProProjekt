@@ -74,43 +74,26 @@ public class Wolf extends Predator implements FlockAnimal {
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
-    //Default constructor for wolf, used in the actorConstructorRegistry
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     */
     public Wolf(World world) {
         super("wolf",  world, 25, 0, 30);
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
-
         wolfType = CapableEnums.WolfType.NPC;
-
         wolfGang = null;
     }
 
+    /** Constructor for testing.
+     * @param world The world wherein the actor exists.
+     * @param age The animals starting age.
+     * @param MATING_AGE The required age for mating.
+     * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
+     */
     public Wolf(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("wolf", world, 30, age, 30, MATING_AGE, MATING_COOLDOWN_DURATION);
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
-
         wolfType = CapableEnums.WolfType.NPC;
+        wolfGang = null;
     }
-
-    public Wolf(World world, WolfGang wolfgang, Wolf alpha, WolfDen wolfDen, CapableEnums.AnimalSize animalSize, CapableEnums.AnimalState animalState, CapableEnums.FungiState fungiState) {
-        super("wolf", world, 30, 0, 30);
-
-        this.wolfGang = wolfgang;
-        this.alpha = alpha;
-        this.wolfDen = wolfDen;
-
-        this.animalSize = animalSize;
-        this.animalState = animalState;
-        this.fungiState = fungiState;
-
-        wolfType = CapableEnums.WolfType.NPC;
-    }
-
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
 
@@ -137,7 +120,7 @@ public class Wolf extends Predator implements FlockAnimal {
 
         if (world.isDay()) {    // It's day
             if (isOnMap()){   // It's day, and it is on the map
-                if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
                     if (!(tryFight() || lookForFood(1)))
                         move();
                 }
@@ -165,7 +148,7 @@ public class Wolf extends Predator implements FlockAnimal {
         if (world.isDay()) {
             if (isOnMap()){   // It's day and it is on the map
                 if (wolfType == CapableEnums.WolfType.ALPHA) {
-                    if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                    if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
                         if (!(tryFight() || lookForFood(1)))
                             move();
                     }
@@ -245,8 +228,8 @@ public class Wolf extends Predator implements FlockAnimal {
     @Override
     public double getStrengthValue() {
         int strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
+        strength += strengthBonus_AnimalSize.get(getAnimalSize());
+        strength += strengthBonus_FungiState.get(getFungiState());
         strength += strengthBonus_WolfType.get(wolfType);
 
         return strength;
@@ -265,7 +248,7 @@ public class Wolf extends Predator implements FlockAnimal {
             Location moveToLocation = PathFinder.getMoveToTile(world, wolfLocation, alphaLocation);
             if (moveToLocation != null) world.move(this, moveToLocation);
         }
-        if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+        if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
             if (!(tryFight() || lookForFood(1)))
                 move();
         }
@@ -299,14 +282,13 @@ public class Wolf extends Predator implements FlockAnimal {
 
     @Override
     public void onDawn() {
-        animalState = CapableEnums.AnimalState.AWAKE;
-        if (isInfected()) System.out.println("s");
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
         if (!isOnMap()) exitDen();
     }
 
     @Override
     public void onNightFall() {
-        animalState = CapableEnums.AnimalState.SLEEPING;
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
         if (isOnMap()) tryEnterDen();
     }
 
@@ -414,13 +396,7 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     protected String getDisplayInformationsKey() {
-        String key = animalSize.label + "-" + fungiState.label + "-" + animalState.label + "-" + wolfType.label;
-        return key;
-    }
-
-    @Override
-    public String getCombatLookupKey() {
-        String key = animalSize.label + "-" + fungiState.label + "-" + wolfType.label;
+        String key = getAnimalSize().label + "-" + getFungiState().label + "-" + getAnimalState().label + "-" + wolfType.label;
         return key;
     }
 

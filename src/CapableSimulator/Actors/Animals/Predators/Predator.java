@@ -4,6 +4,7 @@ import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.WorldActor;
 
+import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -20,7 +21,7 @@ public abstract class Predator extends Animal {
      * @param MAX_ENERGY The maximum amount of energy the animal can have.
      */
     protected Predator(String actorType, World world, int energy, int age, int MAX_ENERGY) {
-        super(actorType, world,  energy, age, MAX_ENERGY);
+        super(actorType, world, energy, age, MAX_ENERGY);
     }
 
     /** Constructor for testing.
@@ -33,7 +34,7 @@ public abstract class Predator extends Animal {
      * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
      */
     protected Predator(String actorType, World world, int energy, int age, int MAX_ENERGY, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
-        super(actorType, world,  energy, age, MAX_ENERGY,  MATING_AGE, MATING_COOLDOWN_DURATION);
+        super(actorType, world, energy, age, MAX_ENERGY, MATING_AGE, MATING_COOLDOWN_DURATION);
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- -----*/
@@ -77,9 +78,9 @@ public abstract class Predator extends Animal {
 
         Predator enemy = null;
         for (Predator possibleEnemy : enemies) {
-            List<Predator> list = enemiesMap.get(possibleEnemy.actorType);
+            List<Predator> list = enemiesMap.get(possibleEnemy.getActorType());
             list.add(possibleEnemy);
-            enemiesMap.put(possibleEnemy.actorType, list);
+            enemiesMap.put(possibleEnemy.getActorType(), list);
         }
 
         for (String key : enemiesMap.keySet()) {
@@ -132,7 +133,7 @@ public abstract class Predator extends Animal {
             throw new NullPointerException("enemyActor is null");
 
         double winChance = getWinChance(enemyActor);
-        System.out.println(actorType + " Attacking: " + enemyActor.actorType + ", with a win chance of: " + (winChance * 100.0) + "%");
+        System.out.println(getActorType() + " Attacking: " + enemyActor.getActorType() + ", with a win chance of: " + (winChance * 100.0) + "%");
         if (new Random().nextDouble() < winChance) {
             kill(enemyActor);
         }

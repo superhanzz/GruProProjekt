@@ -30,15 +30,19 @@ public class Beartin extends Predator {
     DisplayInformation diBertinFungi = new DisplayInformation(Color.blue, "bertin-fungi");
 
 
-
-
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     * @param energy The starting energy of the animal.
+     * @param age The age of the animal.
+     * @param MAX_ENERGY The maximum amount of energy the animal can have.
+     */
     public Beartin(World world, int energy, int age, int MAX_ENERGY) {
         super("beartin", world, energy, age, MAX_ENERGY);
 
-        animalSize = CapableEnums.AnimalSize.ADULT;
-        animalState = world.isDay() ? CapableEnums.AnimalState.AWAKE : CapableEnums.AnimalState.SLEEPING;
-    }
+        setAnimalSize(CapableEnums.AnimalSize.ADULT);
+        setAnimalState(world.isDay() ? CapableEnums.AnimalState.AWAKE : CapableEnums.AnimalState.SLEEPING);
 
+    }
 
 
     @Override
@@ -84,8 +88,8 @@ public class Beartin extends Predator {
     @Override
     public double getStrengthValue() {
         double strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
+        strength += strengthBonus_AnimalSize.get(getAnimalSize());
+        strength += strengthBonus_FungiState.get(getFungiState());
         return strength;
     }
 
@@ -109,12 +113,12 @@ public class Beartin extends Predator {
 
     @Override
     public void onDawn(){
-        animalState = CapableEnums.AnimalState.AWAKE;
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
     }
 
     @Override
     public void onNightFall(){
-        animalState = CapableEnums.AnimalState.SLEEPING;
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
     }
 
     @Override

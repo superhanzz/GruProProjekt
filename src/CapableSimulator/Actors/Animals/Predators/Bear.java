@@ -64,36 +64,20 @@ public class Bear extends Predator {
 
     public Bear(World world) {
         super("bear", world, 40, 0, 35);
-
         this.territoryCenter = new Location(0, 0);
         this.territoryRadius = 2;
-
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     public Bear(World world, Location territoryCenter) {
         super("bear", world, 40, 0, 35);
-
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     public Bear(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
         super("bear", world, 40, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
-
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -107,7 +91,7 @@ public class Bear extends Predator {
             fungiSpore.act(world);
         }
         else if (isOnMap()){
-            if (animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+            if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
                 if (!(tryMate() || tryFight() || lookForFood(1)))
                     move();
             }
@@ -169,8 +153,8 @@ public class Bear extends Predator {
     @Override
     public double getStrengthValue() {
         double strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
+        strength += strengthBonus_AnimalSize.get(getAnimalSize());
+        strength += strengthBonus_FungiState.get(getFungiState());
         return strength;
     }
 

@@ -19,6 +19,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
     private static final int DEFAULT_START_ENERGY = 25;
 
     private final CapableEnums.AnimalSize size;
+    private CapableEnums.FungiState fungiState;
 
     private FungiSpore fungiSpore;
 
@@ -36,6 +37,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
 
         energy = DEFAULT_START_ENERGY;
         size = CapableEnums.AnimalSize.ADULT;
+        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /**
@@ -48,6 +50,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
 
         this.energy = energy;
         this.size = size;
+        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -81,7 +84,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
      *  If the carcass is infected by a fungi then it becomes a fungus, otherwise it disappears .
      */
     public void decompose() {
-        switch(fungiState) {
+        switch(getFungiState()) {
             case NORMAL:
                 world.delete(this);
                 break;
@@ -104,7 +107,6 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
 
     @Override
     public void spreadSpores(World world) {
-        //System.out.println("Spreading spore in carcass");
         if (!isInfected()) return;
 
         fungiSpore.spread(world.getLocation(this));
@@ -113,7 +115,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
     @Override
     public void becomeInfected() {
         fungiSpore = new FungiSpore(world);
-        fungiState = CapableEnums.FungiState.FUNGI;
+        setFungiState(CapableEnums.FungiState.FUNGI);
     }
 
     @Override
@@ -160,5 +162,19 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
             return diCarcass;
         else return
                 diCarcassSmall;
+    }
+
+    /** Gets the actors fungi state.
+     * @return Returns the actors fungi state.
+     */
+    public CapableEnums.FungiState getFungiState() {
+        return fungiState;
+    }
+
+    /** Updates the actors fungi state.
+     * @param fungiState The new fungi state.
+     */
+    private void setFungiState(CapableEnums.FungiState fungiState) {
+        this.fungiState = fungiState;
     }
 }

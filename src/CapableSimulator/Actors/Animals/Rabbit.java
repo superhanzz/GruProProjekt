@@ -48,12 +48,7 @@ public class Rabbit extends Animal {
      */
     public Rabbit(World world) {
         super("rabbit", world, 15, 0, 25);
-
         burrow = null;
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /** A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
@@ -62,12 +57,7 @@ public class Rabbit extends Animal {
      */
     public Rabbit(World world, int energy) {
         super("rabbit", world, energy, 0, 25);
-
         burrow = null;
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /** A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
@@ -78,12 +68,7 @@ public class Rabbit extends Animal {
      */
     public Rabbit(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("rabbit", world, 15, 25, age,  MATING_AGE, MATING_COOLDOWN_DURATION);
-
         burrow = null;
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
-        fungiState = CapableEnums.FungiState.NORMAL;
     }
 
     /* ----- ----- ----- Behavior ----- ----- ----- */
@@ -282,7 +267,7 @@ public class Rabbit extends Animal {
      * */
     @Override
     public void onDawn() {
-        animalState = CapableEnums.AnimalState.AWAKE;
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
 
         if(burrow == null) {
             System.out.println("Burrow is null");
@@ -300,7 +285,7 @@ public class Rabbit extends Animal {
      * */
     @Override
     public void onNightFall() {
-        animalState = CapableEnums.AnimalState.SLEEPING;
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
         if (isOnMap())
             tryEnterBurrow();
     }

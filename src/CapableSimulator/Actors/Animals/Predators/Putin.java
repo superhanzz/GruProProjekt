@@ -47,9 +47,6 @@ public class Putin extends Predator {
      */
     public Putin(World world){
         super("putin", world, 50, 0,100);
-
-        animalSize = CapableEnums.AnimalSize.BABY;
-        animalState = CapableEnums.AnimalState.AWAKE;
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -67,7 +64,7 @@ public class Putin extends Predator {
                 if (moveNextToTarget(fungus.getLocation()))
                     eat(fungus);
             }
-            else if (isOnMap() && animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+            else if (isOnMap() && getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
                 if (!(tryFight() || lookForFood(1))) {
                     move();
                 }
@@ -131,8 +128,8 @@ public class Putin extends Predator {
     @Override
     public double getStrengthValue() {
         double strength = 0;
-        strength += strengthBonus_AnimalSize.get(animalSize);
-        strength += strengthBonus_FungiState.get(fungiState);
+        strength += strengthBonus_AnimalSize.get(getActorType());
+        strength += strengthBonus_FungiState.get(getFungiState());
         return strength;
     }
 
@@ -197,12 +194,12 @@ public class Putin extends Predator {
 
     @Override
     public void onDawn(){
-        animalState = CapableEnums.AnimalState.AWAKE;
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
     }
 
     @Override
     public void onNightFall(){
-        animalState = CapableEnums.AnimalState.SLEEPING;
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
     }
 
     @Override
@@ -219,10 +216,10 @@ public class Putin extends Predator {
     protected String getDisplayInformationsKey() {
         //String key = fungiState.label + "-" + animalState.label + "-" + (world.getCurrentTime() % 2);
         String key;
-        if (animalState.equals(CapableEnums.AnimalState.SLEEPING))
-            key = "Normal" + "-" + animalState.label + "-" + (world.getCurrentTime() % 2);
+        if (getAnimalState().equals(CapableEnums.AnimalState.SLEEPING))
+            key = "Normal" + "-" + getAnimalState().label + "-" + (world.getCurrentTime() % 2);
         else
-            key = "Normal" + "-" + animalState.label;
+            key = "Normal" + "-" + getAnimalState().label;
 
         return key;
     }
