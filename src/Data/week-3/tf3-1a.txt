@@ -1,4 +1,4 @@
-10
-putin 1
-cordyceps bear 1
-bear 1
+8
+grass 10
+rabbit 6
+

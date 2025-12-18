@@ -70,12 +70,13 @@ public abstract class Predator extends Animal {
         if (enemy == null) return false;
         Location enemyLocation = enemy.getLocation();
 
-        if (PathFinder.distance(getLocation(), enemyLocation) > 1) {
-            return moveTowards(enemyLocation);
+        if (moveNextToTarget(enemyLocation)) {
+            attackEnemy(enemy);
+            return true;
         }
+        else
+            return false;
 
-        attackEnemy(enemy);
-        return true;
     }
 
     protected void attackEnemy(Predator enemyActor) {
@@ -133,5 +134,4 @@ public abstract class Predator extends Animal {
         String key = animalSize.label + "-" + fungiState.label;
         return key;
     }
-
 }

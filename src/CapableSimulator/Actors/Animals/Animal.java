@@ -53,6 +53,8 @@ public abstract class Animal extends WorldActor implements Cordycep {
      * */
     private final int MATING_COOLDOWN_DURATION;
 
+    private static final double MIN_INTERACT_DISTANCE = 1.0;
+
     protected CapableEnums.AnimalState animalState;
     protected CapableEnums.AnimalSize animalSize;
 
@@ -254,18 +256,7 @@ public abstract class Animal extends WorldActor implements Cordycep {
         return carcass;
     }
 
-    /** Checks all the criteria for mating.
-     *  returns true if all the criteria are met, otherwise returns false
-     */
-    public boolean canMate() {
-        boolean canReproduce = (
-                        matingCooldown <= 0 &&
-                        age >= MATING_AGE &&
-                        animalSize.equals(CapableEnums.AnimalSize.ADULT) &&
-                        world.isDay());
 
-        return canReproduce;
-    }
 
     public void animalJustReproduce() {
         matingCooldown = MATING_COOLDOWN_DURATION;
@@ -326,16 +317,27 @@ public abstract class Animal extends WorldActor implements Cordycep {
 
     /** Moves the actor towards the given location.
      * @param location is the location to move towards.
+     * @return Returns the new distance to the target location, if the actor couldn't find any free closer tile, returns 0.
      */
-    protected boolean moveTowards(Location location) {
-        //Location moveTo = PathFinder.getClosestTile(world, getLocation(), location);
-        if (PathFinder.distance(getLocation(), location) <= 1) return true;
+    protected double moveTowards(Location location) {
         Location moveTo = PathFinder.getMoveToTile(world, getLocation(), location);
         if (moveTo == null)
-            return false;
+            return 0.0;
 
         world.move(this,  moveTo);
-        return true;
+        return PathFinder.distance(getLocation(), moveTo);
+    }
+
+    /**
+     * @param targetLocation
+     * @return Returns true if animal moved close enough to interact with the target, otherwise returns false.
+     */
+    protected boolean moveNextToTarget(Location targetLocation) {
+        double distanceFromTarget = PathFinder.distance(getLocation(), targetLocation);
+        if (distanceFromTarget > getMinInteractDistance()) {
+            distanceFromTarget = moveTowards(targetLocation);
+        }
+        return (distanceFromTarget <= getMinInteractDistance());
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
@@ -420,7 +422,23 @@ public abstract class Animal extends WorldActor implements Cordycep {
         return age;
     }
 
-    /* ----- ----- ----- Testing Extras ----- ----- ----- */
+    public double getMinInteractDistance() {
+        return MIN_INTERACT_DISTANCE;
+    }
 
+    /* ----- ----- ----- Boolean methods ----- ----- ----- */
+
+    /** Checks all the criteria for mating.
+     *  returns true if all the criteria are met, otherwise returns false
+     */
+    public boolean canMate() {
+        boolean canReproduce = (
+                matingCooldown <= 0 &&
+                        age >= MATING_AGE &&
+                        animalSize.equals(CapableEnums.AnimalSize.ADULT) &&
+                        world.isDay());
+
+        return canReproduce;
+    }
 
 }

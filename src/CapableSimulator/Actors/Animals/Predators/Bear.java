@@ -193,12 +193,8 @@ public class Bear extends Predator {
         Bear mate = mates.get(new  Random().nextInt(mates.size()));
         Location mateLocation = mate.getLocation();
 
-        if (PathFinder.distance(getLocation(), mateLocation) > 1) {
-            moveTowards(mateLocation);
-            return true;
-        }
-
-        mate(mate);
+        if (moveNextToTarget(mateLocation))
+            mate(mate);
         return true;
     }
 

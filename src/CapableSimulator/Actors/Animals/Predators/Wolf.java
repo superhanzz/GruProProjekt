@@ -217,7 +217,7 @@ public class Wolf extends Predator implements FlockAnimal {
     private void tryEnterDen() {
         if (wolfDen == null) return;
 
-        if (PathFinder.distance(getLocation(), wolfGang.getShelterLocation()) < 2) {
+        if (PathFinder.distance(getLocation(), wolfGang.getShelterLocation()) <= getMinInteractDistance()) {
             enterDen();
         }
         else {
@@ -227,7 +227,8 @@ public class Wolf extends Predator implements FlockAnimal {
 
     private void goToDen() {
         Location moveToTile = PathFinder.getMoveToTile(world, getLocation(), wolfGang.getShelterLocation());
-        if (moveToTile != null) world.move(this, moveToTile);
+        if (moveToTile != null)
+            world.move(this, moveToTile);
     }
 
     private void enterDen() {
@@ -236,8 +237,6 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     protected void exitDen() {
-        if (isInfected()) System.out.println("s");
-
         Location spawnAt = TileFinder.getEmptyTileAroundActor(world, wolfDen, true);
         if (spawnAt == null) return;
 

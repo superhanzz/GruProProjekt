@@ -16,9 +16,8 @@ public class Burrow extends AnimalShelter implements NonBlocking {
 
     private final List<Rabbit> inhabbitors = new ArrayList<>();
 
-    private Location location;
 
-    DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
+    private DisplayInformation diBurrow = new DisplayInformation(Color.blue, "hole-small");
 
     public Burrow(World world){
         super("burrow", world);

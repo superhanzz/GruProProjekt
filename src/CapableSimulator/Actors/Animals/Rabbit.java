@@ -1,5 +1,7 @@
 package CapableSimulator.Actors.Animals;
 
+import CapableSimulator.Actors.Plants.Grass;
+import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.Burrow;
 
 import CapableSimulator.Utils.CapableEnums;
@@ -37,15 +39,13 @@ public class Rabbit extends Animal {
         displayInformations.put("Big-Fungi-Sleeping", new DisplayInformation(Color.red, "rabbit-fungi-sleeping"));          // The display information of a big sleeping fungus rabbit
     }
 
-    DisplayInformation diRabbit = new DisplayInformation(Color.red, "rabbit-large");
-
 
     /* ----- ----- ----- Constructors ----- ----- ----- */
 
-    /**
-     * The default constructor for the rabbit class.
-     * This is the constructor to use when making the simulation.
-     * */
+    /** The default constructor for the rabbit class.
+     *  This is the constructor to use when making the simulation.
+     *  @param world The world wherein the rabbit exists.
+     */
     public Rabbit(World world) {
         super("rabbit", world, 15, 0, 25);
 
@@ -56,9 +56,10 @@ public class Rabbit extends Animal {
         fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    /**
-     * A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
-     * */
+    /** A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
+     * @param world The world wherein the animal exists.
+     * @param energy The starting energy of the animal
+     */
     public Rabbit(World world, int energy) {
         super("rabbit", world, energy, 0, 25);
 
@@ -69,9 +70,12 @@ public class Rabbit extends Animal {
         fungiState = CapableEnums.FungiState.NORMAL;
     }
 
-    /**
-     * A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
-     * */
+    /** A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
+     * @param world The world wherein the rabbit exists.
+     * @param age The animals starting age.
+     * @param MATING_AGE The required age for mating.
+     * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
+     */
     public Rabbit(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("rabbit", world, 15, 25, age,  MATING_AGE, MATING_COOLDOWN_DURATION);
 
@@ -90,11 +94,27 @@ public class Rabbit extends Animal {
      * */
     @Override
     public void act(World world) {
-        if(world.isNight() || !isOnMap())
+        super.act(world);
+        if (isDead())
             return;
-        findMate(1);
 
-        lookForFood(2);
+        if(isInfected()) {
+
+        }
+        else if (world.isDay()) {
+            if(!isOnMap()) {
+                exitBurrow();
+            }
+            else if ( !(findMate(1) || lookForFood(1))) {
+                move();
+            }
+        }
+        else {
+            if(isOnMap()) {
+                if ( !(tryEnterBurrow() || lookForFood(1)) )
+                    move();
+            }
+        }
     }
 
     @Override
@@ -105,12 +125,14 @@ public class Rabbit extends Animal {
      *  If the chosen mate is eligible to reproduce, then a offspring is created.
      *  The offspring is inserted into the world at a free surrounding tile, around the instigating rabbit
      *  If no free tile is found the offspring dies, but the mating is still counted as a success. TODO
-     *  // TODO when the mate is chosen, set a variable in the other mate to make sure that they dont try and mate with another rabbit in the same turn.
-     * */
-    public void findMate(int radius) {
+     *
+     * @param radius Is the radius of the area it tries to find a mate within.
+     * @return Returns true if it successfully reproduced, otherwise returns false.
+     */
+    public boolean findMate(int radius) {
         // If Rabbit can't reproduce, the do nothing
         if (!canMate())
-            return;
+            return false;
 
         // Findes rabbits on surrounding tiles
         List<Rabbit> possibleMates = new ArrayList<>();
@@ -118,7 +140,7 @@ public class Rabbit extends Animal {
             if (world.getTile(l) instanceof Rabbit rabbit)
                 possibleMates.add(rabbit);
         }
-        if (possibleMates.isEmpty()) return;
+        if (possibleMates.isEmpty()) return false;
 
         // Select a mate
         Rabbit mate;
@@ -130,12 +152,20 @@ public class Rabbit extends Animal {
         }
 
         // If mate can't mate, the do nothing
-        if (!mate.canMate()) return;
+        if (!mate.canMate()) return false;
 
         reproduce(mate);
+        return true;
     }
 
+    /**
+     * @param mate Reference to the other rabbit it reproduces with.
+     * @throws NullPointerException Throws exception if mate is null.
+     */
     protected void reproduce(Rabbit mate) {
+        if (mate == null)
+            throw new NullPointerException("Rabbit mate is null");
+
         // If the distance between this rabbit and the mate is over 1 tile
         if (PathFinder.distance(getLocation(), mate.getLocation()) > 1) {
             Location moveTo = PathFinder.getClosestTile(world, getLocation(), mate.getLocation());
@@ -157,23 +187,79 @@ public class Rabbit extends Animal {
         mate.animalJustReproduce();
     }
 
+    /* ----- ----- ----- ----- Burrow ----- ----- ----- ----- ----- */
 
+    /**
+     * @return Returns true if it either entered a burrow or moved closer to a burrow. if no burrow was successfully created or located or it didn't move closer returns false.
+     */
+    private boolean tryEnterBurrow() {
+        if (!hasShelter()) {
+            // Looks for an existing burrow around itself to join.
+            if (lookForBurrow()) {
+                // if one is found, then it goes into it and returns true.
+                goIntoBurrow();
+                return true;
+            }
+            // If no existing burrow was found it tries to dig one.
+            else if (digBurrow()) {
+                // if it successfully dug a burrow, it then enters it and returns true.
+                goIntoBurrow();
+                return true;
+            }
+            else {
+                // returns false if it wasn't possible to join or make a burrow
+                return false;
+            }
+        }
+
+        if (moveNextToTarget(burrow.getLocation()))
+            goIntoBurrow();
+        return true;
+    }
 
     /** Handels the digging of a burrow, and connecting the rabbit to the burrow.
-     * */
-    public void digBurrow() {
-        Object standingOn = world.getNonBlocking(world.getLocation(this));
-        if (standingOn != null) {
-            world.delete(standingOn);
-        }
+     * @return Returns true if a burrow was successfully made, ortherwise returns false.
+     */
+    public boolean digBurrow() {
+        Object standingOn = world.getNonBlocking(getLocation());
+
+        if (!prepareTileForBurrow(standingOn))
+             return false;
 
         burrow = new Burrow(world);
         burrow.addBurrowInhabitant(this);
 
         SpawningAgent.spawnActorAtLocation(world, burrow, getLocation());   // spawns the burrow on the map
         burrow.setShelterLocation();
+        return true;
+    }
 
-        goIntoBurrow();
+    /**
+     * @param standingOn The object (object on tile) the rabbit is standing on.
+     * @return Returns true if it is possible to make a burrow at the location of standigOn. Otherwise returns false.
+     */
+    private boolean prepareTileForBurrow(Object standingOn) {
+        if (standingOn == null)
+            return true;
+        else if (standingOn instanceof Grass grass) {
+            world.delete(grass);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * @return Returns true if the rabbit successfully found a burrow nearby. Otherwise, returns false.
+     */
+    private boolean lookForBurrow() {
+        for (Location l : world.getSurroundingTiles(getLocation())) {
+            if (world.getNonBlocking(l) instanceof Burrow burrow) {
+                setBurrow(burrow);
+                break;
+            }
+        }
+        return hasShelter();
     }
 
     /** Handels entering the burrow */
@@ -184,12 +270,11 @@ public class Rabbit extends Animal {
 
     /** Handles exiting the burrow */
     void exitBurrow() {
-        if(burrow == null) System.out.println("Burrow is null");
-        else {
-            Location exitLocation = PathFinder.getEmptyTileAroundLocation(world, burrow.getLocation(), 1);
-            updateOnMap(exitLocation, true);
-            burrow.animalLeftShelter(this);
-        }
+        Location exitLocation = PathFinder.getEmptyTileAroundLocation(world, burrow.getLocation(), 1);
+        if (exitLocation == null)
+            return;
+        updateOnMap(exitLocation, true);
+        burrow.animalLeftShelter(this);
     }
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
@@ -219,19 +304,8 @@ public class Rabbit extends Animal {
     @Override
     public void onNightFall() {
         animalState = CapableEnums.AnimalState.SLEEPING;
-
-        if (burrow == null) {
-            for (Location l : world.getSurroundingTiles(getLocation())) {
-                if (world.getNonBlocking(l) instanceof Burrow burrow) {
-                    this.burrow = burrow;
-                    break;
-                }
-            }
-            if (burrow == null) digBurrow();
-        }
-        else {
-            goIntoBurrow();
-        }
+        if (isOnMap())
+            tryEnterBurrow();
     }
 
     /** The implementation of the animal method almostNight()
@@ -249,18 +323,33 @@ public class Rabbit extends Animal {
             //TODO kill rabbit if no tile was found, burrow might be full
             return;
         }
-
-        world.move(this, closestTile);
+        moveTowards(closestTile);
     }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- ----- */
 
-    /** Returns the rabbits burrow reference */
+    /** Returns the rabbits burrow reference
+     * @return Returns a reference to the burrow.
+     */
     public Burrow getBurrow() { return burrow; }
+
+    /**
+     * @return Returns true if the rabbit has a burrow, otherwise returns false.
+     */
+    public boolean hasShelter() { return burrow != null; }
 
     @Override
     public DisplayInformation getInformation() {
-        return diRabbit;
+        return displayInformations.get(getDisplayInformationsKey());
+    }
+
+    /* ----- ----- ----- ----- Setters ----- ----- ----- ----- ----- */
+
+    /** Set's the reference variable burrow.
+     * @param burrow The reference to the new burrow
+     */
+    private void setBurrow(Burrow burrow) {
+        this.burrow = burrow;
     }
 
 }

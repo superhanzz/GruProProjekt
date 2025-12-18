@@ -10,8 +10,10 @@ import java.util.*;
 public class WorldUtils {
 
     /**
+     * @param world
      * @param actorType Is the type of actor to search for.
      * @param onMap Determines whether to only search for objects currently on the map, or all objects in the world entity list.
+     * @return Returns the number of the given actor type found.
      */
     public static int getNumOfActors(World world, String actorType, boolean onMap) {
         int numOfActors = 0;
@@ -31,6 +33,7 @@ public class WorldUtils {
     }
 
     /**
+     * @param world
      * @return Returns a list of all the objects currently on the world map.
      */
     public static List<Object> getAllObjectOnWorldMap(World world) {
@@ -45,7 +48,9 @@ public class WorldUtils {
     }
 
     /**
-     * @return Returns a list of all the animals in the world*/
+     * @param world
+     * @return Returns a list of all the animals in the world
+     */
     public static List<Animal> getAllAnimals(World world) {
         List<Animal> animals = new ArrayList<>();
         Map<Object, Location> entities = world.getEntities();
