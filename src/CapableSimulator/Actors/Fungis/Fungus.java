@@ -1,5 +1,6 @@
 package CapableSimulator.Actors.Fungis;
 
+import CapableSimulator.Actors.EnergyConsumer;
 import CapableSimulator.Actors.FertilTile;
 
 import CapableSimulator.Actors.WorldActor;
@@ -12,7 +13,7 @@ import itumulator.world.World;
 
 import java.awt.*;
 
-public class Fungus extends WorldActor implements Fungi {
+public class Fungus extends WorldActor implements Fungi, EnergyConsumer {
 
     int energy;
     CapableEnums.AnimalSize size;
@@ -35,9 +36,10 @@ public class Fungus extends WorldActor implements Fungi {
 
 
     /* ----- ----- ----- Constructors ----- ----- ----- */
-    /** The default constructor where the only param is the actorType.
-     *  Both 'energy' and 'size' is set to default value
-     * */
+
+    /** The default constructor.
+     * @param world The world wherein the actor exists.
+     */
     public Fungus(World world) {
         super("fungus", world );
         this.energy = DEFAULT_ENERGY_VALUE;
@@ -47,8 +49,9 @@ public class Fungus extends WorldActor implements Fungi {
     }
 
     /** This constructor should be used when converting a 'Carcass' to a fungi.
-     *  The fungi's size decides the 'energy' value.
-     * */
+     * @param world The world wherein the actor exists.
+     * @param size The size the fungus should be.
+     */
     public Fungus(World world, CapableEnums.AnimalSize size) {
         super("fungus", world);
         this.size = size;
@@ -60,8 +63,11 @@ public class Fungus extends WorldActor implements Fungi {
             case ADULT ->   DEFAULT_ENERGY_VALUE;
         };
     }
-    /** No actual use at the moment.
-     * */
+    /** Constructor for testing.
+     * @param world The world wherein the actor exists.
+     * @param size The size the fungus should be.
+     * @param energy The initial energy in the fungus.
+     */
     public Fungus(World world, CapableEnums.AnimalSize size, int energy) {
         super("fungus", world);
         this.energy = energy;
@@ -70,6 +76,10 @@ public class Fungus extends WorldActor implements Fungi {
         fungiSpore = new FungiSpore(world);
     }
 
+    /** Constructor for testing.
+     * @param world The world wherein the actor exists.
+     * @param energy The initial energy in the fungus.
+     */
     public Fungus(World world, int energy) {
         super("fungus", world);
         this.energy = energy;
@@ -84,30 +94,29 @@ public class Fungus extends WorldActor implements Fungi {
         doEverySimulationStep();
     }
 
-    @Override
-    protected void doEverySimulationStep() {
-        if (world.isNight()) return;
-
-        energy--;
-        if (energy <=0 ) {
-            decompose();
-        }
-    }
-
+    /** Handles when the fungus has decomposed i.e. it has no more energy.
+     */
     public void decompose() {
         Location location = world.getLocation(this);
         world.delete(this);
         if (world.getNonBlocking(location) == null) {
-            becomeFertilTile(location);
+            makeFertilTile(location);
         }
     }
 
-    public void becomeFertilTile(Location location) {
+    /** Spawns a fertile tile at the given location.
+     * @param location The location to spawn the fertile tile at.
+     * @throws NullPointerException throws exception if location is null.
+     */
+    public void makeFertilTile(Location location) {
+        if (location == null)
+            throw new NullPointerException("Location is null");
+
         FertilTile ft = new FertilTile(world);
         SpawningAgent.spawnActorAtLocation(world, ft, location);
     }
 
-    /* ----- ----- ----- Getters and Setters ----- ----- ----- */
+    /* ----- ----- ----- Fungi ----- ----- ----- */
 
     @Override
     public void spreadSpores(World world) {
@@ -131,6 +140,23 @@ public class Fungus extends WorldActor implements Fungi {
     @Override
     public boolean isCarrierOfType(CapableEnums.FungiType fungiType){
         return FungiSpore.getCanCarryType(this.getClass()).equals(fungiType);
+    }
+
+    /* ----- ----- ----- ----- Energy Consumer ----- ----- ----- ----- */
+
+    @Override
+    public void doEverySimulationStep() {
+        if (world.isNight()) return;
+
+        energy -= getDecayRate();
+        if (energy <=0 ) {
+            decompose();
+        }
+    }
+
+    @Override
+    public int getDecayRate() {
+        return 1;
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */

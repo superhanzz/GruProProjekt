@@ -34,9 +34,6 @@ public class Grass extends WorldActor implements NonBlocking{
         grow();
     }
 
-    @Override
-    protected void doEverySimulationStep() {}
-
     public void grow() {
         Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this));
         List<Location> locations = new ArrayList<>();

@@ -1,6 +1,7 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.EnergyConsumer;
 import CapableSimulator.Actors.Fungis.Cordycep;
 import CapableSimulator.Actors.Fungis.CordycepSpore;
 import CapableSimulator.Actors.Fungis.FungiSpore;
@@ -15,7 +16,7 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Animal extends WorldActor implements Cordycep {
+public abstract class Animal extends WorldActor implements Cordycep, EnergyConsumer {
 
     /* ----- ----- ----- Energy variables ----- ----- ----- */
 
@@ -53,10 +54,13 @@ public abstract class Animal extends WorldActor implements Cordycep {
      * */
     private final int MATING_COOLDOWN_DURATION;
 
-    private static final double MIN_INTERACT_DISTANCE = 1.0;
+    private static final double MAX_INTERACT_DISTANCE = 1.0;
 
     protected CapableEnums.AnimalState animalState;
     protected CapableEnums.AnimalSize animalSize;
+
+    private static final int NORMAL_DECAY_RATE = 1;
+    private static final int INFECTED_DECAY_RATE = 2;
 
     private boolean isOnMap;
     private boolean isDead = false;
@@ -127,7 +131,7 @@ public abstract class Animal extends WorldActor implements Cordycep {
 
     @Override
     public void act(World world) {
-        doEverySimStep();
+        doEverySimulationStep();
     }
 
     public void move() {
@@ -146,24 +150,6 @@ public abstract class Animal extends WorldActor implements Cordycep {
         world.move(this, searchLocation);
     }
 
-    public void doEverySimStep() {
-        age++;
-        if (!isOnMap()) {
-            return;
-        }
-
-        energy--;
-        if(energy <= 0) die();
-
-        // Handles child becoming adult
-        if (animalSize.equals(CapableEnums.AnimalSize.BABY)) {
-            if (age > 10) animalSize = CapableEnums.AnimalSize.ADULT;
-        }
-
-        // Updates the matingCooldown
-        matingCooldown--;
-        matingCooldown = Math.clamp(matingCooldown, 0, MATING_COOLDOWN_DURATION);
-    }
 
     public boolean lookForFood(int searchRadius){
         Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
@@ -334,10 +320,10 @@ public abstract class Animal extends WorldActor implements Cordycep {
      */
     protected boolean moveNextToTarget(Location targetLocation) {
         double distanceFromTarget = PathFinder.distance(getLocation(), targetLocation);
-        if (distanceFromTarget > getMinInteractDistance()) {
+        if (distanceFromTarget > getMaxInteractDistance()) {
             distanceFromTarget = moveTowards(targetLocation);
         }
-        return (distanceFromTarget <= getMinInteractDistance());
+        return (distanceFromTarget <= getMaxInteractDistance());
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
@@ -378,6 +364,36 @@ public abstract class Animal extends WorldActor implements Cordycep {
         moveTowards(animal.getLocation());
     }
 
+    /* ----- ----- ----- ----- Energy Consumer Implementations ----- ----- ----- ----- */
+
+    @Override
+    public void doEverySimulationStep() {
+        age++;
+        if (!isOnMap()) {
+            return;
+        }
+
+        energy -= getDecayRate();
+        if(energy <= 0) die();
+
+        // Handles child becoming adult
+        if (animalSize.equals(CapableEnums.AnimalSize.BABY)) {
+            if (age > 10) animalSize = CapableEnums.AnimalSize.ADULT;
+        }
+
+        // Updates the matingCooldown
+        matingCooldown--;
+        matingCooldown = Math.clamp(matingCooldown, 0, MATING_COOLDOWN_DURATION);
+    }
+
+    @Override
+    public int getDecayRate() {
+        if (isInfected()) {
+            return INFECTED_DECAY_RATE;
+        }
+        return NORMAL_DECAY_RATE;
+    }
+
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
 
     /** onDay() is an event that is executed when the world's current time is 0.
@@ -401,16 +417,10 @@ public abstract class Animal extends WorldActor implements Cordycep {
         return key;
     }
 
-    public boolean isOnMap() {
-        return isOnMap;
-    }
-
-    protected void setDead(boolean dead) {
-        isDead = dead;
-    }
-
-    public boolean isDead() {
-        return isDead;
+    /** Set's the isDead variable to true.
+     */
+    protected void setDead() {
+        isDead = true;
     }
 
     @Override
@@ -418,12 +428,18 @@ public abstract class Animal extends WorldActor implements Cordycep {
         return energy;
     }
 
+    /**
+     * @return Returns the animals age.
+     */
     public int getAge() {
         return age;
     }
 
-    public double getMinInteractDistance() {
-        return MIN_INTERACT_DISTANCE;
+    /** Gets the maximum distance from an actor before this actor can can interact with it.
+     * @return returns MAX_INTERACT_DISTANCE: {@value MAX_INTERACT_DISTANCE}.
+     */
+    public double getMaxInteractDistance() {
+        return MAX_INTERACT_DISTANCE;
     }
 
     /* ----- ----- ----- Boolean methods ----- ----- ----- */
@@ -439,6 +455,14 @@ public abstract class Animal extends WorldActor implements Cordycep {
                         world.isDay());
 
         return canReproduce;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public boolean isOnMap() {
+        return isOnMap;
     }
 
 }

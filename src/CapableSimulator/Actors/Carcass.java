@@ -10,25 +10,26 @@ import itumulator.world.World;
 
 import java.awt.*;
 
-public class Carcass extends WorldActor implements Fungi {
+public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
 
     private int energy;
+
     private final static int MAX_ENERGY_CONSUME_AMOUNT = 5;
 
     private static final int DEFAULT_START_ENERGY = 25;
 
-    protected CapableEnums.AnimalSize size;
+    private final CapableEnums.AnimalSize size;
 
     private FungiSpore fungiSpore;
 
-    DisplayInformation diCarcass = new DisplayInformation(Color.BLACK, "carcass");
-    DisplayInformation diCarcassSmall = new DisplayInformation(Color.BLACK, "carcass-small");
+    private static final DisplayInformation diCarcass = new DisplayInformation(Color.BLACK, "carcass");
+    private static final DisplayInformation diCarcassSmall = new DisplayInformation(Color.BLACK, "carcass-small");
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     /** Default constructor, where energy initialised as {@value DEFAULT_START_ENERGY}, and the carcass size is set as big.
      *  The actor type is set as "carcass".
-     * @param world is the world wherein the carcass exists.
+     * @param world The world wherein the actor exists.
      */
     public Carcass(World world) {
         super("carcass",  world);
@@ -37,6 +38,11 @@ public class Carcass extends WorldActor implements Fungi {
         size = CapableEnums.AnimalSize.ADULT;
     }
 
+    /**
+     * @param world The world wherein the actor exists.
+     * @param energy The starting energy of the animal.
+     * @param size The size of the actor.
+     */
     public Carcass(World world, int energy, CapableEnums.AnimalSize size) {
         super("carcass", world);
 
@@ -51,15 +57,6 @@ public class Carcass extends WorldActor implements Fungi {
         doEverySimulationStep();
     }
 
-    /** Decreases the energy amount, and if energy becomes 0 or less the carcass decomposes.
-     */
-    @Override
-    protected void doEverySimulationStep() {
-        energy--;
-        if (energy <= 0) {
-            decompose();
-        }
-    }
 
     /** Consumes a portion of the carcass, the amount consumed is decided by the instigators missing energy and
      * a maximal amount: {@value MAX_ENERGY_CONSUME_AMOUNT}.
@@ -106,6 +103,14 @@ public class Carcass extends WorldActor implements Fungi {
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */
 
     @Override
+    public void spreadSpores(World world) {
+        //System.out.println("Spreading spore in carcass");
+        if (!isInfected()) return;
+
+        fungiSpore.spread(world.getLocation(this));
+    }
+
+    @Override
     public void becomeInfected() {
         fungiSpore = new FungiSpore(world);
         fungiState = CapableEnums.FungiState.FUNGI;
@@ -126,14 +131,19 @@ public class Carcass extends WorldActor implements Fungi {
         return FungiSpore.getCanCarryType(this.getClass()).equals(fungiType);
     }
 
-    /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
+    /* ----- ----- ----- ----- Energy Consumer ----- ----- ----- ----- */
 
     @Override
-    public void spreadSpores(World world) {
-        //System.out.println("Spreading spore in carcass");
-        if (!isInfected()) return;
+    public void doEverySimulationStep() {
+        energy -= getDecayRate();
+        if (energy <= 0) {
+            decompose();
+        }
+    }
 
-        fungiSpore.spread(world.getLocation(this));
+    @Override
+    public int getDecayRate() {
+        return 1;
     }
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- ----- */

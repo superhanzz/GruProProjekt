@@ -120,11 +120,6 @@ public class Bear extends Predator {
     }
 
     @Override
-    protected void doEverySimulationStep() {}
-
-
-
-    @Override
     public void move(){
         Set<Location> territory = world.getSurroundingTiles(territoryCenter, territoryRadius- 1);
         Set<Location> neighbours = world.getEmptySurroundingTiles(getLocation());

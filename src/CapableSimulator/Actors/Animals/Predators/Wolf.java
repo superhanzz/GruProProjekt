@@ -6,7 +6,6 @@ import CapableSimulator.Actors.Animals.FlockAnimal;
 import CapableSimulator.Actors.Carcass;
 import CapableSimulator.Actors.Shelter.AnimalShelter;
 import CapableSimulator.Actors.Shelter.WolfDen;
-import CapableSimulator.Actors.WorldActor;
 
 import CapableSimulator.Utils.*;
 import itumulator.executable.DisplayInformation;
@@ -199,9 +198,6 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     @Override
-    protected void doEverySimulationStep() {}
-
-    @Override
     public Carcass die() {
         Carcass carcass = super.die();
 
@@ -217,7 +213,7 @@ public class Wolf extends Predator implements FlockAnimal {
     private void tryEnterDen() {
         if (wolfDen == null) return;
 
-        if (PathFinder.distance(getLocation(), wolfGang.getShelterLocation()) <= getMinInteractDistance()) {
+        if (PathFinder.distance(getLocation(), wolfGang.getShelterLocation()) <= getMaxInteractDistance()) {
             enterDen();
         }
         else {

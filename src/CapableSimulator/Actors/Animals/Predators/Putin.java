@@ -111,12 +111,6 @@ public class Putin extends Predator {
 
     }
 
-    @Override
-    protected void doEverySimulationStep() {}
-
-
-
-
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
 
     @Override
@@ -169,7 +163,7 @@ public class Putin extends Predator {
         }
         updateOnMap(null, false);
         SpawningAgent.spawnActorAtLocation(world, egg, location);
-        setDead(true);
+        setDead();
 
         return null;
     }

@@ -37,8 +37,8 @@ public class AnimalReproduceTest {
         r1.updateOnMap(new Location(0,0), true);
         r2.updateOnMap(new Location(1,0), true);
 
-        r1.doEverySimStep();
-        r2.doEverySimStep();
+        r1.doEverySimulationStep();
+        r2.doEverySimulationStep();
 
         // Checks how manny actors are en the world, expected is 2
         int entitiesInWorld_1 = world.getEntities().size();
@@ -82,8 +82,8 @@ public class AnimalReproduceTest {
             alpha.updateOnMap(new Location(1, 1), true);
             npc.updateOnMap(new Location(0, 1), true);
 
-            alpha.doEverySimStep();
-            npc.doEverySimStep();
+            alpha.doEverySimulationStep();
+            npc.doEverySimulationStep();
 
             alpha.onDusk();
             alpha.onNightFall();
@@ -116,12 +116,12 @@ public class AnimalReproduceTest {
         Location bear1Location = new Location(0,1);
         Bear bear1 = new Bear(world, 10,10,20, bear1Location);
         bear1.updateOnMap(bear1Location, true);
-        bear1.doEverySimStep();
+        bear1.doEverySimulationStep();
 
         Location bear2Location = new Location(1,1);
         Bear bear2 = new Bear(world, 10,10,20, bear2Location);
         bear2.updateOnMap(bear2Location, true);
-        bear2.doEverySimStep();
+        bear2.doEverySimulationStep();
 
         int numberOfBearsPreMating = WorldUtils.getNumOfActors(world,"bear", false);
 

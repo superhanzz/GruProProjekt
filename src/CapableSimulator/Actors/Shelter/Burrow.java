@@ -29,9 +29,6 @@ public class Burrow extends AnimalShelter implements NonBlocking {
     }
 
     @Override
-    protected void doEverySimulationStep() {}
-
-    @Override
     public void animalEnteredShelter(Animal animal) {
         if (animal instanceof Rabbit rabbit) {
             super.animalEnteredShelter(animal);

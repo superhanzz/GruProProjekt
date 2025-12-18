@@ -23,11 +23,6 @@ public class PutinEgg extends WorldActor {
 
     @Override
     public void act(World world) {
-        doEverySimulationStep();
-    }
-
-    @Override
-    public void doEverySimulationStep() {
         timeToHatch--;
         if (timeToHatch <= 0) {
             hatchEgg();

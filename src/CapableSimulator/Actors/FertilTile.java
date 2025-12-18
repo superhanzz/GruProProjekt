@@ -13,6 +13,9 @@ public class FertilTile extends WorldActor implements NonBlocking {
 
     private static final DisplayInformation di = new DisplayInformation(Color.cyan);
 
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     */
     public FertilTile(World world) {
         super("fertilTile", world);
     }
@@ -22,6 +25,8 @@ public class FertilTile extends WorldActor implements NonBlocking {
         spawnGrass();
     }
 
+    /** Spawns a grass actor at the location of the tile, then this actor is deleted.
+     */
     private void spawnGrass() {
         System.out.println("Fertil tile: spawnGrass");
         Location location = world.getLocation(this);
@@ -29,9 +34,6 @@ public class FertilTile extends WorldActor implements NonBlocking {
         Grass grass = new Grass(world);
         SpawningAgent.spawnActorAtLocation(world, grass, location);
     }
-
-    @Override
-    public void doEverySimulationStep() {}
 
     @Override
     public int getEnergyValue() {

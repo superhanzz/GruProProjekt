@@ -58,9 +58,6 @@ public class Beartin extends Predator {
     }
 
     @Override
-    protected void doEverySimulationStep() {}
-
-    @Override
     public Carcass die() {
         Location location = getLocation();
         PutinEgg egg = new PutinEgg(world);
@@ -71,7 +68,7 @@ public class Beartin extends Predator {
         }
         updateOnMap(null, false);
         SpawningAgent.spawnActorAtLocation(world, egg, location);
-        setDead(true);
+        setDead();
 
         return null;
     }

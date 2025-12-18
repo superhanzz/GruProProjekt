@@ -25,9 +25,6 @@ public class CordycepSpore extends FungiSpore{
         }
     }
 
-    @Override
-    protected void doEverySimulationStep() {}
-
     private List<Animal> lookForNonInfectedOfSameType() {
         List<Animal> animalsOfSameType = new ArrayList<>();
         Map<Object, Location> entities = world.getEntities();

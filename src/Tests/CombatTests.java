@@ -28,7 +28,7 @@ public class CombatTests {
         Location attackedLocation = new Location(1, 1);
         attackedWolf.updateOnMap(attackedLocation, true);
 
-        attackedWolf.doEverySimStep();
+        attackedWolf.doEverySimulationStep();
 
         instigator.act(world);
 

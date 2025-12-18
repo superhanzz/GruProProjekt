@@ -44,7 +44,7 @@ public class Rabbit extends Animal {
 
     /** The default constructor for the rabbit class.
      *  This is the constructor to use when making the simulation.
-     *  @param world The world wherein the rabbit exists.
+     *  @param world The world wherein the actor exists.
      */
     public Rabbit(World world) {
         super("rabbit", world, 15, 0, 25);
@@ -57,7 +57,7 @@ public class Rabbit extends Animal {
     }
 
     /** A constructor where the rabbits starting energy can be defined, mostly for testing purposes.
-     * @param world The world wherein the animal exists.
+     * @param world The world wherein the actor exists.
      * @param energy The starting energy of the animal
      */
     public Rabbit(World world, int energy) {
@@ -71,7 +71,7 @@ public class Rabbit extends Animal {
     }
 
     /** A constructor where the age required before mating can occur and how long before mating can occur again can be defined.
-     * @param world The world wherein the rabbit exists.
+     * @param world The world wherein the actor exists.
      * @param age The animals starting age.
      * @param MATING_AGE The required age for mating.
      * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
@@ -116,9 +116,6 @@ public class Rabbit extends Animal {
             }
         }
     }
-
-    @Override
-    protected void doEverySimulationStep() {}
 
     /** Tries to find a mate to reproduce
      *  If more than one possible mate is found, then a random one is chosen.

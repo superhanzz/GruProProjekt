@@ -67,9 +67,6 @@ public class WolfDen extends AnimalShelter implements NonBlocking {
     }
 
     @Override
-    protected void doEverySimulationStep() {}
-
-    @Override
     public DisplayInformation getInformation() {
         return di;
     }
