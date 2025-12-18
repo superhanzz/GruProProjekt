@@ -238,8 +238,7 @@ public class Wolf extends Predator implements FlockAnimal {
     protected void exitDen() {
         if (isInfected()) System.out.println("s");
 
-        TileFinder tileFinder = new TileFinder(world);
-        Location spawnAt = tileFinder.getEmptyTileAroundActor(wolfDen, true);
+        Location spawnAt = TileFinder.getEmptyTileAroundActor(world, wolfDen, true);
         if (spawnAt == null) return;
 
         updateOnMap(spawnAt, true);
@@ -298,62 +297,6 @@ public class Wolf extends Predator implements FlockAnimal {
 
     private void promoteToAlpha() {
         wolfType = CapableEnums.WolfType.ALPHA;
-    }
-
-
-    // alpha can see whole map TODO and move to animals or something
-    private void alphaSight() {
-        // Gets references to all the possible food sources
-        Map<String, Set<WorldActor>> allPossibleFoodActors = new WorldUtils(world).getAllWorldActorsAsMap(Animal.eatableFoodTypes.get(actorType));
-
-        if (false) {    // Debug
-            System.out.println(allPossibleFoodActors.size());
-            for (String at : allPossibleFoodActors.keySet()) {
-                System.out.println("Number of " + at + " in the world: " + allPossibleFoodActors.get(at).size());
-            }
-            System.out.println();
-        }
-
-        // Finds the closest one
-        if (false) {
-            double shortestDistance = Double.MAX_VALUE;
-            WorldActor nearestFoodActor = null;
-
-            // This is dumb because there is no priority in the food source
-            for (String actorType : allPossibleFoodActors.keySet()) {
-                for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                    double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
-                    if (distance < shortestDistance) {
-                        shortestDistance = distance;
-                        nearestFoodActor = actor;
-                    }
-                }
-            }
-        }
-
-
-        // smart because it is categorised
-        record PreyDist(WorldActor actor, double distance) {}   //
-
-        Map<String, PreyDist> nearestPreyActors = new HashMap<>();
-        Map<String, Double> distances = new HashMap<>();
-
-        for (String actorType : allPossibleFoodActors.keySet()) {
-            distances.put(actorType, Double.MAX_VALUE);
-            for (WorldActor actor : allPossibleFoodActors.get(actorType)) {
-                double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
-                if (distance < distances.get(actorType)) {
-                    distances.put(actorType, distance);
-                    nearestPreyActors.put(actorType, new PreyDist(actor, distance));
-                }
-            }
-        }
-
-        for (String at : Animal.eatableFoodTypes.get(actorType)) {
-
-        }
-
-
     }
 
 

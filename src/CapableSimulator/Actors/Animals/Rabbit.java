@@ -143,8 +143,7 @@ public class Rabbit extends Animal {
         }
 
         // Findes empty location around this rabbit
-        TileFinder tileFinder = new TileFinder(world);
-        Location offspringLocation = tileFinder.getEmptyTileAroundActor(this, true);
+        Location offspringLocation = TileFinder.getEmptyTileAroundActor(world,this, true);
         if (offspringLocation == null) return;
 
         // makes new rabbit

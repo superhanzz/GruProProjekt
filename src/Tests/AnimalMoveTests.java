@@ -35,11 +35,9 @@ public class AnimalMoveTests {
     @RepeatedTest(1)
     public void rabbitMoveTest() {
         world = new World(worldSize);
-        PathFinder pathFinder = new PathFinder(world);
-        TileFinder tileFinder = new TileFinder(world);
 
         Rabbit rabbit = new Rabbit(world);
-        rabbit.updateOnMap(tileFinder.getEmptyTile(world, true), true);
+        rabbit.updateOnMap(TileFinder.getEmptyTile(world, true), true);
 
         Location animalLocationPreMove = rabbit.getLocation();
         rabbit.move();
@@ -54,11 +52,9 @@ public class AnimalMoveTests {
     @RepeatedTest(1)
     public void wolfMoveTest() {
         world = new World(worldSize);
-        PathFinder pathFinder = new PathFinder(world);
-        TileFinder tileFinder = new TileFinder(world);
 
         Wolf wolf = new Wolf(world);
-        wolf.updateOnMap(tileFinder.getEmptyTile(world, true), true);
+        wolf.updateOnMap(TileFinder.getEmptyTile(world, true), true);
 
         Location animalLocationPreMove = wolf.getLocation();
         wolf.move();
@@ -147,9 +143,8 @@ public class AnimalMoveTests {
     void bearMoveTest() {
         world = new World(worldSize);
         PathFinder pathFinder = new PathFinder(world);
-        TileFinder tileFinder = new TileFinder(world);
 
-        Location bearSpawnLocation = tileFinder.getEmptyTile(world, true);
+        Location bearSpawnLocation = TileFinder.getEmptyTile(world, true);
         Bear bear = new Bear(world, bearSpawnLocation);
         bear.updateOnMap(bearSpawnLocation, true);
 

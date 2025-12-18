@@ -9,18 +9,12 @@ import java.util.*;
 
 public class TileFinder {
 
-    World world;
-
-    public TileFinder(World world) {
-        this.world = world;
-    }
-
-    public Location getEmptyTile(World world, boolean isForBlockingActor) {
-        //TODO Make this function chose between the free tiles in the world, by generating a map symbolizing all the possible tiles and then subtracting all entities, and chosing a random tile from the remaining.
-
-        final String RED = "\u001B[31m";
-        final String RESET = "\u001B[0m";
-
+    /**
+     * @param world The world wherein the search occurs.
+     * @param isForBlockingActor Whether to search for free non-blocking or blocking tiles.
+     * @return Returns a random empty tile if one is found, otherwise returns null.
+     */
+    public static Location getEmptyTile(World world, boolean isForBlockingActor) {
         List<Location> freeTiles = new ArrayList<>();
         for (int i = 0; i < world.getSize(); i++) {
             for (int j = 0; j < world.getSize(); j++) {
@@ -29,28 +23,28 @@ public class TileFinder {
         }
         for (Location location : world.getEntities().values()) {
             if (isForBlockingActor) {
-                if (freeTiles.contains(location) && !world.isTileEmpty(location)) freeTiles.remove(location);
+                if (freeTiles.contains(location) && !world.isTileEmpty(location))
+                    freeTiles.remove(location);
             } else {
-                if (freeTiles.contains(location) && world.getNonBlocking(location) != null) freeTiles.remove(location);
+                if (freeTiles.contains(location) && world.getNonBlocking(location) != null)
+                    freeTiles.remove(location);
             }
         }
 
-        for (Location location : freeTiles) {
-            if (isForBlockingActor) {
-                if (!world.isTileEmpty(location))
-                    System.out.printf(RED + "Occupied Tile in Map " + RESET + "%n");  // DEBUG
-            } else {
-                if (!world.isTileEmpty(location) && world.getNonBlocking(location) != null)
-                    System.out.printf(RED + "Occupied Tile in Map " + RESET + "%n");  // DEBUG
-            }
-
-        }
+        if(freeTiles.isEmpty() && isForBlockingActor)
+            System.out.println("ERROR: No tiles found, for blocking actor");
 
         Location emptyTile = freeTiles.get(new Random().nextInt(freeTiles.size()));
         return emptyTile;
     }
 
-    public Location getEmptyTileAroundActor(WorldActor actor, boolean isForBlockingActor) {
+    /**
+     * @param world The world wherein the search occurs.
+     * @param actor The actor to search around.
+     * @param isForBlockingActor Whether to search for free non-blocking or blocking tiles.
+     * @return Returns a random empty tile if one is found, otherwise returns null.
+     */
+    public static Location getEmptyTileAroundActor(World world, WorldActor actor, boolean isForBlockingActor) {
         if (world == null || actor == null) {
             if (world == null) throw new NullPointerException("In getEmptyTileAroundActor(): World is null");
             else throw new NullPointerException("In getEmptyTileAroundActor(): Actor is null");

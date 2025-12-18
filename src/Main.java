@@ -15,9 +15,8 @@ public class Main {
         Program program = new Program(parser.getWorldSize(), 800, 50);
         CapableSimulator sim = (CapableSimulator) program.getSimulator();
         sim.setParser(parser);
+        sim.runSimulation();
         program.show();
-        program.run();
-
 
     }
 }

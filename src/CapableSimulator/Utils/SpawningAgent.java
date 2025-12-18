@@ -33,7 +33,6 @@ public class SpawningAgent {
     }
 
     public void generateActors(InputFileStruct fileStruct, List<WorldActor> listOfActors){
-        TileFinder tileFinder = new TileFinder(world);
         //System.out.println(fileStruct.actorType);
         //System.out.print(fileStruct.actorType);
 
@@ -43,7 +42,7 @@ public class SpawningAgent {
                 WolfGang gang = new WolfGang(world);
 
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = tileFinder.getEmptyTile(world, true);
+                    Location location = TileFinder.getEmptyTile(world, true);
 
                     if (location != null) {
                         Wolf wolf = new Wolf(world);
@@ -61,7 +60,7 @@ public class SpawningAgent {
 
             case "rabbit":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Rabbit r = new Rabbit(world);
                         r.updateOnMap(location, true);
@@ -77,7 +76,7 @@ public class SpawningAgent {
 
             case "bear":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Bear b = new Bear(world, fileStruct.staticSpawnLocation != null ? fileStruct.staticSpawnLocation : location);
                         b.updateOnMap(location, true);
@@ -95,7 +94,7 @@ public class SpawningAgent {
 
             case "putin":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Putin p = new Putin(world);
                         p.updateOnMap(location, true);
@@ -111,7 +110,7 @@ public class SpawningAgent {
 
             case "grass":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, false);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, false);
                     if (location != null) {
                         Grass g = new Grass(world);
                         world.setTile(location, g);
@@ -123,7 +122,7 @@ public class SpawningAgent {
 
             case "berry":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         BerryBush b = new BerryBush(world);
                         world.setTile(location, b);
@@ -136,7 +135,7 @@ public class SpawningAgent {
 
             case "burrow":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, false);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, false);
                     if (location != null) {
                         Burrow b = new Burrow(world);
                         world.setTile(location, b);
@@ -148,7 +147,7 @@ public class SpawningAgent {
 
             case  "carcass":
                 for (int i = 0; i < fileStruct.getSpawnAmount(); i++) {
-                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : tileFinder.getEmptyTile(world, true);
+                    Location location = (fileStruct.staticSpawnLocation != null) ? fileStruct.staticSpawnLocation : TileFinder.getEmptyTile(world, true);
                     if (location != null) {
                         Carcass c = new Carcass(world);
                         world.setTile(location, c);

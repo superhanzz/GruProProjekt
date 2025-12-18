@@ -225,9 +225,8 @@ public class Bear extends Predator {
     private void mate(Bear bear) {
         System.out.println("Bear mate");
 
-        TileFinder tileFinder = new TileFinder(world);
-        Location offspringLocation = tileFinder.getEmptyTileAroundActor(this, true);
-        Location offspringTerritoryLocation = tileFinder.getEmptyTile(world, true);
+        Location offspringLocation = TileFinder.getEmptyTileAroundActor(world, this, true);
+        Location offspringTerritoryLocation = TileFinder.getEmptyTile(world, true);
         if (offspringLocation == null) return;
 
         // makes new rabbit

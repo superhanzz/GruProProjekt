@@ -1,9 +1,11 @@
 package Tests;
 
+import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Fungis.Fungi;
 import CapableSimulator.Actors.WorldActor;
 
 import CapableSimulator.Utils.*;
+import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,20 +87,19 @@ public class FileReadingTest {
                     InputFileStruct inputFile = input.get(key);
                     if (!inputFile.actorType.equals(actorType)) continue;
 
-                    int preNum = worldUtils.getNumOfActors(actorType);
+                    int preNum = worldUtils.getNumOfActors(actorType, false);
                     spawningAgent.generateActors(inputFile);
-                    int postNum = worldUtils.getNumOfActors(actorType);
+                    int postNum = worldUtils.getNumOfActors(actorType, false);
 
                     int spawnedNum = postNum - preNum;
 
                     if (inputFile.fungiState.equals(CapableEnums.FungiState.FUNGI)) {
                         int numOfInfected = 0;
-                        List<String> filter = new ArrayList<>();
-                        filter.add(inputFile.actorType);
-                        for (WorldActor actor : worldUtils.getAllWorldActorsAsMap(filter).get(inputFile.actorType)) {
-                            if (actor instanceof Fungi fungi) {
-                                if (fungi.isInfected()) numOfInfected++;
-                            }
+                        Map<Object, Location> entities = world.getEntities();
+                        for (Object o : world.getEntities().keySet()) {
+                            if (entities.get(o) == null) continue;
+                            else if (o instanceof Animal animal && animal.getActorType().equals(actorType) && animal.isInfected())
+                                numOfInfected++;
                         }
                         assertEquals(numOfInfected, spawnedNum);
                     }

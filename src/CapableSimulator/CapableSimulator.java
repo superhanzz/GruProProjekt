@@ -62,6 +62,7 @@ public class CapableSimulator extends Simulator {
 
     public void runSimulation() {
         runSimulation(CapableEnums.SimulationType.NORMAL);
+
     }
 
     /** Initiates the simulation
@@ -69,7 +70,6 @@ public class CapableSimulator extends Simulator {
      * */
     public void runSimulation(CapableEnums.SimulationType simulationType) {
         if (!preSetupComplete) prepareSimulation();
-
         switch (simulationType) {
             case NORMAL:
                 //run();

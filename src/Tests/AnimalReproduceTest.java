@@ -19,10 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnimalReproduceTest {
 
     World world;
+    WorldUtils worldUtils;
 
     @BeforeEach
     public void setup() {
         world = new World(3);
+        worldUtils = new WorldUtils(world);
     }
 
 
@@ -70,16 +72,11 @@ public class AnimalReproduceTest {
 
         int numberOfNewSuccessfulCups = 0;
         for (int i = 0; i < testSampleSize; i++) {
-            world = new World(3);
 
             Wolf alpha = new Wolf(world, 10, 0, 20);
             Wolf npc = new Wolf(world, 10, 0, 20);
 
             WolfGang gang = new WolfGang(world);
-
-            WorldUtils worldUtils = new WorldUtils(world);
-
-            world.addAnimalFlock(gang);
 
             gang.addNewFlockMember(alpha);
             gang.addNewFlockMember(npc);
@@ -94,21 +91,22 @@ public class AnimalReproduceTest {
             alpha.onNightFall();
             npc.onNightFall();
 
-            int amountBefore = worldUtils.getAllWorldActorsAsMap().get("wolf").size();
+
+            int amountBefore = worldUtils.getNumOfActors("wolf", false); //worldUtils.getAllWorldActorsAsMap().get("wolf").size();
 
             WolfDen den = null;
-            for (WorldActor actor : worldUtils.getAllWorldActorsAsMap().get("wolfDen")) {
-                if (actor instanceof WolfDen wolfDen) {
-                    den = wolfDen;
-                    break;
-                }
-            }
+            if(alpha.getShelter() instanceof WolfDen wolfDen)
+                den = wolfDen;
+
             if (den != null) {
                 den.makeCup();
             }
 
-            int amountAfter = worldUtils.getAllWorldActorsAsMap().get("wolf").size();
+            int amountAfter = worldUtils.getNumOfActors("wolf", false);
             if (amountBefore != amountAfter) numberOfNewSuccessfulCups++;
+
+            for (Object o : world.getEntities().keySet())
+                world.delete(o);
         }
 
         double ActualReproduceChance = (numberOfNewSuccessfulCups * 1.0) / (testSampleSize * 1.0);
@@ -117,7 +115,6 @@ public class AnimalReproduceTest {
 
     @RepeatedTest(1)
     public void bearReproduceTest() {
-        world = new World(3);
         Location bear1Location = new Location(0,1);
         Bear bear1 = new Bear(world, 10,10,20, bear1Location);
         bear1.updateOnMap(bear1Location, true);
@@ -128,18 +125,22 @@ public class AnimalReproduceTest {
         bear2.updateOnMap(bear2Location, true);
         bear2.doEverySimStep();
 
-        int numberOfBearsPreMating = 0;
-        for (Object o : world.getEntities().keySet())
-            if (o instanceof Bear) numberOfBearsPreMating++;
-
+        int numberOfBearsPreMating = worldUtils.getNumOfActors("bear", false);
 
         bear1.act(world);
-        int numberOfBearsPostMating = 0;
-        for (Object o : world.getEntities().keySet())
-            if (o instanceof Bear) numberOfBearsPreMating++;
+
+        int numberOfBearsPostMating = worldUtils.getNumOfActors("bear", false);
 
         assertTrue(numberOfBearsPreMating < numberOfBearsPostMating);
     }
+
+
+    // TODO
+    @RepeatedTest(1)
+    public void putinBecomeEggTest() {}
+
+    @RepeatedTest(1)
+    public void putinHatchFromEggTest() {}
 
 
     @AfterEach
