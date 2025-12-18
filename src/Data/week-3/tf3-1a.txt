@@ -1,4 +1,3 @@
-8
-grass 10
-rabbit 6
-
+15
+putin 1
+carcass fungi 1

@@ -2,9 +2,12 @@ package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Carcass;
 
+import CapableSimulator.Actors.Fungis.Fungus;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
 import CapableSimulator.Utils.SpawningAgent;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -18,8 +21,8 @@ public class Putin extends Predator {
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 1.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 1.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 5.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 8.0);
     }
     private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
     static {
@@ -31,33 +34,98 @@ public class Putin extends Predator {
     protected static final Map<String, DisplayInformation> displayInformations = new HashMap<>();
     static {
         // TODO Fix all the different possible Putin dispay informations
-        displayInformations.put("Small-Normal-Awake", new DisplayInformation(Color.BLACK, "wolf-small"));                   // The display information of a small awake normal putin
-        displayInformations.put("Big-Normal-Awake", new DisplayInformation(Color.BLACK, "wolf"));                           // The display information of a big awake normal putin
-
-        displayInformations.put("Small-Normal-Sleeping", new DisplayInformation(Color.BLACK, "wolf-small-sleeping"));       // The display information of a small sleeping normal putin
-        displayInformations.put("Big-Normal-Sleeping", new DisplayInformation(Color.BLACK, "wolf-sleeping"));               // The display information of a big sleeping normal putin
-
-        displayInformations.put("Small-Fungi-Awake", new DisplayInformation(Color.BLACK, "wolf-fungi-small"));              // The display information of a small awake fungus putin
-        displayInformations.put("Big-Fungi-Awake", new DisplayInformation(Color.BLACK, "wolf-fungi"));                      // The display information of a big awake fungus putin
-
-        displayInformations.put("Small-Fungi-Sleeping", new DisplayInformation(Color.BLACK, "wolf-fungi-small-sleeping"));  // The display information of a small sleeping fungus putin
-        displayInformations.put("Big-Fungi-Sleeping", new DisplayInformation(Color.BLACK, "wolf-fungi-sleeping"));          // The display information of a big sleeping fungus putin
+        displayInformations.put("Normal-Awake", new DisplayInformation(Color.BLACK, "putin"));                  // The display information of a small awake normal putin
+        displayInformations.put("Normal-Sleeping-0", new DisplayInformation(Color.BLACK, "putin-sleeping1"));   // The display information of a big sleeping normal putin
+        displayInformations.put("Normal-Sleeping-1", new DisplayInformation(Color.BLACK, "putin-sleeping2"));   // The display information of a big sleeping normal putin
+        displayInformations.put("Fungi-Awake", new DisplayInformation(Color.BLACK, "putin"));                   // The display information of a big awake fungus putin
+        displayInformations.put("Fungi-Sleeping-0", new DisplayInformation(Color.BLACK, "putin-sleeping1"));    // The display information of a big sleeping normal putin
+        displayInformations.put("Fungi-Sleeping-1", new DisplayInformation(Color.BLACK, "putin-sleeping2"));    // The display information of a big sleeping normal putin
     }
 
-    DisplayInformation diPutin = new DisplayInformation(Color.blue, "putin");
-    static DisplayInformation diPutinSleeping0 = new DisplayInformation(Color.blue, "putin-sleeping1");
-    static DisplayInformation diPutinSleeping1 = new DisplayInformation(Color.blue, "putin-sleeping2");
-    private static final List<DisplayInformation> sleepingAnimations = new ArrayList<>();
-    static {
-        sleepingAnimations.add(diPutinSleeping0);
-        sleepingAnimations.add(diPutinSleeping1);
-    }
-
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     */
     public Putin(World world){
         super("putin", world, 50, 0,100);
 
         animalSize = CapableEnums.AnimalSize.BABY;
         animalState = CapableEnums.AnimalState.AWAKE;
+    }
+
+    /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
+
+    @Override
+    public void act(World world){
+        super.act(world);
+        if (isDead()) return;
+
+        if(isInfected()) {
+
+        }
+        else if (world.isDay()) {
+            if (lookForShrooms() instanceof Fungus fungus) {
+                if (moveNextToTarget(fungus.getLocation()))
+                    eat(fungus);
+            }
+            else if (isOnMap() && animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
+                if (!(tryFight() || lookForFood(1))) {
+                    move();
+                }
+            }
+            else if (isOnMap()) {
+                if (!(lookForFood(1))) {
+                    move();
+                }
+            }
+        }
+    }
+
+    private WorldActor lookForShrooms() {
+        if (WorldUtils.getNumOfActors(world, "fungus", true) <= 0)
+            return null;
+
+        List<Fungus> fungusList = new ArrayList<>();
+        for (Object o : WorldUtils.getAllObjectOnWorldMap(world)) {
+            if (o instanceof Fungus fungus)
+                fungusList.add(fungus);
+        }
+        return getNearestActor(fungusList);
+    }
+
+    @Override
+    protected void eat(WorldActor actor) {
+        if (actor instanceof Fungus)
+            becomeInfected();
+
+        super.eat(actor);
+    }
+
+    @Override
+    public Carcass die() {
+        Location location = getLocation();
+        PutinEgg egg = new PutinEgg(world);
+
+        if (isInfected()) {
+            spreadSpores(world);
+            world.delete(this);
+        }
+        updateOnMap(null, false);
+        SpawningAgent.spawnActorAtLocation(world, egg, location);
+        setDead();
+
+        return null;
+    }
+
+    /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
+
+    @Override
+    protected void attackEnemy(Predator enemyActor) {
+        if (enemyActor instanceof Bear bear) {
+            tryMountBear(bear);
+        }
+        else {
+            super.attackEnemy(enemyActor);
+        }
     }
 
     @Override
@@ -85,50 +153,16 @@ public class Putin extends Predator {
 
     }
 
+    /* ----- ----- ----- ----- Bertin ----- ----- ----- ----- */
 
-    /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
-//TODO make beartin
-    @Override
-    public void act(World world){
-        super.act(world);
-        if (isDead()) return;
-
-        if(isInfected()) {
-
-        }
-        else if (world.isDay()) {
-            if (isOnMap() && animalSize.equals(CapableEnums.AnimalSize.ADULT)) {
-                if (!(tryFight() || lookForFood(1))) {
-                    move();
-                }
-            }
-            else if (isOnMap()) {
-                if (!(lookForFood(1))) {
-                    move();
-                }
-            }
-        }
-
-    }
-
-    /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
-
-    @Override
-    protected boolean tryFight() {
-        return super.tryFight();
-    }
-
-    @Override
-    protected void attackEnemy(Predator enemyActor) {
-        if (enemyActor instanceof Bear bear) {
-            tryMountBear(bear);
-        }
-        else {
-            super.attackEnemy(enemyActor);
-        }
-    }
-
+    /**
+     * @param bear The bear putin will try to mount.
+     * @throws NullPointerException Throws exception if bear is null.
+     */
     private void tryMountBear(Bear bear) {
+        if (bear == null)
+            throw  new NullPointerException("bear is null");
+
         double winChance = getWinChance(bear);
         System.out.println("Putin trying to mount bear, with a win chance of: " + (winChance * 100.0) + "%");
         if (new Random().nextDouble() < winChance) {
@@ -139,7 +173,14 @@ public class Putin extends Predator {
         }
     }
 
+    /**
+     * @param bear The bear to mount.
+     * @throws NullPointerException Throws exception if bear is null.
+     */
     private void mountBear(Bear bear) {
+        if (bear == null)
+            throw  new NullPointerException("bear is null");
+
         Location beartinLocation = PathFinder.getEmptyTileAroundLocation(world, getLocation(), 1);
         Beartin beartin = new Beartin(world, 100, getAge(), 100);
 
@@ -150,22 +191,6 @@ public class Putin extends Predator {
         world.delete(this);
 
         SpawningAgent.spawnActorAtLocation(world, beartin,  beartinLocation);
-    }
-
-    @Override
-    public Carcass die() {
-        Location location = getLocation();
-        PutinEgg egg = new PutinEgg(world);
-
-        if (isInfected()) {
-            spreadSpores(world);
-            world.delete(this);
-        }
-        updateOnMap(null, false);
-        SpawningAgent.spawnActorAtLocation(world, egg, location);
-        setDead();
-
-        return null;
     }
 
     /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
@@ -181,28 +206,25 @@ public class Putin extends Predator {
     }
 
     @Override
-    public void onDusk() {
-
-
-
-
-
-    }
+    public void onDusk() {}
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
 
     @Override
     public DisplayInformation getInformation() {
-
-        if (world.isDay())
-            return diPutin;
-        else {
-            return sleepingAnimations.get(world.getCurrentTime() % 2);
-        }
+        return displayInformations.get(getDisplayInformationsKey());
     }
 
+    @Override
+    protected String getDisplayInformationsKey() {
+        //String key = fungiState.label + "-" + animalState.label + "-" + (world.getCurrentTime() % 2);
+        String key;
+        if (animalState.equals(CapableEnums.AnimalState.SLEEPING))
+            key = "Normal" + "-" + animalState.label + "-" + (world.getCurrentTime() % 2);
+        else
+            key = "Normal" + "-" + animalState.label;
 
-
-
+        return key;
+    }
 }
 

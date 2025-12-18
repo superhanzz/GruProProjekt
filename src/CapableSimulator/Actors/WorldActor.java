@@ -34,10 +34,13 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
     public abstract int getEnergyValue();
 
     public Location getLocation() {
-        if (world == null) throw new NullPointerException("In getLocation(): World is null");
+        if (world == null)
+            throw new NullPointerException("In getLocation(): World is null");
 
-        if (world.isOnTile(this)) return world.getLocation(this);
-        else return null;
+        if (world.isOnTile(this))
+            return world.getLocation(this);
+        else
+            return null;
     }
 
 

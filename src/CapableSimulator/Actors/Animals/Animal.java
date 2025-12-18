@@ -187,7 +187,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
                 eat(eatableActor);
             }
         }
-        else if  (eatableActor instanceof BerryBush) {
+        else if (eatableActor instanceof BerryBush) {
             System.out.println(actorType + " trying to eat a BerryBush");
         }
         else {
