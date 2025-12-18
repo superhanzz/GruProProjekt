@@ -10,6 +10,7 @@ import CapableSimulator.Actors.WorldActor;
 
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -150,6 +151,8 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         doEverySimulationStep();
     }
 
+    /**
+     */
     public void move() {
         Set<Location> neighbours = world.getEmptySurroundingTiles(getLocation());
         List<Location> emptyNeighbours = new ArrayList<>();
@@ -166,13 +169,17 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         world.move(this, searchLocation);
     }
 
+    /* ----- ----- ----- ----- Food ----- ----- ----- ----- */
 
+    /**
+     * @param searchRadius
+     * @return */
     public boolean lookForFood(int searchRadius){
-        Location[] neighbours = world.getSurroundingTiles(getLocation(),searchRadius).toArray(new Location[0]);
+        List<Location> neighbours = new ArrayList<>(world.getSurroundingTiles(getLocation(),searchRadius));
 
         List<WorldActor> foodTiles = findFoodFromSource(neighbours);
 
-        WorldActor eatableActor = getNearestActor(foodTiles);
+        WorldActor eatableActor = WorldUtils.getNearestActor(world, this, foodTiles);
 
         if(eatableActor != null){
             prepareToEat(eatableActor);
@@ -181,21 +188,14 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return false;
     }
 
-    public WorldActor getNearestActor(List<? extends WorldActor> actors) {
-        double shortestDistance = Double.MAX_VALUE;
-        WorldActor nearestActor = null;
-
-        for (WorldActor actor : actors) {
-            double distance = PathFinder.distance(getLocation(), world.getLocation(actor));
-            if (distance < shortestDistance) {
-                shortestDistance = distance;
-                nearestActor = actor;
-            }
-        }
-        return nearestActor;
-    }
-
+    /**
+     * @param eatableActor Reference to the actor that is to be eaten.
+     * @throws NullPointerException Throws exception if eatableActor is null.
+     */
     protected void prepareToEat(WorldActor eatableActor) {
+        if (eatableActor == null)
+            throw new NullPointerException("eatableActor is null");
+
         if (eatableActor instanceof NonBlocking) {
             Location goTo = world.getLocation(eatableActor);
             if (world.isTileEmpty(goTo)) {
@@ -203,15 +203,19 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
                 eat(eatableActor);
             }
         }
-        else if (eatableActor instanceof BerryBush) {
-            System.out.println(getActorType() + " trying to eat a BerryBush");
-        }
         else {
             eat(eatableActor);
         }
     }
 
+    /**
+     * @param actor Reference of the actor to be eaten.
+     * @throws NullPointerException Throws exception if actor is null.
+     */
     protected void eat(WorldActor actor){
+        if (actor == null)
+            throw new NullPointerException("actor is null");
+
         if (actor instanceof Carcass carcass) {
             int gainedEnergy = carcass.getConsumed(world, (MAX_ENERGY - energy));
             energy += gainedEnergy;
@@ -225,8 +229,10 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         }
     }
 
-    // findFoodFromSources
-    protected List<WorldActor> findFoodFromSource(Location[] neighbours) {
+    /**
+     * @param neighbours List of all the tiles to be searched.
+     * @return Returns a list of all the food sources found withing the searched tiles. */
+    protected List<WorldActor> findFoodFromSource(List<Location> neighbours) {
         List<WorldActor> foodSources = new ArrayList<>();
 
         for (Location location : neighbours) {
@@ -258,8 +264,8 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return carcass;
     }
 
-
-
+    /**
+     */
     public void animalJustReproduce() {
         matingCooldown = MATING_COOLDOWN_DURATION;
     }
@@ -282,15 +288,6 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         isOnMap = false;
         isDead = true;
         return carcass;
-    }
-
-    public Location getLocation() {
-        if (world == null) throw new NullPointerException("In getLocation(): World is null");
-        if (!isOnMap) {
-            System.out.println(this + " isn't on map");
-            return null;
-        }
-        return world.getLocation(this);
     }
 
     /**
@@ -363,10 +360,9 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     @Override
     public void spreadSpores(World world) {
-        //System.out.println("Spreading spore in animal");
         if (!isInfected()) return;
 
-        //fungiSpore.spread(getLocation(), 1.0);
+        fungiSpore.spread(getLocation(), 1.0, 1);
     }
 
     @Override
@@ -495,7 +491,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
     /* ----- ----- ----- Boolean methods ----- ----- ----- */
 
     /** Checks all the criteria for mating.
-     *  returns true if all the criteria are met, otherwise returns false
+     *  @return Returns true if all the criteria are met, otherwise returns false
      */
     public boolean canMate() {
         boolean canReproduce = (
@@ -507,10 +503,16 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return canReproduce;
     }
 
+    /**
+     * @return Returns the value of isDead.
+     */
     public boolean isDead() {
         return isDead;
     }
 
+    /**
+     * @return Returns the value of isOnMap.
+     */
     public boolean isOnMap() {
         return isOnMap;
     }

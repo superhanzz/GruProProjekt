@@ -16,8 +16,10 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
 
     protected World world;
 
-
-
+    /** Default constructor.
+     * @param actorType The actors type.
+     * @param world The world wherein the actor exists.
+     */
     protected WorldActor(String actorType, World world) {
         this.actorType = actorType;
         this.world = world;
@@ -28,8 +30,15 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
      */
     public String getActorType() {return actorType;}
 
+    /** Retrieves the actors energy values.
+     * @return Returns the energy actors variable if it has one, otherwise just a static value.
+     */
     public abstract int getEnergyValue();
 
+    /**
+     * @return Returns the location of the actor if it is on the map, if it isn't returns null.
+     * @throws NullPointerException Throws exception if world is null.
+     */
     public Location getLocation() {
         if (world == null)
             throw new NullPointerException("In getLocation(): World is null");
@@ -39,8 +48,6 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
         else
             return null;
     }
-
-
 
 
     public static List<String> getAllWorldActorTypes() {

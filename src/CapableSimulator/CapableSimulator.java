@@ -70,8 +70,6 @@ public class CapableSimulator extends Simulator {
     public void simulate() {
         super.simulate();
 
-        //System.out.println(getSteps());
-
         // Initiates time based events
         switch (getDayNightStatus()) {
             case DAWN:

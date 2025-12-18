@@ -54,16 +54,18 @@ public class FungiSpore extends WorldActor {
     /** Tries to spread the fungi onto other actors within a certain radius: "SPREAD_RADIUS" = {@value SPREAD_RADIUS} of the sporeLocation.
      *  For each non-infected actor found, then it tries to infect that with a probability of: "SPREAD_CHANCE" = {@value SPREAD_CHANCE} out of 1
      * @param sporeLocation is the location from where to spread from */
-    public void spread(Location sporeLocation) {
-        spread(sporeLocation, SPREAD_CHANCE);
+    public void spread(Location sporeLocation)
+    {
+        spread(sporeLocation, SPREAD_CHANCE, SPREAD_RADIUS);
     }
 
     /** Tries to spread the fungi onto other actors who can carry the same fungi type within a certain radius of the sporeLocation.
      * @param sporeLocation The location from where to spread from.
      * @param spreadChance The chance of successfully spreading to a specifik actor.
+     * @param radius The radius of the area to spread in.
      */
-    public void spread(Location sporeLocation, double spreadChance) {
-        List<Fungi> surroundingFungiActors = getSurroundingFungiActors(sporeLocation, fungiType, SPREAD_RADIUS);
+    public void spread(Location sporeLocation, double spreadChance, int radius) {
+        List<Fungi> surroundingFungiActors = getSurroundingFungiActors(sporeLocation, fungiType, radius);
         List<Fungi> nonInfectedActors = new ArrayList<>();
         sortFungiActors(surroundingFungiActors, new ArrayList<>(), nonInfectedActors);
 

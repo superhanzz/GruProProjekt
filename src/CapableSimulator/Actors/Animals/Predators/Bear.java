@@ -90,17 +90,18 @@ public class Bear extends Predator {
         if(isInfected()) {
             fungiSpore.act(world);
         }
-        else if (isOnMap()){
-            if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
-                if (!(tryMate() || tryFight() || lookForFood(1)))
-                    move();
-            }
-            else {
-                if (!lookForFood(2))
-                    move();
+        else if (world.isDay()) {
+            if (isOnMap()){
+                if (getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
+                    if (!(tryMate() || tryFight() || lookForFood(1)))
+                        move();
+                }
+                else {
+                    if (!lookForFood(2))
+                        move();
+                }
             }
         }
-
     }
 
     @Override
@@ -219,12 +220,12 @@ public class Bear extends Predator {
 
     @Override
     public void onDawn() {
-
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
     }
 
     @Override
     public void onNightFall() {
-
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
     }
 
     @Override
@@ -242,7 +243,13 @@ public class Bear extends Predator {
         return returnValue;
     }
 
+    /** Retrieves the center location of the bear's territory.
+     * @return Returns the center location of the bear's territory.
+     */
     public Location getTerritoryCenter() { return territoryCenter; }
 
+    /** Retrieves the radius of the bear's territory.
+     * @return Returns the radius of the bear's territory, the radius is from the center location.
+     */
     public int getTerritoryRadius() { return territoryRadius; }
 }

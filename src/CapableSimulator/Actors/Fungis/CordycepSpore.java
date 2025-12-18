@@ -2,6 +2,7 @@ package CapableSimulator.Actors.Fungis;
 
 import CapableSimulator.Actors.Animals.Animal;
 
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -20,7 +21,7 @@ public class CordycepSpore extends FungiSpore{
 
     @Override
     public void act(World world) {
-        if (host.getNearestActor(lookForNonInfectedOfSameType()) instanceof Animal animal) {
+        if (WorldUtils.getNearestActor(world, host, lookForNonInfectedOfSameType()) instanceof Animal animal) {
             host.moveTowardsNonInfected(animal);
         }
     }

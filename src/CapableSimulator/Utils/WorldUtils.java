@@ -60,4 +60,21 @@ public class WorldUtils {
         return animals;
     }
 
+    /**
+     * @param world The
+     * @*/
+    public static WorldActor getNearestActor(World world, WorldActor instigator, List<? extends WorldActor> actors) {
+        double shortestDistance = Double.MAX_VALUE;
+        WorldActor nearestActor = null;
+
+        for (WorldActor actor : actors) {
+            double distance = PathFinder.distance(world.getLocation(instigator), world.getLocation(actor));
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                nearestActor = actor;
+            }
+        }
+        return nearestActor;
+    }
+
 }

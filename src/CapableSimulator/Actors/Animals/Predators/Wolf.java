@@ -112,10 +112,10 @@ public class Wolf extends Predator implements FlockAnimal {
         else {
             loneWolfBehavior();
         }
-
-
     }
 
+    /**
+     * */
     private void loneWolfBehavior() {
 
         if (world.isDay()) {    // It's day
@@ -143,6 +143,8 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
+    /**
+     * */
     private void flockWolfBehavior() {
 
         if (world.isDay()) {
@@ -204,17 +206,23 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
+    /**
+     */
     private void goToDen() {
         Location moveToTile = PathFinder.getMoveToTile(world, getLocation(), wolfGang.getShelterLocation());
         if (moveToTile != null)
             world.move(this, moveToTile);
     }
 
+    /**
+     */
     private void enterDen() {
         updateOnMap(new Location(0,0), false);
         wolfDen.wolfEnteredDen(this);
     }
 
+    /**
+     */
     protected void exitDen() {
         Location spawnAt = TileFinder.getEmptyTileAroundActor(world, wolfDen, true);
         if (spawnAt == null) return;
@@ -237,6 +245,9 @@ public class Wolf extends Predator implements FlockAnimal {
 
     /* ----- ----- ----- ----- NPC Wolf Specific ----- ----- ----- ----- */
 
+    /**
+     * @param alphaLocation The location of the alpha.
+     */
     public void followAlpha(Location alphaLocation) {
         if (!isOnMap()) return;
 

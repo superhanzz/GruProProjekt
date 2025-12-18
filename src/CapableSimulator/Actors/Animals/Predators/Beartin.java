@@ -44,16 +44,14 @@ public class Beartin extends Predator {
 
     }
 
+    /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
 
     @Override
     public void act(World world){
         super.act(world);
         if (isDead()) return;
 
-        if(isInfected()) {
-
-        }
-        else if (isOnMap()) {
+        if (isOnMap()) {
             if (!(tryFight() || lookForFood(1))) {
                 move();
             }
@@ -79,11 +77,6 @@ public class Beartin extends Predator {
 
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
-
-    @Override
-    protected boolean tryFight() {
-        return super.tryFight();
-    }
 
     @Override
     public double getStrengthValue() {

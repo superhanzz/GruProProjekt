@@ -21,8 +21,8 @@ public class Putin extends Predator {
 
     private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
     static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 5.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 8.0);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 5.0d);
+        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 8.0d);
     }
     private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
     static {
@@ -37,9 +37,9 @@ public class Putin extends Predator {
         displayInformations.put("Normal-Awake", new DisplayInformation(Color.BLACK, "putin"));                  // The display information of a small awake normal putin
         displayInformations.put("Normal-Sleeping-0", new DisplayInformation(Color.BLACK, "putin-sleeping1"));   // The display information of a big sleeping normal putin
         displayInformations.put("Normal-Sleeping-1", new DisplayInformation(Color.BLACK, "putin-sleeping2"));   // The display information of a big sleeping normal putin
-        displayInformations.put("Fungi-Awake", new DisplayInformation(Color.BLACK, "putin"));                   // The display information of a big awake fungus putin
-        displayInformations.put("Fungi-Sleeping-0", new DisplayInformation(Color.BLACK, "putin-sleeping1"));    // The display information of a big sleeping normal putin
-        displayInformations.put("Fungi-Sleeping-1", new DisplayInformation(Color.BLACK, "putin-sleeping2"));    // The display information of a big sleeping normal putin
+        displayInformations.put("Fungi-Awake", new DisplayInformation(Color.BLACK, "putin-fungi"));                   // The display information of a big awake fungus putin
+        displayInformations.put("Fungi-Sleeping-0", new DisplayInformation(Color.BLACK, "putin-fungi-sleeping1"));    // The display information of a big sleeping normal putin
+        displayInformations.put("Fungi-Sleeping-1", new DisplayInformation(Color.BLACK, "putin-fungi-sleeping2"));    // The display information of a big sleeping normal putin
     }
 
     /** Default constructor.
@@ -77,16 +77,16 @@ public class Putin extends Predator {
         }
     }
 
+    /**
+     * @return Returns a reference to the nearest fungus on the world map, if there is no fungus' on the map returns null.
+     */
     private WorldActor lookForShrooms() {
-        if (WorldUtils.getNumOfActors(world, "fungus", true) <= 0)
-            return null;
-
         List<Fungus> fungusList = new ArrayList<>();
         for (Object o : WorldUtils.getAllObjectOnWorldMap(world)) {
             if (o instanceof Fungus fungus)
                 fungusList.add(fungus);
         }
-        return getNearestActor(fungusList);
+        return WorldUtils.getNearestActor(world,this, fungusList);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class Putin extends Predator {
     @Override
     public double getStrengthValue() {
         double strength = 0;
-        strength += strengthBonus_AnimalSize.get(getActorType());
+        strength += strengthBonus_AnimalSize.get(getAnimalSize());
         strength += strengthBonus_FungiState.get(getFungiState());
         return strength;
     }
@@ -217,9 +217,9 @@ public class Putin extends Predator {
         //String key = fungiState.label + "-" + animalState.label + "-" + (world.getCurrentTime() % 2);
         String key;
         if (getAnimalState().equals(CapableEnums.AnimalState.SLEEPING))
-            key = "Normal" + "-" + getAnimalState().label + "-" + (world.getCurrentTime() % 2);
+            key = getFungiState().label + "-" + getAnimalState().label + "-" + (world.getCurrentTime() % 2);
         else
-            key = "Normal" + "-" + getAnimalState().label;
+            key = getFungiState().label + "-" + getAnimalState().label;
 
         return key;
     }

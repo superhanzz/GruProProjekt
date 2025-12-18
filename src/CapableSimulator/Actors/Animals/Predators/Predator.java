@@ -6,6 +6,7 @@ import CapableSimulator.Actors.WorldActor;
 
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.PathFinder;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -84,7 +85,7 @@ public abstract class Predator extends Animal {
         }
 
         for (String key : enemiesMap.keySet()) {
-            enemy = ((Predator) getNearestActor(enemiesMap.get(key)));
+            enemy = ((Predator) WorldUtils.getNearestActor(world, this, enemiesMap.get(key)));
             if (enemy != null) break;
         }
         if (enemy == null) return false;
