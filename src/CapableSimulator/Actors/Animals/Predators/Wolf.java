@@ -364,8 +364,6 @@ public class Wolf extends Predator implements FlockAnimal {
 
     public WolfGang getWolfGang() {return wolfGang;}
 
-    public boolean isAlpha() {return wolfType.equals(CapableEnums.WolfType.ALPHA);}
-
     @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         if (possibleEnemy instanceof Wolf wolf) {

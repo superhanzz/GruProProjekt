@@ -410,15 +410,21 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     /** onDay() is an event that is executed when the world's current time is 0.
      * */
-    public abstract void onDawn();
+    public void onDawn(){
+        setAnimalState(CapableEnums.AnimalState.AWAKE);
+    }
 
     /** almostNight() is an event that is executed  when the world's current time is 9.
      * */
-    public abstract void onDusk();
+    public void onDusk() {
+
+    }
 
     /** onNight() is an event that is executed when the world's current time is 10.
      * */
-    public abstract void onNightFall();
+    public void onNightFall() {
+        setAnimalState(CapableEnums.AnimalState.SLEEPING);
+    }
 
 
     /* ----- ----- ----- ----- Getters and setters ----- ----- ----- ----- */

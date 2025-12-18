@@ -14,6 +14,10 @@ import java.util.*;
 
 public abstract class Predator extends Animal {
 
+    private final Map<Class<? extends Enum>, Map<String, Integer>> strengthBonusMap = new HashMap<>();
+    //private final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
+    //private final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
+
     /** Default constructor.
      * @param actorType The actor type.
      * @param world The world wherein the actor exists.
@@ -64,6 +68,19 @@ public abstract class Predator extends Animal {
     }
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- -----*/
+
+    protected void setupPredatorStrength(int baseStrength, int adultBonus, int infectedBonus) {
+        Map<String, Integer> animalSize = new HashMap<>();
+        animalSize.put("Small", baseStrength);
+        animalSize.put("Big", baseStrength + adultBonus);
+
+        Map<String, Integer> fungiState = new HashMap<>();
+        fungiState.put("Normal", 0);
+        fungiState.put("Fungi", infectedBonus);
+
+        strengthBonusMap.put(CapableEnums.AnimalSize.class, animalSize);
+        strengthBonusMap.put(CapableEnums.FungiState.class, fungiState);
+    }
 
     /**
      * @return Returns true if an enemy was found, and a fight occurred otherwise, returns false.
@@ -178,7 +195,12 @@ public abstract class Predator extends Animal {
     /**
      * @return Returns the strength value of the actor.
      */
-    public abstract double getStrengthValue();
+    public double getStrengthValue() {
+        int strength = 0;
+        strength += strengthBonusMap.get(getAnimalSize().getClass()).get(getAnimalSize().label);
+        strength += strengthBonusMap.get(getFungiState().getClass()).get(getFungiState().label);
+        return (strength * 1.0);
+    }
 
     /** Evaluates if a possible enemy actor is actually an enemy.
      * @param possibleEnemy The animal to be evaluated.

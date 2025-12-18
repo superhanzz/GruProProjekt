@@ -161,8 +161,6 @@ public class Simulator {
                 }
             }
         });
-
-
     }
 
     protected World getWorld() {

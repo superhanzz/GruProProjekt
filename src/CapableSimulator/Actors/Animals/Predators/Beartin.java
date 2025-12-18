@@ -15,17 +15,6 @@ import java.util.List;
 
 public class Beartin extends Predator {
 
-    private static final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
-    static {
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.BABY, 50.0);
-        strengthBonus_AnimalSize.put(CapableEnums.AnimalSize.ADULT, 70.0);
-    }
-    private static final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
-    static {
-        strengthBonus_FungiState.put(CapableEnums.FungiState.NORMAL, 0.0);
-        strengthBonus_FungiState.put(CapableEnums.FungiState.FUNGI, 5.0);
-    }
-
     DisplayInformation diBertin = new DisplayInformation(Color.blue, "bertin");
     DisplayInformation diBertinFungi = new DisplayInformation(Color.blue, "bertin-fungi");
 
@@ -41,7 +30,7 @@ public class Beartin extends Predator {
 
         setAnimalSize(CapableEnums.AnimalSize.ADULT);
         setAnimalState(world.isDay() ? CapableEnums.AnimalState.AWAKE : CapableEnums.AnimalState.SLEEPING);
-
+        setupPredatorStrength(50, 20, 5);
     }
 
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
@@ -56,7 +45,6 @@ public class Beartin extends Predator {
                 move();
             }
         }
-
     }
 
     @Override
@@ -79,14 +67,6 @@ public class Beartin extends Predator {
     /* ----- ----- ----- ----- Fighting ----- ----- ----- ----- */
 
     @Override
-    public double getStrengthValue() {
-        double strength = 0;
-        strength += strengthBonus_AnimalSize.get(getAnimalSize());
-        strength += strengthBonus_FungiState.get(getFungiState());
-        return strength;
-    }
-
-    @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         switch (possibleEnemy) {
             case Wolf wolf -> {
@@ -100,23 +80,6 @@ public class Beartin extends Predator {
                 return false;
             }
         }
-
-    }
-    /* ----- ----- ----- ----- Events ----- ----- ----- ----- */
-
-    @Override
-    public void onDawn(){
-        setAnimalState(CapableEnums.AnimalState.AWAKE);
-    }
-
-    @Override
-    public void onNightFall(){
-        setAnimalState(CapableEnums.AnimalState.SLEEPING);
-    }
-
-    @Override
-    public void onDusk() {
-
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
@@ -128,6 +91,4 @@ public class Beartin extends Predator {
         else
             return diBertin;
     }
-
-
 }

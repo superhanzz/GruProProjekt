@@ -102,8 +102,10 @@ public class FungiSpore extends WorldActor {
      * */
     private void sortFungiActors(List<Fungi> fungiActors, List<Fungi> infectedActors, List<Fungi> nonInfectedActors) {
         for (Fungi fungi : fungiActors) {
-            if (fungi.isInfected()) infectedActors.add(fungi);
-            else  nonInfectedActors.add(fungi);
+            if (fungi.isInfected())
+                infectedActors.add(fungi);
+            else
+                nonInfectedActors.add(fungi);
         }
     }
 
