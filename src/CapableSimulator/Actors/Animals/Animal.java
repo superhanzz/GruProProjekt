@@ -260,7 +260,6 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
     public Carcass becomeCarcass(Location location) {
         Carcass carcass = new Carcass(world, Math.max(energy, 10), animalSize);
         world.setTile(location, carcass);
-        //System.out.println("Carcass has been created");
         return carcass;
     }
 
@@ -306,9 +305,6 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
             }
         }
         else {
-            if (!isOnMap())
-                System.out.println(this + " isn't on map");
-
             world.remove(this);
             isOnMap = false;
         }
@@ -343,7 +339,6 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     @Override
     public void becomeInfected() {
-        System.out.println("Animal becomes infected");
         fungiSpore = new CordycepSpore(world, this);
         fungiState = CapableEnums.FungiState.FUNGI;
     }

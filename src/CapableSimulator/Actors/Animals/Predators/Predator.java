@@ -71,7 +71,6 @@ public abstract class Predator extends Animal {
     @Override
     protected void prepareToEat(WorldActor eatableActor) {
         if (eatableActor == null) {
-            System.out.println("In prepareToEat(): eatableActor is null");
             return;
         }
 
@@ -170,7 +169,6 @@ public abstract class Predator extends Animal {
             throw new NullPointerException("enemyActor is null");
 
         double winChance = getWinChance(enemyActor);
-        System.out.println(getActorType() + " Attacking: " + enemyActor.getActorType() + ", with a win chance of: " + (winChance * 100.0) + "%");
         if (new Random().nextDouble() < winChance) {
             kill(enemyActor);
         }

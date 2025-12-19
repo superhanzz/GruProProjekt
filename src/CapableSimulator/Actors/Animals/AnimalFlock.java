@@ -88,7 +88,7 @@ public abstract class AnimalFlock {
     }
 
     private void killFlock() {
-        System.out.println("A flock has gone extinct :(");
+        return;
     }
 
     private void findNewFlockLeader() {
