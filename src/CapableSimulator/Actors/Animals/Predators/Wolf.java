@@ -400,7 +400,7 @@ public class Wolf extends Predator implements FlockAnimal {
      * @throws NullPointerException Throws exception if wolf is null
      */
     public void setAlpha(Wolf wolf) {
-        if (wolfGang == null)
+        if (wolf == null)
             throw new  IllegalArgumentException("wolf is null");
 
         alpha = wolf;
