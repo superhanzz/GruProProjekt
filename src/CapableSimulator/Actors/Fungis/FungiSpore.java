@@ -16,7 +16,7 @@ public class FungiSpore extends WorldActor {
     protected World world;
 
     private final static int SPREAD_RADIUS = 3;
-    /** */
+
     private final static double SPREAD_CHANCE = 0.1;
 
     private CapableEnums.FungiType fungiType;

@@ -12,12 +12,13 @@ import java.util.List;
 public abstract class AnimalFlock {
 
     protected Animal flockLeader;
+
     protected World world;
+
     private AnimalShelter shelter;
 
-    //DisplayInformation displayInfo = new DisplayInformation(Color.cyan);
-
     protected final List<Animal> flockMembers = new ArrayList<>();
+
     protected final List<Animal> deadFlockMembers = new ArrayList<>();
 
     public AnimalFlock(World world){
@@ -29,8 +30,6 @@ public abstract class AnimalFlock {
 
     /* ----- ----- ----- ----- Flock Things ----- ----- ----- -----*/
 
-    /**
-     * */
     public double getFlockRadius(){
        double radius = 0.0;
        Location flockCenter = flockLeader.getLocation();

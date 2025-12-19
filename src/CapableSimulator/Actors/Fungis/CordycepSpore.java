@@ -26,6 +26,9 @@ public class CordycepSpore extends FungiSpore{
         }
     }
 
+    /** Looks for other actors of the same type, that is not infected.
+     * @return Returns a list of all the non-infected actors.
+     */
     private List<Animal> lookForNonInfectedOfSameType() {
         List<Animal> animalsOfSameType = new ArrayList<>();
         Map<Object, Location> entities = world.getEntities();

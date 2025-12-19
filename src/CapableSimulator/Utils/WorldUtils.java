@@ -10,7 +10,7 @@ import java.util.*;
 public class WorldUtils {
 
     /**Method for getting total number of Actors
-     * @param world
+     * @param world The world to search within.
      * @param actorType Is the type of actor to search for.
      * @param onMap Determines whether to only search for objects currently on the map, or all objects in the world entity list.
      * @return Returns the number of the given actor type found.
@@ -33,7 +33,7 @@ public class WorldUtils {
     }
 
     /**Getting all objects currently placed on World
-     * @param world
+     * @param world The world to search within.
      * @return Returns a list of all the objects currently on the world map.
      */
     public static List<Object> getAllObjectOnWorldMap(World world) {
@@ -47,8 +47,8 @@ public class WorldUtils {
         return actors;
     }
 
-    /**Method for getting a List of all Animals
-     * @param world
+    /** Method for getting a List of all Animals
+     * @param world The world to search within.
      * @return Returns a list of all the animals in the world
      */
     public static List<Animal> getAllAnimals(World world) {
@@ -60,9 +60,12 @@ public class WorldUtils {
         return animals;
     }
 
-    /**Method for getting other Actor shortest distance away
-     * @param world The
-     * @*/
+    /** Method for getting the Actor that is the shortest distance away from a list of actors.
+     * @param world The world to search within.
+     * @param instigator The instigating actor.
+     * @param actors The list of actors to search though.
+     * @return Returns a reference to the nearest actor.
+     */
     public static WorldActor getNearestActor(World world, WorldActor instigator, List<? extends WorldActor> actors) {
         double shortestDistance = Double.MAX_VALUE;
         WorldActor nearestActor = null;
