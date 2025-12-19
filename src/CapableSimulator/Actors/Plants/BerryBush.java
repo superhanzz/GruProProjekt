@@ -39,7 +39,7 @@ public class BerryBush extends WorldActor {
         if (hasBerrys) return;
 
         Random rand = new Random();
-        if (rand.nextDouble() < BERRY_SPAWN_CHANCE) { // TODO test that the spawn chance is actually true
+        if (rand.nextDouble() < BERRY_SPAWN_CHANCE) {
             hasBerrys = true;
         }
     }

@@ -48,10 +48,8 @@ public class WolfDen extends AnimalShelter implements NonBlocking {
         if (grownWolfsInDen < 2) return;    // There needs to be more than 2 grown wolf's in the den before procreation can occur
 
         if (new Random().nextDouble(1) < procreationSuccessChance) {
-            //Wolf cup = new Wolf(world, owners, owners.Alpha, this, CapableEnums.AnimalSize.BABY, CapableEnums.AnimalState.SLEEPING, CapableEnums.FungiState.NORMAL);
             Wolf cup = new Wolf(world);
             owners.addNewFlockMember(cup);
-            //System.out.println("Wolf cup created");
             world.add(cup);
         }
     }
