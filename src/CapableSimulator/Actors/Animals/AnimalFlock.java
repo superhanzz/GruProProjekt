@@ -47,7 +47,7 @@ public abstract class AnimalFlock {
 
     /* ----- ----- ----- ----- Shelter ----- ----- ----- -----*/
 
-    /**
+    /**Method for determining if shelter is created before setting it
      * @param shelter
      * @throws NullPointerException
      */

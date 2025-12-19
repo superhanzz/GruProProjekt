@@ -8,10 +8,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String inputDataFilePath = "src/Data/week-2/t2-3a.txt";
+        String inputDataFilePath = "src/Data/week-3/tf3-3ab.txt";
         int worldSize = Parser.parseWorldSizeFromFile(inputDataFilePath);
 
-        Program program = new Program(worldSize, 1000, 200);
+        Program program = new Program(worldSize, 1000, 250);
         CapableSimulator sim = (CapableSimulator) program.getSimulator();
         sim.setInputFilePath(inputDataFilePath);
         sim.runSimulation();

@@ -5,6 +5,7 @@ import itumulator.world.World;
 
 public interface Fungi {
 
+
     void spreadSpores(World world);
 
     void becomeInfected();

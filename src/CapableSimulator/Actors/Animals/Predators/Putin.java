@@ -150,7 +150,7 @@ public class Putin extends Predator {
 
     /* ----- ----- ----- ----- Bertin ----- ----- ----- ----- */
 
-    /**
+    /**Method for attempting to mount a bear
      * @param bear The bear putin will try to mount.
      * @throws NullPointerException Throws exception if bear is null.
      */
@@ -168,7 +168,7 @@ public class Putin extends Predator {
         }
     }
 
-    /**
+    /**Method for mounting bear
      * @param bear The bear to mount.
      * @throws NullPointerException Throws exception if bear is null.
      */

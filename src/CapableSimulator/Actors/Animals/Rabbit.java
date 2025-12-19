@@ -140,7 +140,7 @@ public class Rabbit extends Animal {
         return true;
     }
 
-    /**
+    /**Method for reproduction
      * @param mate Reference to the other rabbit it reproduces with.
      * @throws NullPointerException Throws exception if mate is null.
      */
@@ -171,7 +171,7 @@ public class Rabbit extends Animal {
 
     /* ----- ----- ----- ----- Burrow ----- ----- ----- ----- ----- */
 
-    /**
+    /**Method for determining if the rabbit should try to enter a burrow
      * @return Returns true if it either entered a burrow or moved closer to a burrow. if no burrow was successfully created or located or it didn't move closer returns false.
      */
     private boolean tryEnterBurrow() {
@@ -199,8 +199,8 @@ public class Rabbit extends Animal {
         return true;
     }
 
-    /** Handels the digging of a burrow, and connecting the rabbit to the burrow.
-     * @return Returns true if a burrow was successfully made, ortherwise returns false.
+    /** Handles the digging of a burrow, and connecting the rabbit to the burrow.
+     * @return Returns true if a burrow was successfully made, otherwise returns false.
      */
     public boolean digBurrow() {
         Object standingOn = world.getNonBlocking(getLocation());
@@ -216,7 +216,7 @@ public class Rabbit extends Animal {
         return true;
     }
 
-    /**
+    /**Seeing if tile is available for a burrow to be created.
      * @param standingOn The object (object on tile) the rabbit is standing on.
      * @return Returns true if it is possible to make a burrow at the location of standigOn. Otherwise returns false.
      */
@@ -231,7 +231,7 @@ public class Rabbit extends Animal {
             return false;
     }
 
-    /**
+    /**Rabbit looks for a burrow
      * @return Returns true if the rabbit successfully found a burrow nearby. Otherwise, returns false.
      */
     private boolean lookForBurrow() {
@@ -244,7 +244,7 @@ public class Rabbit extends Animal {
         return hasShelter();
     }
 
-    /** Handels entering the burrow */
+    /** Handles entering the burrow */
     void goIntoBurrow() {
         updateOnMap(getLocation(), false);
         burrow.animalEnteredShelter(this);

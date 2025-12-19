@@ -35,7 +35,7 @@ public abstract class WorldActor implements Actor, DynamicDisplayInformationProv
      */
     public abstract int getEnergyValue();
 
-    /**
+    /**Gets the location of Actor
      * @return Returns the location of the actor if it is on the map, if it isn't returns null.
      * @throws NullPointerException Throws exception if world is null.
      */

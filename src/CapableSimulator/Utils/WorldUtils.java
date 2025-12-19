@@ -9,7 +9,7 @@ import java.util.*;
 
 public class WorldUtils {
 
-    /**
+    /**Method for getting total number of Actors
      * @param world
      * @param actorType Is the type of actor to search for.
      * @param onMap Determines whether to only search for objects currently on the map, or all objects in the world entity list.
@@ -32,7 +32,7 @@ public class WorldUtils {
         return numOfActors;
     }
 
-    /**
+    /**Getting all objects currently placed on World
      * @param world
      * @return Returns a list of all the objects currently on the world map.
      */
@@ -47,7 +47,7 @@ public class WorldUtils {
         return actors;
     }
 
-    /**
+    /**Method for getting a List of all Animals
      * @param world
      * @return Returns a list of all the animals in the world
      */
@@ -60,7 +60,7 @@ public class WorldUtils {
         return animals;
     }
 
-    /**
+    /**Method for getting other Actor shortest distance away
      * @param world The
      * @*/
     public static WorldActor getNearestActor(World world, WorldActor instigator, List<? extends WorldActor> actors) {

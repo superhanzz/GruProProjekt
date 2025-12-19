@@ -171,7 +171,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
 
     /* ----- ----- ----- ----- Food ----- ----- ----- ----- */
 
-    /**
+    /** method for determining if the Animal is looking for food
      * @param searchRadius
      * @return */
     public boolean lookForFood(int searchRadius){
@@ -188,7 +188,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return false;
     }
 
-    /**
+    /**Method for when the Animal is about to eat
      * @param eatableActor Reference to the actor that is to be eaten.
      * @throws NullPointerException Throws exception if eatableActor is null.
      */
@@ -208,7 +208,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         }
     }
 
-    /**
+    /**Method for when the Animal eats another Actor
      * @param actor Reference of the actor to be eaten.
      * @throws NullPointerException Throws exception if actor is null.
      */
@@ -229,7 +229,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         }
     }
 
-    /**
+    /**Method for the Animal to find nearby food sources
      * @param neighbours List of all the tiles to be searched.
      * @return Returns a list of all the food sources found withing the searched tiles. */
     protected List<WorldActor> findFoodFromSource(List<Location> neighbours) {
@@ -290,7 +290,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return carcass;
     }
 
-    /**
+    /**Updating status of being or not being on the map
      * @param location
      * @param putOnMap
      * @throws NullPointerException if location is null & putOnMap is true*/
@@ -327,7 +327,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         return PathFinder.distance(getLocation(), moveTo);
     }
 
-    /**
+    /**Method for moving next to a location rather than on it
      * @param targetLocation
      * @return Returns true if animal moved close enough to interact with the target, otherwise returns false.
      */

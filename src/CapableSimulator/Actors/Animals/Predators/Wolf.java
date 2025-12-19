@@ -124,7 +124,7 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
-    /**
+    /**Method for behavior as a lone wolf
      * */
     private void loneWolfBehavior() {
 
@@ -153,7 +153,7 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
-    /**
+    /**Method for behavior for a wolf in a pack
      * */
     private void flockWolfBehavior() {
 
@@ -203,7 +203,7 @@ public class Wolf extends Predator implements FlockAnimal {
     }
 
     /* ----- ----- ----- ----- Wolf Den ----- ----- ----- ----- */
-    /**
+    /**Method for trying to enter a wolf den
      * @throws NullPointerException If actor isn't on the world map*/
     private void tryEnterDen() {
         if (wolfDen == null) return;
@@ -255,7 +255,7 @@ public class Wolf extends Predator implements FlockAnimal {
 
     /* ----- ----- ----- ----- NPC Wolf Specific ----- ----- ----- ----- */
 
-    /**
+    /**Method for the wolf to follow the direction of the Alpha Wolf
      * @param alphaLocation The location of the alpha.
      */
     public void followAlpha(Location alphaLocation) {

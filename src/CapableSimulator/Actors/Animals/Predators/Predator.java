@@ -101,7 +101,7 @@ public abstract class Predator extends Animal {
         strengthBonusMap.put(CapableEnums.FungiState.class, fungiState);
     }
 
-    /**
+    /**Method for if the animal should attack another actor or not.
      * @return Returns true if an enemy was found, and a fight occurred otherwise, returns false.
      */
     protected boolean tryFight() {
@@ -136,7 +136,7 @@ public abstract class Predator extends Animal {
 
     }
 
-    /**
+    /**Method for if the animal should be looking for enemies.
      * @param enemies The list wherein all the found enemies are added.
      * @param radius The radius of the area wherein to search for enemies.
      * @return Returns true if any enemies were found, if not returns false.
@@ -161,7 +161,7 @@ public abstract class Predator extends Animal {
         return !enemies.isEmpty();
     }
 
-    /**
+    /**Method for attacking an enemy
      * @param enemyActor Reference to the actor that is being fought with.
      * @throws NullPointerException Throws exception if enemy actor is null.
      */
@@ -179,7 +179,7 @@ public abstract class Predator extends Animal {
         }
     }
 
-    /**
+    /**Method for killing another animal
      * @param animal Reference to the animal that is to be killed.
      * @throws NullPointerException Throws exception if animal is null.
      */
@@ -197,7 +197,7 @@ public abstract class Predator extends Animal {
 
     /* ----- ----- ----- ----- Getters ----- ----- ----- -----*/
 
-    /**
+    /**Method for determining the chance of winning a fight against another animal
      * @param enemy Reference to the enemy actor.
      * @return Returns the probability of winning.
      * @throws NullPointerException Throws exception if enemy is null.
@@ -211,7 +211,7 @@ public abstract class Predator extends Animal {
         return winChance;
     }
 
-    /**
+    /**Gets amount of strength
      * @return Returns the strength value of the actor.
      */
     public double getStrengthValue() {
