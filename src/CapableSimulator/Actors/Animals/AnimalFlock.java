@@ -1,7 +1,6 @@
 package CapableSimulator.Actors.Animals;
 
 import CapableSimulator.Actors.Shelter.AnimalShelter;
-
 import CapableSimulator.Utils.PathFinder;
 import itumulator.world.Location;
 import itumulator.world.World;

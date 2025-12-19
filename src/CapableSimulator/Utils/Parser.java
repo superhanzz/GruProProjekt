@@ -96,7 +96,6 @@ public class Parser {
     public static Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
         Map<File, List<File>> map = new HashMap<>();
 
-        //File dataFolder = new File("src/Data");
         File[] listOfFiles = dataFolder.listFiles();
 
         for  (File file : listOfFiles) {

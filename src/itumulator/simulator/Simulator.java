@@ -70,8 +70,6 @@ public class Simulator {
         frame.updateDayNightLabel(world.isDay());
         frame.updateStepLabel(steps);
 
-        //simulateDispacher.dispach(null);
-
         // iterate all actors of the world and execute their actions.
         Map<Object, Location> entities = world.getEntities();
         for(Object o : entities.keySet()){
@@ -118,7 +116,6 @@ public class Simulator {
      *              if {@link run() run} is not currently executing.
      */
     public synchronized void stop(){
-        //System.out.println("Stopping Simulator");
         if(!isRunning()) throw new IllegalStateException("No current execution to stop");
         executor.shutdownNow();
         canvas.reduceImgQueue();
@@ -129,7 +126,6 @@ public class Simulator {
      * Executes simulation steps in a parallel process. Can be stopped using {@link stop() stop}.
      */
     public synchronized void run() {
-        //System.out.println("Starting Simulator");
         if (isRunning())
             return;
         running.set(true);
