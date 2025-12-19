@@ -73,7 +73,6 @@ public class FungiSpore extends WorldActor {
         for (Fungi fungiActor : nonInfectedActors) {
             if (rand.nextDouble(1) < spreadChance) {
                 fungiActor.becomeInfected();
-                //System.out.println("Actor got infected");
             }
         }
     }
