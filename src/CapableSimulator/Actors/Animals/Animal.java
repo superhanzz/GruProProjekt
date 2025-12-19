@@ -306,7 +306,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
             }
         }
         else {
-            if (!world.isOnTile(this))
+            if (!isOnMap())
                 System.out.println(this + " isn't on map");
 
             world.remove(this);
@@ -336,7 +336,7 @@ public abstract class Animal extends WorldActor implements Cordycep, EnergyConsu
         if (distanceFromTarget > getMaxInteractDistance()) {
             distanceFromTarget = moveTowards(targetLocation);
         }
-        return (distanceFromTarget <= getMaxInteractDistance());
+        return (distanceFromTarget >= getMaxInteractDistance());
     }
 
     /* ----- ----- ----- ----- Fungi Related ----- ----- ----- ----- */

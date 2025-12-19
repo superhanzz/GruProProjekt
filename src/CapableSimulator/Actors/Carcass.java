@@ -16,7 +16,7 @@ public class Carcass extends WorldActor implements Fungi, EnergyConsumer {
 
     private final static int MAX_ENERGY_CONSUME_AMOUNT = 5;
 
-    private static final int DEFAULT_START_ENERGY = 25;
+    private static final int DEFAULT_START_ENERGY = 5;
 
     private final CapableEnums.AnimalSize size;
     private CapableEnums.FungiState fungiState;

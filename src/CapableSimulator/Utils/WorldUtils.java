@@ -42,7 +42,7 @@ public class WorldUtils {
 
         for (Object o : entities.keySet())
             if (entities.get(o) != null)
-                actors.add(entities.get(o));
+                actors.add(o);
 
         return actors;
     }

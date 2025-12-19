@@ -2,18 +2,20 @@ package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Carcass;
 
+import CapableSimulator.Actors.Fungis.Fungus;
+import CapableSimulator.Actors.WorldActor;
 import CapableSimulator.Utils.CapableEnums;
 import CapableSimulator.Utils.SpawningAgent;
+import CapableSimulator.Utils.WorldUtils;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 
-public class Beartin extends Predator {
+public class Bertin extends Predator {
 
     DisplayInformation diBertin = new DisplayInformation(Color.blue, "bertin");
     DisplayInformation diBertinFungi = new DisplayInformation(Color.blue, "bertin-fungi");
@@ -25,7 +27,7 @@ public class Beartin extends Predator {
      * @param age The age of the animal.
      * @param MAX_ENERGY The maximum amount of energy the animal can have.
      */
-    public Beartin(World world, int energy, int age, int MAX_ENERGY) {
+    public Bertin(World world, int energy, int age, int MAX_ENERGY) {
         super("beartin", world, energy, age, MAX_ENERGY);
 
         setAnimalSize(CapableEnums.AnimalSize.ADULT);
@@ -40,11 +42,30 @@ public class Beartin extends Predator {
         super.act(world);
         if (isDead()) return;
 
-        if (isOnMap()) {
-            if (!(tryFight() || lookForFood(1))) {
-                move();
+        if(isInfected()) {
+            normalBehaviour();
+        }
+        else if (world.isDay()) {
+            if (lookForShrooms() instanceof Fungus fungus) {
+                if (moveNextToTarget(fungus.getLocation()))
+                    eat(fungus);
             }
         }
+        else {
+            normalBehaviour();
+        }
+    }
+
+    /** Handles Bertin looking for shrooms
+     * @return Returns a reference to the nearest fungus on the world map, if there is no fungus' on the map returns null.
+     */
+    private WorldActor lookForShrooms() {
+        List<Fungus> fungusList = new ArrayList<>();
+        for (Object o : WorldUtils.getAllObjectOnWorldMap(world)) {
+            if (o instanceof Fungus fungus)
+                fungusList.add(fungus);
+        }
+        return WorldUtils.getNearestActor(world,this, fungusList);
     }
 
     @Override

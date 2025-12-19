@@ -2,6 +2,7 @@ package CapableSimulator.Actors.Animals.Predators;
 
 import CapableSimulator.Actors.Animals.Animal;
 import CapableSimulator.Actors.Carcass;
+import CapableSimulator.Actors.Fungis.Fungus;
 import CapableSimulator.Actors.WorldActor;
 
 import CapableSimulator.Utils.CapableEnums;
@@ -47,6 +48,24 @@ public abstract class Predator extends Animal {
     @Override
     public void act(World world) {
         super.act(world);
+    }
+
+    protected void normalBehaviour() {
+        if (world.isDay()) {
+            if (isOnMap() && getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
+                if (!(tryFight() || lookForFood(1))) {
+                    move();
+                }
+            }
+            else if (isOnMap()) {
+                if (!(lookForFood(1))) {
+                    move();
+                }
+            }
+        }
+        else {
+
+        }
     }
 
     @Override

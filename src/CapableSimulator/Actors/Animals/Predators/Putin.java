@@ -48,27 +48,20 @@ public class Putin extends Predator {
         if (isDead()) return;
 
         if(isInfected()) {
-
+            normalBehaviour();
         }
         else if (world.isDay()) {
             if (lookForShrooms() instanceof Fungus fungus) {
                 if (moveNextToTarget(fungus.getLocation()))
                     eat(fungus);
             }
-            else if (isOnMap() && getAnimalSize().equals(CapableEnums.AnimalSize.ADULT)) {
-                if (!(tryFight() || lookForFood(1))) {
-                    move();
-                }
-            }
-            else if (isOnMap()) {
-                if (!(lookForFood(1))) {
-                    move();
-                }
-            }
+        }
+        else {
+            normalBehaviour();
         }
     }
 
-    /**
+    /** Handles Putin looking for shrooms
      * @return Returns a reference to the nearest fungus on the world map, if there is no fungus' on the map returns null.
      */
     private WorldActor lookForShrooms() {
@@ -95,12 +88,11 @@ public class Putin extends Predator {
 
         if (isInfected()) {
             spreadSpores(world);
-            world.delete(this);
         }
         updateOnMap(null, false);
+        world.delete(this);
         SpawningAgent.spawnActorAtLocation(world, egg, location);
         setDead();
-
         return null;
     }
 
@@ -162,15 +154,15 @@ public class Putin extends Predator {
             throw  new NullPointerException("bear is null");
 
         Location beartinLocation = PathFinder.getEmptyTileAroundLocation(world, getLocation(), 1);
-        Beartin beartin = new Beartin(world, 100, getAge(), 100);
+        Bertin bertin = new Bertin(world, 100, getAge(), 100);
 
         if (bear.isInfected() || isInfected())
-            beartin.becomeInfected();
+            bertin.becomeInfected();
 
         world.delete(bear);
         world.delete(this);
 
-        SpawningAgent.spawnActorAtLocation(world, beartin,  beartinLocation);
+        SpawningAgent.spawnActorAtLocation(world, bertin,  beartinLocation);
     }
 
     /* ----- ----- ----- Getters and Setters ----- ----- ----- */
