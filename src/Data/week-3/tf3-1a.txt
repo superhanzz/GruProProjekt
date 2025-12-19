@@ -1,3 +1,2 @@
-15
-putin 1
-carcass fungi 1
+5
+carcass fungi 5-8
