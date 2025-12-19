@@ -31,9 +31,6 @@ public class TileFinder {
             }
         }
 
-        if(freeTiles.isEmpty() && isForBlockingActor)
-            System.out.println("ERROR: No tiles found, for blocking actor");
-
         Location emptyTile = freeTiles.get(new Random().nextInt(freeTiles.size()));
         return emptyTile;
     }
