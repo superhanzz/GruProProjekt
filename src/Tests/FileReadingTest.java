@@ -60,7 +60,6 @@ public class FileReadingTest {
                 for (String key : input.keySet()) {
                     if (input.get(key) == null) continue;
                     if (input.get(key).actorType.equals(actorType)) {
-                        //System.out.println(fileName + " contains the actor type: " + actorType);
                         inputFilesToTest.put(fileName, input);
                     }
                 }
@@ -105,7 +104,6 @@ public class FileReadingTest {
 
 
                     String interval = inputFile.minAmount + "-" + inputFile.maxAmount;
-                    //System.out.println(spawnedNum + ",\t ");
                     System.out.print("\t");
                     System.out.printf("Spawned: %s%-5d%s Interval: %s%-10s%s File: %s%5s%s%n", GREEN,spawnedNum,RESET, PURPLE,interval,RESET, CYAN,fileName,RESET);
 
@@ -115,7 +113,6 @@ public class FileReadingTest {
                     else
                         assertTrue((inputFile.minAmount <= spawnedNum) && (spawnedNum <= inputFile.maxAmount));
                 }
-                //System.out.println();   // Separates files
             }
             System.out.println();
         }

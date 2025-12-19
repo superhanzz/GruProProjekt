@@ -16,8 +16,6 @@ import java.util.*;
 public abstract class Predator extends Animal {
 
     private final Map<Class<? extends Enum>, Map<String, Integer>> strengthBonusMap = new HashMap<>();
-    //private final EnumMap<CapableEnums.AnimalSize, Double> strengthBonus_AnimalSize = new EnumMap<>(CapableEnums.AnimalSize.class);
-    //private final EnumMap<CapableEnums.FungiState, Double> strengthBonus_FungiState = new EnumMap<>(CapableEnums.FungiState.class);
 
     /** Default constructor.
      * @param actorType The actor type.

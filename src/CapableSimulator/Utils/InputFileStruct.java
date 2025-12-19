@@ -36,8 +36,6 @@ public class InputFileStruct {
         staticSpawnLocation = null;
         fungiState = CapableEnums.FungiState.NORMAL;
 
-        //this.isDelayedSpawn = false;
-
         buildInputFile(inputLine);
     }
 

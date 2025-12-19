@@ -29,7 +29,6 @@ public class Bear extends Predator {
         fightPriority.add("wolf");
         fightPriority.add("bear");
         fightPriority.add("putin");
-        //fightPriority.add("beartin");
     }
 
 

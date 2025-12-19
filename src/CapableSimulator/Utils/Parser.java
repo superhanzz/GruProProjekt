@@ -160,7 +160,6 @@ public class Parser {
                 Pattern pattern = Pattern.compile("\\#(\\d+)\\#");  // Regular expression that accepts Strings of the form "#<integer>#"
                 Matcher matcher = pattern.matcher(key);
                 if (matcher.matches()) {
-                    //System.out.println("DEBUG in getWorldSize(), in Parser. \tWorld Size: " + matcher.group(1));
                     worldSizeKey = key;
                     worldSize = Integer.parseInt(matcher.group(1));
                 }
