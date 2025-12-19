@@ -27,6 +27,12 @@ public class CapableSimulator extends Simulator {
     private static final int time_Dawn = 0;
 
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
+
+    /** Default constructor
+     * @param world The world that the simulator simulates.
+     * @param canvas The canvas of the simulator.
+     * @param delay The time between simulation steps.
+     */
     public  CapableSimulator(World world, Canvas canvas, int delay) {
         super(world, canvas, delay);
     }
@@ -46,24 +52,12 @@ public class CapableSimulator extends Simulator {
 
     /* ----- ----- ----- ----- Simulation ----- ----- ----- ----- */
 
-    public void runSimulation() {
-        runSimulation(CapableEnums.SimulationType.NORMAL);
-
-    }
 
     /** Initiates the simulation
-     * @param simulationType The type of simulation, NORMAL is the default
-     * */
-    public void runSimulation(CapableEnums.SimulationType simulationType) {
+     */
+    public void runSimulation() {
         if (!preSetupComplete) prepareSimulation();
-        switch (simulationType) {
-            case NORMAL:
-                //run();
-                break;
-            case TEST:
-                System.out.println("Testing Simulator");
-                break;
-        }
+        run();
     }
 
     @Override
@@ -94,7 +88,6 @@ public class CapableSimulator extends Simulator {
 
         if (getWorld().getCurrentTime() % 5 == 0) {
             fungiSpreadSporesOfType(CapableEnums.FungiType.FUNGUS);
-            //fungiSpreadSporesOfType(CapableEnums.FungiType.CORDYCEP);
         }
     }
 
@@ -136,6 +129,9 @@ public class CapableSimulator extends Simulator {
         }
     }
 
+    /** Initiates the spreading of fungi spores in the all the infected actors.
+     * @param fungiType The fungi type to spread from.
+     */
     private void fungiSpreadSporesOfType(CapableEnums.FungiType fungiType) {
         for (Object o : getWorld().getEntities().keySet()) {
             if  (o instanceof Fungi fungi && fungi.isCarrierOfType(fungiType)) {
@@ -144,6 +140,9 @@ public class CapableSimulator extends Simulator {
         }
     }
 
+    /** Gets the day night status of the world.
+     * @return Returns the day night status of the world.
+     */
     public CapableEnums.DayNightStatus getDayNightStatus() {
         CapableEnums.DayNightStatus status;
 
@@ -168,5 +167,8 @@ public class CapableSimulator extends Simulator {
 
     /* ----- ----- ----- ----- Setters ----- ----- ----- ----- */
 
+    /** Sets the input file path variable.
+     * @param inputFilePath The input file path.
+     */
     public void setInputFilePath(String inputFilePath) {this.inputFilePath = inputFilePath;}
 }

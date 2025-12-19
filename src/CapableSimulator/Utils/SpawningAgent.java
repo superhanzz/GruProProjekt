@@ -14,12 +14,17 @@ import itumulator.world.World;
 
 public class SpawningAgent {
 
-    /**
+    /** Instantiates all the actors specified in the input file struct.
      * @param world The world to spawn the actors in.
-     * @param fileStruct
-     * @throws NullPointerException if the file struct is null.*/
+     * @param fileStruct The data file containing all the relevant data
+     * @throws NullPointerException if the world is null.
+     * @throws NullPointerException if the file struct is null.
+     */
     public static void generateActors(World world, InputFileStruct fileStruct){
-        if (fileStruct == null) throw new NullPointerException("fileStruct is null");
+        if (world == null)
+            throw new NullPointerException("world is null");
+        else if (fileStruct == null)
+            throw new NullPointerException("fileStruct is null");
 
         switch (fileStruct.actorType){
             case "wolf":
@@ -132,26 +137,43 @@ public class SpawningAgent {
         }
     }
 
-    /**
+    /** Handles the instantiation of all the actors in the given input file
      * @param world The world to spawn the actors in.
      * @param filePath The path of the file to spawn from.
+     * @throws NullPointerException if the world is null.
+     * @throws IllegalArgumentException if the filePath is empty or null.
      */
     public static void spawnActorsFromInputFile(World world, String filePath) {
+        if (world == null)
+            throw new NullPointerException("world is null");
+        else if (filePath == null || filePath.isEmpty())
+            throw new IllegalArgumentException("filePath is empty or null");
+
         Parser parser = new Parser(filePath);
         parser.parseInputsFromFile();
         parser.getWorldSize();
-
 
         for (InputFileStruct inputStruct : parser.getInputMap().values()) {
             generateActors(world, inputStruct);
         }
     }
 
-    /**
+    /** Spawn an actor in the given world at the specified location.
      * @param world The world to spawn the actor in.
-     * @param actor
-     * @param location */
+     * @param actor Reference to the actor that is to be spawned.
+     * @param location The location to spawn the actor
+     * @throws NullPointerException Throws exception if world is null
+     * @throws NullPointerException Throws exception if actor is null
+     * @throws NullPointerException Throws exception if location is null
+     */
     public static void spawnActorAtLocation(World world, WorldActor actor, Location location) {
+        if (world == null)
+            throw new NullPointerException("World is null");
+        else if (actor == null)
+            throw new NullPointerException("actor is null");
+        else if (location == null)
+            throw new NullPointerException("location is null");
+
         if (location == null || actor == null) {
             if (location == null) throw new NullPointerException("In spawnActorAtLocation(): location is null");
             else throw new NullPointerException("In spawnActorAtLocation(): actor is null");
@@ -163,8 +185,5 @@ public class SpawningAgent {
         else {
             world.setTile(location, actor);
         }
-
     }
-
-
 }
