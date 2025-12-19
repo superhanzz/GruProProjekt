@@ -108,7 +108,7 @@ public class Wolf extends Predator implements FlockAnimal {
         super.act(world);
         if (isDead()) return;
 
-        if(isInfected()) {
+        if(isInfected() && isOnMap()) {
             getFungiSpore().act(world);
         }
         else if (wolfGang != null) {

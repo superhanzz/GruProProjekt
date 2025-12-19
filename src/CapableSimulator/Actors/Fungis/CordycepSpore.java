@@ -35,7 +35,7 @@ public class CordycepSpore extends FungiSpore{
         for (Object o : entities.keySet()) {
             if (entities.get(o) != null && (o.getClass() == host.getClass())) {
                 Animal animal = (Animal) o;
-                if (!animal.isInfected())
+                if (!animal.isInfected() && animal.isOnMap())
                     animalsOfSameType.add(animal);
             }
         }

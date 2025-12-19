@@ -90,7 +90,7 @@ public class Bear extends Predator {
         super.act(world);
         if (isDead()) return;
 
-        if(isInfected()) {
+        if(isInfected() && isOnMap()) {
             getFungiSpore().act(world);
         }
         else if (world.isDay()) {
