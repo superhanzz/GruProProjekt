@@ -93,28 +93,28 @@ public class CapableSimulator extends Simulator {
 
     /* ----- ----- ----- ----- Event Handling ----- ----- ----- ----- */
 
-    /** Handels the events related to dawn */
+    /** Handles the events related to dawn */
     private void onDawn() {
         for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onDawn();
         }
     }
 
-    /** Handels the events related to dusk */
+    /** Handles the events related to dusk */
     private void onDusk() {
         for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onDusk();
         }
     }
 
-    /** Handels the events related to nightfall */
+    /** Handles the events related to nightfall */
     private void onNightFall() {
         for (Animal animal : WorldUtils.getAllAnimals(getWorld())) {
             animal.onNightFall();
         }
     }
 
-    /** Handels the events related to midnight */
+    /** Handles the events related to midnight */
     private void onMidnight() {
         initiateWolfMating();
     }
