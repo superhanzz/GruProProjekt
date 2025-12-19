@@ -34,7 +34,7 @@ public class Program {
         boolean startIso = size <= MAX_2D_SIZE_DEFAULT;
 
         c = new Canvas(w, display_size, startIso);
-        s = new CapableSimulator(w, c, delay);  //TODO changed to CapableSimulator
+        s = new CapableSimulator(w, c, delay);
         f = new Frame(c, s, display_size, startIso);
         s.setFrame(f);
     }

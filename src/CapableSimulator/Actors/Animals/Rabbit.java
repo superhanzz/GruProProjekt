@@ -106,7 +106,7 @@ public class Rabbit extends Animal {
      *  If more than one possible mate is found, then a random one is chosen.
      *  If the chosen mate is eligible to reproduce, then a offspring is created.
      *  The offspring is inserted into the world at a free surrounding tile, around the instigating rabbit
-     *  If no free tile is found the offspring dies, but the mating is still counted as a success. TODO
+     *  If no free tile is found the offspring dies, but the mating is still counted as a success.
      *
      * @param radius Is the radius of the area it tries to find a mate within.
      * @return Returns true if it successfully reproduced, otherwise returns false.
