@@ -49,6 +49,15 @@ public class Putin extends Predator {
         setupPredatorStrength(5, 3, 5);
     }
 
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     */
+    public Putin(World world, int energy, int age){
+        super("putin", world, energy, age,100);
+
+        setupPredatorStrength(5, 3, 5);
+    }
+
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
 
     @Override
@@ -124,6 +133,8 @@ public class Putin extends Predator {
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         switch (possibleEnemy) {
             case Wolf wolf -> {
+                if (wolf.getWolfGang() == null)
+                    return true;
                 List<Wolf> nearbyWolfs = new ArrayList<>();
                 wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
                 return nearbyWolfs.size() < 4;

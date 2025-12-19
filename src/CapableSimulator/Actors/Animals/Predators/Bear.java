@@ -76,7 +76,7 @@ public class Bear extends Predator {
         setupPredatorStrength(8, 5, -2);
     }
 
-    public Bear(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
+    public Bear(World world, Location territoryCenter, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION) {
         super("bear", world, 25, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
@@ -218,10 +218,7 @@ public class Bear extends Predator {
 
     @Override
     public DisplayInformation getInformation() {
-
-        DisplayInformation returnValue = displayInformations.get(getDisplayInformationsKey());
-
-        return returnValue;
+        return displayInformations.get(getDisplayInformationsKey());
     }
 
     /** Retrieves the center location of the bear's territory.

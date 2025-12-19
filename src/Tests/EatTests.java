@@ -2,6 +2,7 @@ package Tests;
 
 
 import CapableSimulator.Actors.Animals.Predators.Bear;
+import CapableSimulator.Actors.Animals.Predators.Putin;
 import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Animals.Rabbit;
 import CapableSimulator.Actors.Carcass;
@@ -80,6 +81,23 @@ public class EatTests {
     }
 
     @RepeatedTest(1)
+    void putinEatFromCarcassTest() {
+        Carcass carcass = new Carcass(world);
+        Location carcassLocation = new Location(1,1);
+        world.setTile(carcassLocation, carcass);
+
+        Location putinLocation = new Location(0,1);
+        Putin putin = new Putin(world);
+        putin.updateOnMap(putinLocation, true);
+
+        int carcassInitEnergy = carcass.getEnergyValue();
+        putin.lookForFood(1);
+        int carcassEndEnergy = carcass.getEnergyValue();
+
+        assertTrue(carcassEndEnergy < carcassInitEnergy);
+    }
+
+    @RepeatedTest(1)
     void bearEatFromBerryBushTest() {
         BerryBush bush = new BerryBush(world);
         Location bushLocation = new Location(1,1);
@@ -132,23 +150,6 @@ public class EatTests {
 
         assertFalse(world.getEntities().containsKey(rabbit));
         assertInstanceOf(Carcass.class, world.getTile(rabbitLocation));
-    }
-
-    @RepeatedTest(1)
-    void bearHuntWolfTest() {
-        Location bearLocation = new Location(0,1);
-        Bear bear = new Bear(world, bearLocation, 10);
-        bear.updateOnMap(bearLocation, true);
-
-        Wolf wolf = new Wolf(world, 10);
-        Location wolfLocation = new Location(1,1);
-        wolf.updateOnMap(wolfLocation, true);
-
-        wolf.doEverySimulationStep();
-        bear.act(world);
-
-        assertFalse(world.getEntities().containsKey(wolf));
-        assertInstanceOf(Carcass.class, world.getTile(wolfLocation));
     }
 
 

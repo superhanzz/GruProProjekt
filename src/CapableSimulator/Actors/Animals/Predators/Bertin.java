@@ -94,6 +94,8 @@ public class Bertin extends Predator {
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         switch (possibleEnemy) {
             case Wolf wolf -> {
+                if (wolf.getWolfGang() == null)
+                    return true;
                 List<Wolf> nearbyWolfs = new ArrayList<>();
                 wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
                 return nearbyWolfs.size() < 4;

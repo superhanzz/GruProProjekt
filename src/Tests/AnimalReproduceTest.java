@@ -112,12 +112,12 @@ public class AnimalReproduceTest {
     @RepeatedTest(1)
     public void bearReproduceTest() {
         Location bear1Location = new Location(0,1);
-        Bear bear1 = new Bear(world, 10,10,20, bear1Location);
+        Bear bear1 = new Bear(world, bear1Location, 10,10,20);
         bear1.updateOnMap(bear1Location, true);
         bear1.doEverySimulationStep();
 
         Location bear2Location = new Location(1,1);
-        Bear bear2 = new Bear(world, 10,10,20, bear2Location);
+        Bear bear2 = new Bear(world, bear2Location,10,10,20);
         bear2.updateOnMap(bear2Location, true);
         bear2.doEverySimulationStep();
 
