@@ -28,7 +28,6 @@ public class FertilTile extends WorldActor implements NonBlocking {
     /** Spawns a grass actor at the location of the tile, then this actor is deleted.
      */
     private void spawnGrass() {
-        System.out.println("Fertil tile: spawnGrass");
         Location location = world.getLocation(this);
         world.delete(this);
         Grass grass = new Grass(world);
