@@ -120,27 +120,10 @@ public class PathFinder {
 
                 testMoveTo = new Location(x, y);
 
-                /*if (false){
-                    System.out.println("(" + dx + "," + dy + ") -> (" + x + "," + y + ")\t\t Original distance was: " + distance);
-                    double newDistance = distance(testMoveTo, alphaLocation);
-                    System.out.println("\t\t\t\t\t New distance is: " + distance(testMoveTo, alphaLocation));
-
-                    boolean isShorter = distance >= newDistance;
-                    String truth = isShorter ? GREEN + "Shorter" + RESET : RED + "Longer" + RESET;
-                    System.out.printf("\t\t\t\t\t " + truth + "%n");
-                }*/
-                //if (x > 9 || y > 9) throw new RuntimeException(x + "," + y + "\t not a valid tile");
-
-
                 Object o = world.getTile(testMoveTo);
                 if (o == null || o instanceof NonBlocking) {
                     moveToLocations.add(testMoveTo);
                 }
-                /*
-                if (o instanceof NonBlocking || !(o instanceof Animals)) {
-                    moveToLocations.add(testMoveTo);
-                }
-                */
             }
         }
         if (!moveToLocations.isEmpty()) {

@@ -270,7 +270,6 @@ public class Rabbit extends Animal {
         setAnimalState(CapableEnums.AnimalState.AWAKE);
 
         if(burrow == null) {
-            System.out.println("Burrow is null");
             return;
         }
 
@@ -301,8 +300,6 @@ public class Rabbit extends Animal {
 
         Location closestTile = PathFinder.getClosestTile(world, getLocation(), world.getLocation(burrow));
         if (closestTile == null) {
-            System.out.println("Rabbit could not find a free tile around it's burrow.");    // error message if no empty tile was found around its burrow
-            //TODO kill rabbit if no tile was found, burrow might be full
             return;
         }
         moveTowards(closestTile);

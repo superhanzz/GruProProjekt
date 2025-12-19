@@ -38,7 +38,6 @@ public class Parser {
         int lineNumber = 0;                 // Debug line number
         String filePath = file.getPath();   // Debug file path
 
-        //System.out.printf("Parsing file: %s%s%s %n", RED, filePath, RESET);
 
         try(Scanner sc = new Scanner(file)){
             // Handles the extraction of the world size
@@ -67,11 +66,9 @@ public class Parser {
                     }
                     local_inputMap.put(mapKey, inputFile);
 
-                    //System.out.printf("%-10s* %-10s%s%n",GREEN, inputFile.actorType,  RESET);
                     lineNumber++;   // Debug line number
                 }
             }
-            //System.out.println();
         }
         catch (Exception e) {
             System.out.println("Error in parseInputsFromFile(), message: " + e.getMessage());

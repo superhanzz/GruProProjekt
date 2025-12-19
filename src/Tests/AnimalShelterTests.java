@@ -162,7 +162,6 @@ public class AnimalShelterTests {
 
         int steps = 0;
         while (world.isOnTile(w)) {
-            //System.out.println(steps);
             double distanceBeforeMove = pathFinder.distance(w.getLocation(),  wLoc);
             w.onNightFall();
 
@@ -210,7 +209,6 @@ public class AnimalShelterTests {
         // Checks if all the member enters the same den
         int num = 0;
         while (anyWolfsOnMap()) {
-            System.out.println(num);
             for (Animal animal : WorldUtils.getAllAnimals(world)) {
                 animal.onNightFall();
             }

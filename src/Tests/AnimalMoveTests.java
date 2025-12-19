@@ -128,12 +128,10 @@ public class AnimalMoveTests {
             gang.alphaMoved(alpha.getLocation());
             double radius = gang.getFlockRadius();
             radiusSum += radius;
-            //System.out.println(radius);
+
         }
         averageRadius = radiusSum / (numOfMovesInTest * 1.0);
 
-        //System.out.println();
-        //System.out.println(averageRadius);
 
         assertTrue(gang.getAllowedRadiusAroundAlpha() > averageRadius);
     }

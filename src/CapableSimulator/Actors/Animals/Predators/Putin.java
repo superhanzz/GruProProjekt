@@ -159,7 +159,6 @@ public class Putin extends Predator {
             throw  new NullPointerException("bear is null");
 
         double winChance = getWinChance(bear);
-        System.out.println("Putin trying to mount bear, with a win chance of: " + (winChance * 100.0) + "%");
         if (new Random().nextDouble() < winChance) {
             mountBear(bear);
         }

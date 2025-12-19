@@ -132,7 +132,6 @@ public class SpawningAgent {
                 break;
 
             default:
-                System.out.println("Unknown Spawn Type: " + fileStruct.actorType);
                 break;
         }
     }

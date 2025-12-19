@@ -196,7 +196,6 @@ public class Bear extends Predator {
      * @param bear The actor to mate with.
      */
     private void mate(Bear bear) {
-        System.out.println("Bear mate");
 
         Location offspringLocation = TileFinder.getEmptyTileAroundActor(world, this, true);
         Location offspringTerritoryLocation = TileFinder.getEmptyTile(world, true);

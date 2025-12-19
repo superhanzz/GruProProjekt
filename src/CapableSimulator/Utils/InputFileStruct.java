@@ -88,13 +88,13 @@ public class InputFileStruct {
                 fungiState = CapableEnums.FungiState.FUNGI;
             }
             else
-                System.out.println("Fuckery in parseActorType()");
+                return;
         }
         else if (matcher1.matches()) {
             actorType = matcher1.group(0);
         }
         else
-            System.out.println("Fuckery in parseActorType()");
+            return;
     }
 
     /** Parses the spawn amount from the input file line
@@ -136,7 +136,6 @@ public class InputFileStruct {
         int y = Integer.parseInt(matcher.group(2));
         staticSpawnLocation = new Location(x, y);
 
-        //else System.out.println("No static spawn for: " + actorType);
     }
 
 }

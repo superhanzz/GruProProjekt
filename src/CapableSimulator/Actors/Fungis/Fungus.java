@@ -120,7 +120,6 @@ public class Fungus extends WorldActor implements Fungi, EnergyConsumer {
 
     @Override
     public void spreadSpores(World world) {
-        //System.out.println("Spreading spore in fungus");
         fungiSpore.spread(world.getLocation(this));
     }
 
