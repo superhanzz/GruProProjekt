@@ -9,12 +9,6 @@ import java.util.*;
 
 public class PathFinder {
 
-    //CapableWorld world;
-
-    public PathFinder(World world) {
-        //this.world = world;
-    }
-
     /** Gets a random empty tile around a location, within a certain radius.
      * @param location is the location to search around.
      * @param radius is the radius of the search area, must be positive.
@@ -49,11 +43,12 @@ public class PathFinder {
 
     /* ----- ----- ----- ----- PATHFINDING ----- ----- ----- ----- */
 
-    /**
-     * @param world
-     * @param insigatorLocation
-     * @param tileLocation
-     * @return */
+    /** Find the closest free tile to a given location.
+     * @param world The world to search within.
+     * @param insigatorLocation The location of the instigator.
+     * @param tileLocation The optimal location.
+     * @return Returns the closest empty tile
+     */
     public static Location getClosestTile(World world, Location insigatorLocation, Location tileLocation) {
         Set<Location> tiles = world.getEmptySurroundingTiles(tileLocation);
         if (tiles.isEmpty()) return null;
@@ -69,12 +64,21 @@ public class PathFinder {
         return shortestTile;
     }
 
+    /** Gets the distance between to locations.
+     * @param A The from location.
+     * @param B The to location.
+     * @return Returns the distance between the two locations as an integer.
+     */
     public static int distance(Location A, Location B) {
         Location distanceVector = new Location((A.getX() - B.getX()),(A.getY() - B.getY()));
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
         return Double.valueOf(distance).intValue();
     }
 
+    /** Findes the possible tiles axis coordinates that results in moving closer to the target location.
+     * @param axis The axis to eval in.
+     * @param possibleMovesList The output list of possible moves in the given axis.
+     */
     public static void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {
         if (axis == 0) {       // no movement on the given axis
             possibleMovesList.add(0);
@@ -91,7 +95,12 @@ public class PathFinder {
         }
     }
 
-
+    /** Finds the best tile for the actor to move to i.e. the empty tile with the shortest distance to the goal location.
+     * @param world The world wherein to find the tile.
+     * @param fromLocation The staring location.
+     * @param goalLocation The ideal end location.
+     * @return Returns the location the actor should move to.
+     */
     public static Location getMoveToTile(World world, Location fromLocation, Location goalLocation) {
         // DEBUG COLORS FOR printf
         final String RED = "\u001B[31m";
@@ -139,7 +148,7 @@ public class PathFinder {
         return moveToLocation;
     }
 
-    /**
+    /** Calculates the movement vector.
      * @param start The start location.
      * @param end The end location.
      * @return Returns the movement vector.

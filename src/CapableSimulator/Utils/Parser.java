@@ -8,26 +8,36 @@ import java.util.regex.Pattern;
 public class Parser {
 
     private Map<String, InputFileStruct>  inputMap = new  HashMap<>();
+
     private String inputFilePath;
 
+    /** Default constructor.
+     * @param inputFilePath The path to the input file.
+     */
     public Parser(String inputFilePath) {
         this.inputFilePath = inputFilePath;
     }
 
-    public Parser() {
+    /** Constructor for testing. */
+    public Parser() {}
 
-    }
-
+    /** Overloaded parseInputsFromFile, Should only be used if the default constructor is used. */
     public void parseInputsFromFile() {
         if (inputFilePath == null || inputFilePath.isEmpty()) return;
-
         parseInputsFromFile(inputFilePath);
     }
 
+    /** Overloaded parseInputsFromFile, that takes the file path insted of a file. The returned value of the pared file is inserts the values into an internal map: inputMap.
+     * @param filePath The path to the input file.
+     */
     public void parseInputsFromFile(String filePath){
         inputMap = parseInputsFromFile(new File(filePath));
     }
 
+    /** The default parseInputsFromFile. Parses the given inputFile.
+     * @param file Reference to the input file.
+     * @return Returns a map of all the parsed data.
+     */
     public Map<String, InputFileStruct> parseInputsFromFile(File file) {
         Map<String, InputFileStruct>  local_inputMap = new  HashMap<>();
 
@@ -79,6 +89,10 @@ public class Parser {
         return  local_inputMap;
     }
 
+    /** Retrieves all the inputfiles within the specified folder file.
+     * @param dataFolder Reference to the data folder.
+     * @return Returns a map of all the data folder names and files.
+     */
     public static Map<File, List<File>> getAllInputDataFiles(File dataFolder) {
         Map<File, List<File>> map = new HashMap<>();
 
@@ -95,6 +109,11 @@ public class Parser {
         return map;
     }
 
+    /** Findes the name of the given file.
+     * @param file Reference to the file.
+     * @return Returns the file name.
+     * @throws RuntimeException Throws exception if file is not within the folder: "scr/Data/".
+     */
     public static String getInputFileName(File file){
         String fileName = file.getPath();
         if(!fileName.contains("src/Data/")){
@@ -103,11 +122,14 @@ public class Parser {
         return fileName.replaceAll(".*/([^/]+)\\.[^/]+$", "$1");
     }
 
+    /** Retrieves all the inputs within the specified data folder.
+     * @param dataFolder Reference to the data folder.
+     * @return Returns a map where the key is the file name, and the value is a map of all the inputs in the specifik input file.
+     */
     public Map<String, Map<String, InputFileStruct>> getAllInputs(File dataFolder) {
-        if (dataFolder == null) return null;    // TODO make exeption or something
+        if (dataFolder == null) return null;
 
         Map<String, Map<String, InputFileStruct>> allInputs = new HashMap<>();
-        boolean printAllInputs = false;  // Debug print all entries
 
         /* Goes through all input files and extracts the file name, and makes an entry in "allInput" map
          *  Where the file name is the key and the value is a map of all the inputs
@@ -121,22 +143,13 @@ public class Parser {
             }
         }
 
-        // Prints everything like if printAllInputs is set to true:
-        // key        value.size entries
-        if (printAllInputs) allInputs.forEach((key, value) -> {System.out.printf("%-10s %5d entries%n",  key, value.size());});
-
         return allInputs;
     }
 
-    public Map<String, InputFileStruct>  getInputMap() {
-        return inputMap;
-    }
-
-    public int getWorldSize() {
-        if (inputFilePath == null || inputFilePath.isEmpty()) return 0;
-        return getWorldSize(inputMap);
-    }
-
+    /** Retrieves the world size from within the specified map, and removes that entry.
+     * @param map Reference to a input map.
+     * @return Returns the world size as an integer.
+     */
     public int getWorldSize(Map<String, InputFileStruct> map) {
         if (map.isEmpty()) return 0;
         String worldSizeKey = null;
@@ -157,6 +170,18 @@ public class Parser {
         return worldSize;
     }
 
+    /** Overloaded version of getWorldSize, where the metod is executed on the internal input map.
+     * @return Returns the world size as an integer.
+     */
+    public int getWorldSize() {
+        if (inputFilePath == null || inputFilePath.isEmpty()) return 0;
+        return getWorldSize(inputMap);
+    }
+
+    /** Parses the given input file, to retrieve the world size.
+     * @param filePath The input file path.
+     * @return Returns the world size as an integer.
+     */
     public static int parseWorldSizeFromFile(String filePath) {
         File file = new File(filePath);
         int worldSize = 0;
@@ -166,5 +191,12 @@ public class Parser {
             System.out.println("Error in parseWorldSizeFromFile(), message: " + e.getMessage());
         }
         return worldSize;
+    }
+
+    /** Retrieves the internal input map-
+     * @return Returns a reference to the internal input map.
+     */
+    public Map<String, InputFileStruct>  getInputMap() {
+        return inputMap;
     }
 }

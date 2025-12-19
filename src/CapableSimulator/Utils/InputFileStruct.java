@@ -26,17 +26,9 @@ public class InputFileStruct {
     // If 2 or more entries of the same type is present in the input file
     public boolean isDelayedSpawn;
 
-
-    /**
-     * */
-    public InputFileStruct(String actorType, int minAmount, int maxAmount, Location staticSpawnLocation,  boolean isDelayedSpawn) {
-        this.actorType = actorType;
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
-        this.staticSpawnLocation = staticSpawnLocation;
-        this.isDelayedSpawn = isDelayedSpawn;
-    }
-
+    /** Default constructor.
+     * @param inputLine The input line.
+     */
     public InputFileStruct(String inputLine){
         actorType = "";
         minAmount = 0;
@@ -49,6 +41,9 @@ public class InputFileStruct {
         buildInputFile(inputLine);
     }
 
+    /** Retrieves the amount to spawn.
+     * @return Either returns the static amount, or a random amount within the interval.
+     */
     public int getSpawnAmount() {
         if (maxAmount == 0)
             return minAmount;
@@ -58,7 +53,8 @@ public class InputFileStruct {
     }
 
     /** Parses the input file line and builds the file structure
-     * */
+     * @param input The input line from the input file.
+     */
     public void buildInputFile(String input) {
         if (input == null || input.isEmpty()) throw new IllegalArgumentException();
         List<String> words = Arrays.asList(input.split(" "));
@@ -70,6 +66,9 @@ public class InputFileStruct {
 
     }
 
+    /** Parses the actor type, as well as if the actor should be infected by fungi.
+     * @param input The list of all the sub-elements of the input line.
+     */
     private void parseActorType(List<String> input) {
         Pattern pattern = Pattern.compile("[a-z]+");
         String index1 = input.get(0);
@@ -98,7 +97,8 @@ public class InputFileStruct {
     }
 
     /** Parses the spawn amount from the input file line
-     * */
+     * @param input The list of all the sub-elements of the input line.
+     */
     private void parseSpawnAmount(List<String> input) {
         String amount = "";
         Pattern amountPattern = Pattern.compile("[\\d-]+");
@@ -119,7 +119,8 @@ public class InputFileStruct {
     }
 
     /** Parses the static spawn location from the input file line if one i present
-     * */
+     * @param input The list of all the sub-elements of the input line.
+     */
     private void parseStaticSpawnLocation(List<String> input) {
         Pattern staticSpawnPattern = Pattern.compile("\\((\\d+),(\\d+)\\)");    // Regular expression that extracts the x and y coordinates from the static location
         Matcher matcher = null;
@@ -135,7 +136,5 @@ public class InputFileStruct {
         int x = Integer.parseInt(matcher.group(1));
         int y = Integer.parseInt(matcher.group(2));
         staticSpawnLocation = new Location(x, y);
-
     }
-
 }
