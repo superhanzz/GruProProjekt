@@ -1,10 +1,8 @@
 package Tests;
 
 import CapableSimulator.Actors.*;
-import CapableSimulator.Actors.Animals.Predators.Bear;
-import CapableSimulator.Actors.Animals.Predators.WolfGang;
+import CapableSimulator.Actors.Animals.Predators.*;
 import CapableSimulator.Actors.Animals.Rabbit;
-import CapableSimulator.Actors.Animals.Predators.Wolf;
 import CapableSimulator.Actors.Shelter.WolfDen;
 
 import CapableSimulator.Utils.WorldUtils;
@@ -132,13 +130,27 @@ public class AnimalReproduceTest {
         assertTrue(numberOfBearsPreMating < numberOfBearsPostMating);
     }
 
-
-    // TODO
     @RepeatedTest(1)
-    public void putinBecomeEggTest() {}
+    public void putinBecomeEggTest() {
+        Putin putin = new Putin(world, 0);
+        Location putinLocation = new Location(0,1);
+        putin.updateOnMap(putinLocation, true);
+        putin.doEverySimulationStep();
+
+        assertFalse(world.getEntities().containsKey(putin));
+        assertInstanceOf(PutinEgg.class, world.getTile(putinLocation));
+    }
 
     @RepeatedTest(1)
-    public void putinHatchFromEggTest() {}
+    public void putinHatchFromEggTest() {
+        PutinEgg putinegg = new PutinEgg(world, 0);
+        Location putinLocation = new Location(0,1);
+        world.setTile(putinLocation, putinegg);
+        putinegg.act(world);
+
+        assertFalse(world.getEntities().containsKey(putinegg));
+        assertInstanceOf(Putin.class, world.getTile(putinLocation));
+    }
 
 
     @AfterEach

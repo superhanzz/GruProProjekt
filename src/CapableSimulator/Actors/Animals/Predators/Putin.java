@@ -40,6 +40,15 @@ public class Putin extends Predator {
         setupPredatorStrength(5, 3, 5);
     }
 
+    /** Default constructor.
+     * @param world The world wherein the actor exists.
+     */
+    public Putin(World world, int energy){
+        super("putin", world, energy, 0,100);
+
+        setupPredatorStrength(5, 3, 5);
+    }
+
     /* ----- ----- ----- ----- Behavior ----- ----- ----- ----- */
 
     @Override

@@ -224,16 +224,12 @@ public class AnimalShelterTests {
     }
 
     private boolean anyWolfsOnMap() {
-        int num = 0;
         for (Object o : WorldUtils.getAllObjectOnWorldMap(world)) {
             if (o instanceof Wolf wolf) {
                 return true;
-                /*if (world.isOnTile(wolf)) return true;
-                num++;*/
             }
         }
-
-        return num > 0;
+        return false;
     }
 
 

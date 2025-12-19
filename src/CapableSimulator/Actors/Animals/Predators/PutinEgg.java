@@ -21,6 +21,11 @@ public class PutinEgg extends WorldActor {
         timeToHatch = INIT_HATCH_TIME;
     }
 
+    public PutinEgg(World world, int INIT_HATCH_TIME) {
+        super("putinEgg", world);
+        timeToHatch = INIT_HATCH_TIME;
+    }
+
     @Override
     public void act(World world) {
         timeToHatch--;
