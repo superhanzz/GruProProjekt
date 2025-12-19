@@ -64,6 +64,9 @@ public class Putin extends Predator {
                 if (moveNextToTarget(fungus.getLocation()))
                     eat(fungus);
             }
+            else {
+                normalBehaviour();
+            }
         }
         else {
             normalBehaviour();
