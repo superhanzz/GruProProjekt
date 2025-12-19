@@ -124,7 +124,7 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
-    /**
+    /**Method for behavior as a lone wolf
      * */
     private void loneWolfBehavior() {
 
@@ -153,7 +153,7 @@ public class Wolf extends Predator implements FlockAnimal {
         }
     }
 
-    /**
+    /**Method for behavior for a wolf in a pack
      * */
     private void flockWolfBehavior() {
 
