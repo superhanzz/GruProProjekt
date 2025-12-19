@@ -11,11 +11,10 @@ import java.util.List;
 
 public class WolfGang extends AnimalFlock {
 
-    //public Wolf Alpha;
-    //public List<Wolf> NPCs;
     private int optimalRadiusAroundAlpha;
+
     private int allowedRadiusAroundAlpha;
-    //public WolfDen wolfDen;
+
     public Location denLocation;
 
 
@@ -35,7 +34,7 @@ public class WolfGang extends AnimalFlock {
     }
 
     public void getNearbyWolfsFromGang(Wolf askingWolf, List<Wolf> nearbyWolfs) {
-        PathFinder pathFinder = new PathFinder(world);
+        PathFinder pathFinder = new PathFinder();
         for (Animal animal : flockMembers) {
             if(animal instanceof Wolf wolf) {
                 if (wolf.isOnMap()) {
@@ -53,9 +52,6 @@ public class WolfGang extends AnimalFlock {
     /* ----- ----- ----- ----- Getters and Setters ----- ----- ----- -----*/
 
     public int getOptimalRadiusAroundAlpha() { return optimalRadiusAroundAlpha; }
+
     public int getAllowedRadiusAroundAlpha() { return allowedRadiusAroundAlpha; }
-
-    /* ----- ----- ----- ----- Flock Animal Related ----- ----- ----- ----- */
-
-
 }

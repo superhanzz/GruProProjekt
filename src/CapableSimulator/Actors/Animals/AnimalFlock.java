@@ -33,7 +33,7 @@ public abstract class AnimalFlock {
     public double getFlockRadius(){
        double radius = 0.0;
        Location flockCenter = flockLeader.getLocation();
-        PathFinder pathFinder = new PathFinder(world);
+        PathFinder pathFinder = new PathFinder();
 
        double radiusSum = 0.0;
        for (Animal animal : flockMembers){

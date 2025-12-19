@@ -144,7 +144,7 @@ public class AnimalShelterTests {
 
     @RepeatedTest(1)
     public void wolfGoTowardsDenTest() {
-        PathFinder pathFinder = new PathFinder(world);
+        PathFinder pathFinder = new PathFinder();
 
         world =  new World(10);
 

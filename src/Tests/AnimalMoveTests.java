@@ -68,7 +68,7 @@ public class AnimalMoveTests {
     public void wolfFollowAlphaTest() {
         world = new World(worldSize);
 
-        PathFinder pathFinder = new PathFinder(world);
+        PathFinder pathFinder = new PathFinder();
 
         Wolf alpha = new Wolf(world);
         Wolf npc = new Wolf(world);
@@ -140,7 +140,7 @@ public class AnimalMoveTests {
     @RepeatedTest(1)
     void bearMoveTest() {
         world = new World(worldSize);
-        PathFinder pathFinder = new PathFinder(world);
+        PathFinder pathFinder = new PathFinder();
 
         Location bearSpawnLocation = TileFinder.getEmptyTile(world, true);
         Bear bear = new Bear(world, bearSpawnLocation);
