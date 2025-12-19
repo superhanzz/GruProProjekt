@@ -84,7 +84,7 @@ public class Rabbit extends Animal {
             return;
 
         if(isInfected()) {
-
+            getFungiSpore().act(world);
         }
         else if (world.isDay()) {
             if(!isOnMap()) {
