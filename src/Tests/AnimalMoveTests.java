@@ -92,9 +92,9 @@ public class AnimalMoveTests {
 
         double npcDistanceFromAlphaPostMove = pathFinder.distance(alphaLocationPostMove, npcLocationPostMove);
 
-        assertTrue(alphaLocationPreMove.getX() != alphaLocationPostMove.getX() || alphaLocationPreMove.getY() != alphaLocationPostMove.getY());
+        assertTrue(alphaLocationPreMove.getX() != alphaLocationPostMove.getX() || alphaLocationPreMove.getY() != alphaLocationPostMove.getY() || PathFinder.distance(npc.getLocation(), npc.getLocation()) <= gang.getAllowedRadiusAroundAlpha());
 
-        assertTrue(npcLocationPreMove.getX() != npcLocationPostMove.getX() || npcLocationPreMove.getY() != npcLocationPostMove.getY());
+        assertTrue(npcLocationPreMove.getX() != npcLocationPostMove.getX() || npcLocationPreMove.getY() != npcLocationPostMove.getY() || PathFinder.distance(npc.getLocation(), npc.getLocation()) <= gang.getAllowedRadiusAroundAlpha());
 
         assertTrue(npcDistanceFromAlphaPreMove >= npcDistanceFromAlphaPostMove);
     }

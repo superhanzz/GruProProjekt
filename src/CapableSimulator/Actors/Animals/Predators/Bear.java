@@ -53,7 +53,7 @@ public class Bear extends Predator {
     /* ----- ----- ----- ----- Constructors ----- ----- ----- ----- */
 
     public Bear(World world) {
-        super("bear", world, 40, 0, 35);
+        super("bear", world, 25, 0, 35);
         this.territoryCenter = new Location(0, 0);
         this.territoryRadius = 2;
 
@@ -61,7 +61,15 @@ public class Bear extends Predator {
     }
 
     public Bear(World world, Location territoryCenter) {
-        super("bear", world, 40, 0, 35);
+        super("bear", world, 25, 0, 35);
+        this.territoryCenter = territoryCenter;
+        this.territoryRadius = 2;
+
+        setupPredatorStrength(8, 5, -2);
+    }
+
+    public Bear(World world, Location territoryCenter, int age) {
+        super("bear", world, 25, age, 35);
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
 
@@ -69,7 +77,7 @@ public class Bear extends Predator {
     }
 
     public Bear(World world, int age, int MATING_AGE, int MATING_COOLDOWN_DURATION,  Location territoryCenter) {
-        super("bear", world, 40, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
+        super("bear", world, 25, age, 35, MATING_AGE, MATING_COOLDOWN_DURATION);
         this.territoryCenter = territoryCenter;
         this.territoryRadius = 2;
 
@@ -137,6 +145,8 @@ public class Bear extends Predator {
     @Override
     protected boolean isAnimalEnemy(Predator possibleEnemy) {
         if (possibleEnemy instanceof Wolf wolf) {
+            if (wolf.getWolfGang() == null)
+                return true;
             List<Wolf> nearbyWolfs = new ArrayList<>();
             wolf.getWolfGang().getNearbyWolfsFromGang(wolf,  nearbyWolfs);
             return nearbyWolfs.size() < 3;

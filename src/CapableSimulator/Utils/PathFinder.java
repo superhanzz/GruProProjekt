@@ -69,10 +69,10 @@ public class PathFinder {
         return shortestTile;
     }
 
-    public static double distance(Location A, Location B) {
+    public static int distance(Location A, Location B) {
         Location distanceVector = new Location((A.getX() - B.getX()),(A.getY() - B.getY()));
         double distance = Math.sqrt(Math.pow(distanceVector.getX(), 2) + Math.pow(distanceVector.getY(), 2));
-        return (Math.ceil(distance));
+        return Double.valueOf(distance).intValue();
     }
 
     public static void getPossibleMovesForAxis(int axis, List<Integer> possibleMovesList) {

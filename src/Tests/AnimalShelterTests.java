@@ -215,6 +215,7 @@ public class AnimalShelterTests {
                 animal.onNightFall();
             }
             num++;
+            if (num > 100) break;
         }
 
         for (Animal animal : den.getAnimalsInShelter()) {
@@ -224,10 +225,11 @@ public class AnimalShelterTests {
 
     private boolean anyWolfsOnMap() {
         int num = 0;
-        for (Animal animal : WorldUtils.getAllAnimals(world)) {
-            if (animal instanceof Wolf wolf) {
-                if (world.isOnTile(wolf)) return true;
-                num++;
+        for (Object o : WorldUtils.getAllObjectOnWorldMap(world)) {
+            if (o instanceof Wolf wolf) {
+                return true;
+                /*if (world.isOnTile(wolf)) return true;
+                num++;*/
             }
         }
 

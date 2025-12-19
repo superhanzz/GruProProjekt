@@ -137,14 +137,15 @@ public class EatTests {
     @RepeatedTest(1)
     void bearHuntWolfTest() {
         Location bearLocation = new Location(0,1);
-        Bear bear = new Bear(world, bearLocation);
+        Bear bear = new Bear(world, bearLocation, 10);
         bear.updateOnMap(bearLocation, true);
 
-        Wolf wolf = new Wolf(world);
+        Wolf wolf = new Wolf(world, 10);
         Location wolfLocation = new Location(1,1);
         wolf.updateOnMap(wolfLocation, true);
 
-        bear.lookForFood(1);
+        wolf.doEverySimulationStep();
+        bear.act(world);
 
         assertFalse(world.getEntities().containsKey(wolf));
         assertInstanceOf(Carcass.class, world.getTile(wolfLocation));

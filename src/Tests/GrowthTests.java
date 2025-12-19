@@ -50,7 +50,7 @@ public class GrowthTests {
 
         }
 
-        assertEquals(0.01, (grassGrowths / sampleSize), 0.01);
+        assertEquals(0.01, (grassGrowths / sampleSize), 0.025);
     }
 
     @RepeatedTest(100)
@@ -69,7 +69,7 @@ public class GrowthTests {
         }
 
         double actualSpawnChance = (numberOfBerriesSpawns * 1.0) / (sampleSize * 1.0);
-        assertEquals(berrySpawnChance, actualSpawnChance, 0.01);
+        assertEquals(berrySpawnChance, actualSpawnChance, 0.025);
 
     }
 

@@ -86,6 +86,16 @@ public class Wolf extends Predator implements FlockAnimal {
     /** Constructor for testing.
      * @param world The world wherein the actor exists.
      * @param age The animals starting age.
+     */
+    public Wolf(World world, int age) {
+        super("wolf", world, 30, age, 30);
+        wolfType = CapableEnums.WolfType.NPC;
+        wolfGang = null;
+    }
+
+    /** Constructor for testing.
+     * @param world The world wherein the actor exists.
+     * @param age The animals starting age.
      * @param MATING_AGE The required age for mating.
      * @param MATING_COOLDOWN_DURATION The required time (simulation steps) before the animal can reproduce again.
      */
