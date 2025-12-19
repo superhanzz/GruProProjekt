@@ -88,6 +88,11 @@ public abstract class Predator extends Animal {
 
     /* ----- ----- ----- ----- Fighting ----- ----- ----- -----*/
 
+    /** Prepares the strength table.
+     * @param baseStrength The base strength.
+     * @param adultBonus The adult bonus.
+     * @param infectedBonus The infected bonus.
+     */
     protected void setupPredatorStrength(int baseStrength, int adultBonus, int infectedBonus) {
         Map<String, Integer> animalSize = new HashMap<>();
         animalSize.put("Small", baseStrength);
@@ -99,6 +104,14 @@ public abstract class Predator extends Animal {
 
         strengthBonusMap.put(CapableEnums.AnimalSize.class, animalSize);
         strengthBonusMap.put(CapableEnums.FungiState.class, fungiState);
+    }
+
+    /** Adds an entry to the strength bonus map.
+     * @param enumClass the class of the enum.
+     * @param value The value associated with the enum.
+     */
+    protected void addToStrengthBonusMap(Class<? extends Enum> enumClass, Map<String, Integer> value) {
+        strengthBonusMap.put(enumClass, value);
     }
 
     /**Method for if the animal should attack another actor or not.
@@ -219,6 +232,14 @@ public abstract class Predator extends Animal {
         strength += strengthBonusMap.get(getAnimalSize().getClass()).get(getAnimalSize().label);
         strength += strengthBonusMap.get(getFungiState().getClass()).get(getFungiState().label);
         return (strength * 1.0);
+    }
+
+    /** Retrieves the bonus associated with the enum class and the enum label.
+     * @param enumClass The enum class.
+     * @param label The label value of the enum.
+     * @return Returns the value associated with the label.*/
+    protected double getStrengthBonusEntry(Class<? extends Enum> enumClass, String label) {
+        return strengthBonusMap.get(enumClass).get(label);
     }
 
     /** Evaluates if a possible enemy actor is actually an enemy.

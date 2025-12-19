@@ -132,7 +132,6 @@ public class Bear extends Predator {
         }
         world.move(this, searchLocation);
     }
-    // TODO make test that test if a bear moves out of it territory.
 
     @Override
     public void updateOnMap(Location location, boolean isOnMap) {
